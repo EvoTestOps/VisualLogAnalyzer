@@ -1,0 +1,6 @@
+test_data
+output
+__pycache__/
+.env
+.venv
+venv
