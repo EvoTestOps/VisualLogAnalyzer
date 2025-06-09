@@ -1,6 +1,7 @@
 import os
 
-from flask import Blueprint, jsonify, request
+import polars as pl
+from flask import Blueprint, jsonify, redirect, request
 
 from log_analyzer import LogAnalyzer
 
@@ -22,19 +23,50 @@ def analyze():
         return jsonify({"error": "No directory specified"}), 400
 
     try:
-        if log_format == "lo2":
-            analyzer.load_lo2(dir_path)
-        elif log_format == "hadoop":
-            analyzer.load_hadoop(dir_path, labels_file_name)
+        analyzer.load(
+            dir_path=dir_path, log_format=log_format, labels_file_name=labels_file_name
+        )
 
-        analyzer.train_split(item_list_col=item_list_col, test_frac=test_frac)
+        analyzer.enhance(item_list_col=item_list_col)
 
-        results = analyzer.run_models(models)
+        analyzer.train_split(item_list_col=analyzer.item_list_col, test_frac=test_frac)
 
-        data = results[0]  # make plots (store data some where)
-        avg_scores = results[1].to_dict()
+        data, avg_scores = analyzer.run_models(models)
 
-        return jsonify(avg_scores)
+        return jsonify(avg_scores.to_dict())
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+# @main_routes.route("/api/simple_plot", methods=["POST"])
+# def simple_plot():
+#
+#     analyzer = LogAnalyzer()
+#
+#     dir_path = request.form.get("directory")
+#     log_format = request.form.get("dataset", "lo2")
+#
+#     if not dir_path or not os.path.exists(dir_path):
+#         return jsonify({"error": "No directory specified"}), 400
+#
+#     if log_format == "lo2":
+#         analyzer.load_lo2(dir_path)
+#     else:
+#         return ""
+#
+#     line_counts = analyzer.df.group_by("run").agg(
+#         [
+#             pl.count().alias("line_count"),
+#             pl.col("seq_id").n_unique().alias("file_count"),
+#         ]
+#     )
+#     print(line_counts)
+#
+#     return jsonify(line_counts.to_dicts())
+#
+
+
+@main_routes.route("/")
+def home():
+    return redirect("/dash")
