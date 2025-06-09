@@ -39,33 +39,33 @@ plot = html.Div(dcc.Graph(id="plot-area"))
 form = dbc.Form([dataset_input, directory_input, submit_btn])
 layout = dbc.Container([form, plot])
 
-
-@callback(
-    Output("plot-area", "figure"),
-    Input("submit", "n_clicks"),
-    State("dataset", "value"),
-    State("directory", "value"),
-    prevent_initial_call=True,
-)
-def update_plot(n_clicks, dataset, directory):
-    try:
-        response = requests.post(
-            "http://localhost:5000/api/simple_plot",
-            params={"dataset": dataset, "directory": directory},
-        )
-        response.raise_for_status()
-
-        data = response.json()
-        df = pl.from_dicts(data)
-
-        fig = px.scatter(
-            df,
-            x="file_count",
-            y="line_count",
-            hover_data=["file_count", "line_count", "run"],
-        )
-
-        return fig
-
-    except Exception as e:
-        return px.scatter(title=f"Error loading data: {e}")
+#
+# @callback(
+#     Output("plot-area", "figure"),
+#     Input("submit", "n_clicks"),
+#     State("dataset", "value"),
+#     State("directory", "value"),
+#     prevent_initial_call=True,
+# )
+# def update_plot(n_clicks, dataset, directory):
+#     try:
+#         response = requests.post(
+#             "http://localhost:5000/api/simple_plot",
+#             params={"dataset": dataset, "directory": directory},
+#         )
+#         response.raise_for_status()
+#
+#         data = response.json()
+#         df = pl.from_dicts(data)
+#
+#         fig = px.scatter(
+#             df,
+#             x="file_count",
+#             y="line_count",
+#             hover_data=["file_count", "line_count", "run"],
+#         )
+#
+#         return fig
+#
+#     except Exception as e:
+#         return px.scatter(title=f"Error loading data: {e}")

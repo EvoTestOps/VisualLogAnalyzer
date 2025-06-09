@@ -1,5 +1,5 @@
 import polars as pl
-from loglead import AnomalyDetector, enhancers
+from loglead import AnomalyDetector
 from loglead.enhancers import EventLogEnhancer
 from loglead.loaders import HadoopLoader, LO2Loader
 
@@ -105,9 +105,13 @@ class LogAnalyzer:
             else:
                 results[model_name] = {"error": f"Unsupported model '{model_name}'"}
 
-        avg_scores = self._sad.storage.calculate_average_scores(score_type="accuracy")
+        avg_scores = self._sad.storage.calculate_average_scores(
+            score_type="accuracy"
+        )  # TODO: Multiple score types
 
-        return (results, avg_scores)
+        results["avg_scores"] = pl.from_pandas(avg_scores)
+
+        return results
 
     @property
     def df(self):
