@@ -31,6 +31,7 @@ class LogAnalyzer:
 
         self._item_list_col = item_list_col
 
+    # TODO: Change names since also predicts
     def _train_lr(self):
         self._sad.train_LR()
         return self._sad.predict()
@@ -52,24 +53,31 @@ class LogAnalyzer:
         self._sad.test_train_split(self._df, test_frac=test_frac)
 
     def run_models(self, models):
-        results = {}
-
+        df_result = None
         for model_name in models:
-            train_func = self._model_to_func.get(model_name)
-            if train_func:
-                df_pred = train_func()
-                results[model_name] = df_pred
-            else:
-                results[model_name] = {"error": f"Unsupported model '{model_name}'"}
+            df_result = self._run_model(model_name, df_result)
 
-        avg_scores = self._sad.storage.calculate_average_scores(
-            score_type="accuracy"
-        )  # TODO: Multiple score types
+        return df_result
 
-        results["avg_scores"] = pl.from_pandas(avg_scores)
 
-        return results
+    def _run_model(self, model_name, df_result):
+        train_func = self._model_to_func.get(model_name)
 
+        if not train_func:
+            raise ValueError(f"error: Unsupported model {model_name}")
+
+        predictions = train_func()
+
+        if df_result is None:
+            df_result = predictions.rename({"pred_ano_proba": f"{model_name}_pred_ano_proba"})
+        else:
+            predictions_series = predictions.select("pred_ano_proba").to_series()
+            df_result = df_result.with_columns(predictions_series.alias(f"{model_name}_pred_ano_proba"))
+
+        del predictions
+
+        return df_result
+        
     @property
     def df(self):
         return self._df

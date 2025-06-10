@@ -1,5 +1,6 @@
 import io
 import os
+import gc
 
 import polars as pl
 from flask import Blueprint, Response, jsonify, redirect, request
@@ -28,6 +29,11 @@ def analyze():
             400,
         )
 
+    buffer = None
+    loader = None
+    analyzer = None
+    results = None
+
     try:
         loader = Loader(
             dir_path, log_format=log_format, labels_file_name=labels_file_name
@@ -39,17 +45,35 @@ def analyze():
         analyzer.train_split(test_frac=test_frac)
         results = analyzer.run_models(models)
 
-        avg_scores = results["avg_scores"]
-        model_result = results[models[0]]  # first one for testing
+        if results is None:
+            return (
+                jsonify({"error": "Results are null"}),
+                400,
+            )
 
         buffer = io.BytesIO()
-        model_result.write_parquet(buffer, compression="lz4")  # zstd
+        results.write_parquet(buffer, compression="zstd")  # zstd lz4
         buffer.seek(0)
 
         return Response(buffer.getvalue(), mimetype="application/octet-stream")
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+        
+    finally:
+        if buffer:
+            buffer.close()
+
+        # Might help with some memory issues
+        if results is not None:
+            del results
+        if analyzer is not None:
+            del analyzer
+        if loader is not None:
+            del loader
+
+        gc.collect()
+
 
 
 # @main_routes.route("/")
