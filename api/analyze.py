@@ -4,16 +4,15 @@ import os
 import polars as pl
 from flask import Blueprint, Response, jsonify, redirect, request
 
-from log_analyzer import LogAnalyzer
+from services.loader import Loader
+from services.log_analyzer import LogAnalyzer
 
-main_routes = Blueprint("main", __name__)
+analyze_bp = Blueprint("main", __name__)
 
 
-# TODO: fix to get multiple models
-@main_routes.route("/api/analyze", methods=["POST"])
+# TODO: add masking option
+@analyze_bp.route("/", methods=["POST"])
 def analyze():
-    analyzer = LogAnalyzer()
-
     params = request.get_json()
 
     dir_path = params.get("dir_path")
@@ -29,18 +28,15 @@ def analyze():
             400,
         )
 
-    if not models:
-        return (
-            jsonify({"error": "No models specified"}),
-            400,
-        )
-
     try:
-        analyzer.load(
-            dir_path=dir_path, log_format=log_format, labels_file_name=labels_file_name
+        loader = Loader(
+            dir_path, log_format=log_format, labels_file_name=labels_file_name
         )
-        analyzer.enhance(item_list_col=item_list_col)
-        analyzer.train_split(item_list_col=analyzer.item_list_col, test_frac=test_frac)
+        loader.load()
+
+        analyzer = LogAnalyzer(loader.df, loader.df_seq)
+        analyzer.enhance(item_list_col)
+        analyzer.train_split(test_frac=test_frac)
         results = analyzer.run_models(models)
 
         avg_scores = results["avg_scores"]
@@ -56,6 +52,6 @@ def analyze():
         return jsonify({"error": str(e)}), 500
 
 
-@main_routes.route("/")
-def home():
-    return redirect("/dash")
+# @main_routes.route("/")
+# def home():
+#     return redirect("/dash")

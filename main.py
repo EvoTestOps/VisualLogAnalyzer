@@ -3,10 +3,10 @@ import dash_bootstrap_components as dbc
 from dash import Dash, dcc, html
 from flask import Flask
 
-from routes import main_routes
+from api.analyze import analyze_bp
 
 server = Flask(__name__)
-server.register_blueprint(main_routes)
+server.register_blueprint(analyze_bp, url_prefix="/api/analyze")
 
 dash_app = Dash(
     __name__,
