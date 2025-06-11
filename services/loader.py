@@ -3,7 +3,7 @@ from loglead.loaders import HadoopLoader, LO2Loader
 
 
 class Loader:
-    def __init__(self, directory_path, log_format="lo2", labels_file_name=None) -> None:
+    def __init__(self, directory_path, log_format="lo2", labels_file_name=None):
         self._directory_path = directory_path
         self._log_format = log_format
         self._labels_file_name = labels_file_name
@@ -30,6 +30,7 @@ class Loader:
         self._df = loader.df
         self._df_seq = loader.df_seq
 
+    # Fix this makes no sense
     def _load_hadoop(self):
         loader = HadoopLoader(
             filename=self._directory_path,

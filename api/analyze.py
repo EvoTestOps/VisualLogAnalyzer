@@ -5,8 +5,12 @@ import gc
 import polars as pl
 from flask import Blueprint, Response, jsonify, redirect, request
 
+import logging
+import traceback
+
 from services.loader import Loader
 from services.log_analyzer import LogAnalyzer
+from services.enhancer import Enhancer
 
 analyze_bp = Blueprint("main", __name__)
 
@@ -22,6 +26,7 @@ def analyze():
     item_list_col = params.get("item_list_col", "e_words")
     log_format = params.get("log_format", "lo2")
     labels_file_name = params.get("labels_file_name", None)
+    sequence_enhancement = params.get("seq", False)
 
     if not dir_path or not os.path.exists(dir_path):
         return (
@@ -40,9 +45,16 @@ def analyze():
         )
         loader.load()
 
-        analyzer = LogAnalyzer(loader.df, loader.df_seq)
-        analyzer.enhance(item_list_col)
-        analyzer.train_split(test_frac=test_frac)
+        enhancer = Enhancer(loader.df, loader.df_seq)
+
+        if sequence_enhancement:
+            enhancer.enhance_seq(item_list_col)
+        else:
+            enhancer.enhance_event(item_list_col)
+
+        analyzer = LogAnalyzer(enhancer.df, enhancer.df_seq, item_list_col)
+
+        analyzer.train_split(test_frac=test_frac, sequence=sequence_enhancement)
         results = analyzer.run_models(models)
 
         if results is None:
@@ -58,6 +70,9 @@ def analyze():
         return Response(buffer.getvalue(), mimetype="application/octet-stream")
 
     except Exception as e:
+        trace = traceback.format_exc()
+        logging.error(trace)
+
         return jsonify({"error": str(e)}), 500
         
     finally:

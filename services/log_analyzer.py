@@ -9,7 +9,8 @@ class LogAnalyzer:
         self._df_seq = df_seq
         self._item_list_col = item_list_col
 
-        self._sad = AnomalyDetector()
+        # self._sad = AnomalyDetector()
+        self._sad = None
 
         self._model_to_func = {
             "lr": self._train_lr,
@@ -18,27 +19,6 @@ class LogAnalyzer:
             "rm": self._train_rm,
             "oovd": self._train_oovd,
         }
-
-    # Only event enhanching
-    def enhance(self, item_list_col="e_words"):
-        enhancer = EventLogEnhancer(self._df)
-
-        if item_list_col == "e_words":
-            self._df = enhancer.words()
-        elif item_list_col == "e_trigrams":
-            self._df = enhancer.trigrams()
-        elif item_list_col == "e_event_drain_id":
-            self._df = enhancer.parse_drain()
-        elif item_list_col == "e_event_tip_id":
-            self._df = enhancer.parse_tip()
-        elif item_list_col == "e_message_normalized":
-            self._df = enhancer.normalize()
-        elif item_list_col == "e_event_brain_id":
-            self._df = enhancer.parse_brain()
-        else:
-            raise ValueError(f"Unsupported enhance: {item_list_col}")
-
-        self._item_list_col = item_list_col
 
     # TODO: Change names since also predicts
     def _train_lr(self):
@@ -61,13 +41,19 @@ class LogAnalyzer:
         self._sad.train_OOVDetector()
         return self._sad.predict()
 
-    def train_split(self, test_frac=0.9):
+    def train_split(self, test_frac=0.9, sequence=False):
         # self._sad.item_list_col = item_list_col
+        self._sad = AnomalyDetector()
+
         self._sad.item_list_col = self._item_list_col
         self._sad.numeric_cols = None
         self._sad.auc_roc = True
         self._sad.store_scores = False
-        self._sad.test_train_split(self._df, test_frac=test_frac)
+
+        if sequence:
+            self._sad.test_train_split(self._df_seq, test_frac=test_frac)
+        else:
+            self._sad.test_train_split(self._df, test_frac=test_frac)
 
     def run_models(self, models):
         df_result = None
