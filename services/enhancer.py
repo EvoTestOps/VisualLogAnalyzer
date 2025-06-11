@@ -41,7 +41,7 @@ class Enhancer:
         else:
             raise ValueError(f"Unsupported enhance: {item_list_col}")
 
-        return (self._df, item_list_col)
+        return self._df
 
     def enhance_seq(self, item_list_col):
         self._sequence_enhancer = SequenceEnhancer(self._df, self._df_seq)
@@ -55,7 +55,7 @@ class Enhancer:
         else:
             raise ValueError(f"Unsupported sequence enhancer: {item_list_col}")
         
-        return (self._df_seq, item_list_col)
+        return self._df_seq
 
     def _check_prerequisites(self, item_list_col):
         if self._df.get_column(item_list_col, default=None) is None:

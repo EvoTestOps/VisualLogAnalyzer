@@ -8,9 +8,7 @@ from flask import Blueprint, Response, jsonify, redirect, request
 import logging
 import traceback
 
-from services.loader import Loader
-from services.log_analyzer import LogAnalyzer
-from services.enhancer import Enhancer
+from services.log_analysis_pipeline import LogAnalysisPipeline
 
 analyze_bp = Blueprint("main", __name__)
 
@@ -34,34 +32,25 @@ def analyze():
             400,
         )
 
-    buffer = None
-    loader = None
-    analyzer = None
     results = None
+    pipeline = None
+    buffer = None
 
     try:
-        loader = Loader(
-            dir_path, log_format=log_format, labels_file_name=labels_file_name
+        pipeline = LogAnalysisPipeline(
+            dir_path,
+            models,
+            item_list_col,
+            test_frac,
+            log_format,
+            labels_file_name,
+            sequence_enhancement,
         )
-        loader.load()
+        pipeline.load()
+        pipeline.enhance()
+        pipeline.analyze()
 
-        enhancer = Enhancer(loader.df, loader.df_seq)
-
-        if sequence_enhancement:
-            enhancer.enhance_seq(item_list_col)
-        else:
-            enhancer.enhance_event(item_list_col)
-
-        analyzer = LogAnalyzer(enhancer.df, enhancer.df_seq, item_list_col)
-
-        analyzer.train_split(test_frac=test_frac, sequence=sequence_enhancement)
-        results = analyzer.run_models(models)
-
-        if results is None:
-            return (
-                jsonify({"error": "Results are null"}),
-                400,
-            )
+        results = pipeline.results
 
         buffer = io.BytesIO()
         results.write_parquet(buffer, compression="zstd")  # zstd lz4
@@ -74,7 +63,7 @@ def analyze():
         logging.error(trace)
 
         return jsonify({"error": str(e)}), 500
-        
+
     finally:
         if buffer:
             buffer.close()
@@ -83,13 +72,10 @@ def analyze():
         # for whatever reason doesn't drop them automatically
         if results is not None:
             del results
-        if analyzer is not None:
-            del analyzer
-        if loader is not None:
-            del loader
+        if pipeline is not None:
+            del pipeline
 
         gc.collect()
-
 
 
 # @main_routes.route("/")
