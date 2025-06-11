@@ -64,7 +64,8 @@ def analyze():
         if buffer:
             buffer.close()
 
-        # Might help with some memory issues
+        # Might help with some memory issues, if python
+        # for whatever reason doesn't drop them automatically
         if results is not None:
             del results
         if analyzer is not None:

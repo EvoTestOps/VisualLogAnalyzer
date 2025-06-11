@@ -15,8 +15,11 @@ class LogAnalyzer:
             "lr": self._train_lr,
             "kmeans": self._train_kmeans,
             "dt": self._train_dt,
+            "rm": self._train_rm,
+            "oovd": self._train_oovd,
         }
 
+    # Only event enhanching
     def enhance(self, item_list_col="e_words"):
         enhancer = EventLogEnhancer(self._df)
 
@@ -26,6 +29,12 @@ class LogAnalyzer:
             self._df = enhancer.trigrams()
         elif item_list_col == "e_event_drain_id":
             self._df = enhancer.parse_drain()
+        elif item_list_col == "e_event_tip_id":
+            self._df = enhancer.parse_tip()
+        elif item_list_col == "e_message_normalized":
+            self._df = enhancer.normalize()
+        elif item_list_col == "e_event_brain_id":
+            self._df = enhancer.parse_brain()
         else:
             raise ValueError(f"Unsupported enhance: {item_list_col}")
 
@@ -44,12 +53,20 @@ class LogAnalyzer:
         self._sad.train_DT()
         return self._sad.predict()
 
+    def _train_rm(self):
+        self._sad.train_RarityModel()
+        return self._sad.predict()
+
+    def _train_oovd(self):
+        self._sad.train_OOVDetector()
+        return self._sad.predict()
+
     def train_split(self, test_frac=0.9):
         # self._sad.item_list_col = item_list_col
         self._sad.item_list_col = self._item_list_col
         self._sad.numeric_cols = None
         self._sad.auc_roc = True
-        self._sad.store_scores = True
+        self._sad.store_scores = False
         self._sad.test_train_split(self._df, test_frac=test_frac)
 
     def run_models(self, models):
@@ -60,6 +77,7 @@ class LogAnalyzer:
         return df_result
 
 
+    # Could possibly use sad.storage.test_results
     def _run_model(self, model_name, df_result):
         train_func = self._model_to_func.get(model_name)
 

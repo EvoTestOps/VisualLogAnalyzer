@@ -43,6 +43,7 @@ class Loader:
         if loader.df is None:
             raise ValueError("No data loaded")
 
+        # Do we need these??
         self._df = loader.df.join(
             loader.df_seq.select(["seq_id", "normal"]), on="seq_id", how="left"
         )
