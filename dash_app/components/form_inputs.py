@@ -42,6 +42,7 @@ def detectors_input():
                 ],
                 multi=True,
                 id="detectors",
+                className="dbc",
             ),
         ]
     )

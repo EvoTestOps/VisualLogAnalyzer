@@ -29,7 +29,7 @@ form = dbc.Form(
         test_frac_input(),
         submit_btn,
     ],
-    class_name="border border-primary-subtle p-3",
+    class_name="border border-primary-subtle p-3 mb-3",
 )
 
 layout = dbc.Container([form, plot])
