@@ -14,7 +14,7 @@ analyze_bp = Blueprint("main", __name__)
 
 
 # TODO: add masking option
-@analyze_bp.route("/", methods=["POST"])
+@analyze_bp.route("/analyze", methods=["POST"])
 def analyze():
     params = request.get_json()
 
@@ -78,6 +78,6 @@ def analyze():
         gc.collect()
 
 
-# @main_routes.route("/")
+# @analyze_bp.route("/")
 # def home():
 #     return redirect("/dash")

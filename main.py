@@ -3,16 +3,17 @@ import dash_bootstrap_components as dbc
 from dash import Dash, dcc, html
 from flask import Flask
 
-from api.analyze import analyze_bp
+from api.routes import analyze_bp
 
 server = Flask(__name__)
-server.register_blueprint(analyze_bp, url_prefix="/api/analyze")
+server.register_blueprint(analyze_bp, url_prefix="/api")
 
 dash_app = Dash(
     __name__,
     server=server,
     url_base_pathname="/dash/",
     use_pages=True,
+    pages_folder="dash_app/pages",
     external_stylesheets=[dbc.themes.BOOTSTRAP],
 )
 
