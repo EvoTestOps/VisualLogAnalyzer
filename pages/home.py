@@ -4,6 +4,7 @@ import plotly.express as px
 import polars as pl
 import requests
 from dash import Input, Output, State, callback, dcc, html
+import io
 
 dash.register_page(__name__, path="/", title="home")
 
@@ -34,7 +35,13 @@ detectors_input = dbc.Col(
     [
         dbc.Label("Detectors", html_for="detectors", width="auto"),
         dcc.Dropdown(
-            ["Logistic Regression", "Decision Tree", "K-Means", "Rarity Model", "OOVD"],
+            options=[
+                {"label": "Logistic Regression", "value": "lr"},
+                {"label": "Decision Tree", "value": "dt"},
+                {"label": "K-Means", "value": "kmeans"},
+                {"label": "Rarity Model", "value": "rm"},
+                {"label": "OOVD", "value": "oovd"},
+            ],
             multi=True,
             id="detectors",
         ),
@@ -61,9 +68,9 @@ enhancement_input = dbc.Col(
 
 sequence_input = dbc.Col(
     [
-        dbc.Label("Event/Seq", html_for="seq", width="auto"),
+        dbc.Label("Event/Seq", html_for="sequence", width="auto"),
         dbc.RadioItems(
-            id="seq",
+            id="sequence",
             options=[
                 {"label": "Event", "value": False},
                 {"label": "Sequence", "value": True},
@@ -99,3 +106,39 @@ form = dbc.Form(
 )
 
 layout = dbc.Container([form, plot])
+
+
+@callback(
+    Output("plot-area", "figure"),
+    Input("submit", "n_clicks"),
+    State("log_format", "value"),
+    State("directory", "value"),
+    State("detectors", "value"),
+    State("enhancement", "value"),
+    State("sequence", "value"),
+    State("test_frac", "value"),
+    prevent_initial_call=True,
+)
+def update_plot(
+    n_clicks, log_format, directory, detectors, enhancement, sequence, test_frac
+):
+    try:
+        response = requests.post(
+            "http://localhost:5000/api/analyze",
+            json={
+                "dir_path": directory,
+                "log_format": log_format,
+                "models": detectors,
+                "item_list_col": enhancement,
+                "test_frac": test_frac,
+                "seq": sequence,
+            },
+        )
+        response.raise_for_status()
+        parquet_bytes = io.BytesIO(response.content)
+        df = pl.read_parquet(parquet_bytes)
+
+        return px.scatter(title="OK")
+
+    except Exception as e:
+        return px.scatter(title=f"Error loading data: {e}")
