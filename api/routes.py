@@ -8,6 +8,7 @@ from flask import Blueprint, Response, jsonify, redirect, request
 import logging
 import traceback
 
+from services.loader import Loader
 from services.log_analysis_pipeline import LogAnalysisPipeline
 
 analyze_bp = Blueprint("main", __name__)
@@ -76,6 +77,48 @@ def analyze():
             del pipeline
 
         gc.collect()
+
+
+@analyze_bp.route("/run_line_counts", methods=["POST"])
+def run_line_lens():
+    params = request.get_json()
+
+    dir_path = params.get("dir_path")
+    log_format = params.get("log_format", "lo2")
+
+    if not dir_path or not os.path.exists(dir_path):
+        return (
+            jsonify({"error": "No directory specified or directory does not exist"}),
+            400,
+        )
+
+    buffer = None
+    try:
+        loader = Loader(dir_path, log_format)
+        loader.load()
+        df = loader.df
+
+        line_counts = df.group_by("run").agg(
+            [
+                pl.count().alias("line_count"),
+                pl.col("seq_id").n_unique().alias("file_count"),
+            ]
+        )
+
+        buffer = io.BytesIO()
+        line_counts.write_parquet(buffer, compression="zstd")  # zstd lz4
+        buffer.seek(0)
+
+        return Response(buffer.getvalue(), mimetype="application/octet-stream")
+
+    except Exception as e:
+        trace = traceback.format_exc()
+        logging.error(trace)
+
+        return jsonify({"error": str(e)}), 500
+    finally:
+        if buffer:
+            buffer.close()
 
 
 # @analyze_bp.route("/")
