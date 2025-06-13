@@ -55,13 +55,31 @@ class LogAnalyzer:
         else:
             self._sad.test_train_split(self._df, test_frac=test_frac)
 
+    def manual_train_split(self, train_df, test_df):
+        self._sad = AnomalyDetector(
+            item_list_col=self._item_list_col,
+            store_scores=False,
+            auc_roc=True,
+            numeric_cols=None,
+            print_scores=False,  # will crash otherwise
+        )
+
+        self._sad.item_list_col = self._item_list_col
+        self._sad.numeric_cols = None
+        self._sad.auc_roc = True
+        self._sad.store_scores = False
+
+        self._sad.train_df = train_df
+        self._sad.test_df = test_df
+
+        self._sad.prepare_train_test_data()
+
     def run_models(self, models):
         df_result = None
         for model_name in models:
             df_result = self._run_model(model_name, df_result)
 
         return df_result
-
 
     # Could possibly use sad.storage.test_results
     def _run_model(self, model_name, df_result):
@@ -73,15 +91,19 @@ class LogAnalyzer:
         predictions = train_func()
 
         if df_result is None:
-            df_result = predictions.rename({"pred_ano_proba": f"{model_name}_pred_ano_proba"})
+            df_result = predictions.rename(
+                {"pred_ano_proba": f"{model_name}_pred_ano_proba"}
+            )
         else:
             predictions_series = predictions.select("pred_ano_proba").to_series()
-            df_result = df_result.with_columns(predictions_series.alias(f"{model_name}_pred_ano_proba"))
+            df_result = df_result.with_columns(
+                predictions_series.alias(f"{model_name}_pred_ano_proba")
+            )
 
         del predictions
 
         return df_result
-        
+
     @property
     def df(self):
         return self._df

@@ -39,13 +39,13 @@ def analyze():
 
     try:
         pipeline = LogAnalysisPipeline(
-            dir_path,
-            models,
-            item_list_col,
-            test_frac,
-            log_format,
-            labels_file_name,
-            sequence_enhancement,
+            directory_path=dir_path,
+            model_names=models,
+            item_list_col=item_list_col,
+            test_frac=test_frac,
+            log_format=log_format,
+            labels_file_name=labels_file_name,
+            sequence_enhancement=sequence_enhancement,
         )
         pipeline.load()
         pipeline.enhance()
@@ -71,6 +71,74 @@ def analyze():
 
         # Might help with some memory issues, if python
         # for whatever reason doesn't drop them automatically
+        if results is not None:
+            del results
+        if pipeline is not None:
+            del pipeline
+
+        gc.collect()
+
+
+@analyze_bp.route("/manual_test_train", methods=["POST"])
+def manual_test_train():
+    params = request.get_json()
+
+    train_data_path = params.get("train_data_path")
+    test_data_path = params.get("test_data_path")
+    models = params.get("models", ["lr"])
+    item_list_col = params.get("item_list_col", "e_words")
+    log_format = params.get("log_format", "lo2")
+    labels_file_name = params.get("labels_file_name", None)
+    sequence_enhancement = params.get("seq", False)
+
+    if (
+        not train_data_path
+        or not os.path.exists(train_data_path)
+        or not test_data_path
+        or not os.path.exists(test_data_path)
+    ):
+        return (
+            jsonify({"error": "No directory specified or directory does not exist"}),
+            400,
+        )
+
+    results = None
+    pipeline = None
+    buffer = None
+
+    try:
+        pipeline = LogAnalysisPipeline(
+            model_names=models,
+            item_list_col=item_list_col,
+            log_format=log_format,
+            labels_file_name=labels_file_name,
+            sequence_enhancement=sequence_enhancement,
+            manual_split=True,
+            train_data_path=train_data_path,
+            test_data_path=test_data_path,
+        )
+        pipeline.load()
+        pipeline.enhance()
+        pipeline.analyze()
+
+        results = pipeline.results
+
+        buffer = io.BytesIO()
+        results.write_parquet(buffer, compression="zstd")
+        buffer.seek(0)
+
+        return Response(buffer.getvalue(), mimetype="application/octet-stream")
+
+    except Exception as e:
+        trace = traceback.format_exc()
+        logging.error(trace)
+
+        return jsonify({"error": str(e)}), 500
+
+    finally:
+        if buffer:
+            buffer.close()
+
         if results is not None:
             del results
         if pipeline is not None:

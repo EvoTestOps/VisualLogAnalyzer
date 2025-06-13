@@ -25,7 +25,9 @@ class Loader:
         loader.preprocess()
 
         if loader.df is None:
-            raise ValueError("No data loaded")
+            raise ValueError(
+                f"Error: No data loaded. Check your directory path ({self._directory_path}) and data format."
+            )
 
         self._df = loader.df
         self._df_seq = loader.df_seq
