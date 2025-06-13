@@ -100,7 +100,7 @@ def run_line_lens():
 
         line_counts = df.group_by("run").agg(
             [
-                pl.count().alias("line_count"),
+                pl.len().alias("line_count"),
                 pl.col("seq_id").n_unique().alias("file_count"),
             ]
         )

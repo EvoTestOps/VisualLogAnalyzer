@@ -2,12 +2,12 @@ import dash_bootstrap_components as dbc
 from dash import dcc
 
 
-def log_format_input():
+def log_format_input(id):
     return dbc.Col(
         [
-            dbc.Label("Log Format", html_for="log_format", width="auto"),
+            dbc.Label("Log Format", html_for=id, width="auto"),
             dbc.Select(
-                id="log_format",
+                id=id,
                 options=[
                     {"label": "LO2", "value": "lo2"},
                     {"label": "Hadoop", "value": "hadoop"},
@@ -17,21 +17,41 @@ def log_format_input():
     )
 
 
-def directory_input():
+def directory_input(id):
     return dbc.Col(
         [
-            dbc.Label("Directory Path", html_for="directory", width="auto"),
+            dbc.Label("Directory Path", html_for=id, width="auto"),
+            dbc.Input(type="text", id=id, placeholder="path/to/your/root/log/folder"),
+        ]
+    )
+
+
+def train_data_input(id):
+    return dbc.Col(
+        [
+            dbc.Label("Directory path to train data", html_for=id, width="auto"),
             dbc.Input(
-                type="text", id="directory", placeholder="path/to/your/root/log/folder"
+                type="text", id=id, placeholder="path/to/your/train/data/directory"
             ),
         ]
     )
 
 
-def detectors_input():
+def test_data_input(id):
     return dbc.Col(
         [
-            dbc.Label("Detectors", html_for="detectors", width="auto"),
+            dbc.Label("Directory path to test data", html_for=id, width="auto"),
+            dbc.Input(
+                type="text", id=id, placeholder="path/to/your/test/data/directory"
+            ),
+        ]
+    )
+
+
+def detectors_input(id):
+    return dbc.Col(
+        [
+            dbc.Label("Detectors", html_for=id, width="auto"),
             dcc.Dropdown(
                 options=[
                     {"label": "Logistic Regression", "value": "lr"},
@@ -41,19 +61,19 @@ def detectors_input():
                     {"label": "OOVD", "value": "oovd"},
                 ],
                 multi=True,
-                id="detectors",
+                id=id,
                 className="dbc",
             ),
         ]
     )
 
 
-def enhancement_input():
+def enhancement_input(id):
     return dbc.Col(
         [
-            dbc.Label("Enhancement", html_for="enhancement", width="auto"),
+            dbc.Label("Enhancement", html_for=id, width="auto"),
             dbc.Select(
-                id="enhancement",
+                id=id,
                 options=[
                     {"label": "Words", "value": "e_words"},
                     {"label": "Trigrams", "value": "e_trigrams"},
@@ -68,27 +88,28 @@ def enhancement_input():
     )
 
 
-def sequence_input():
+def sequence_input(id):
     return dbc.Col(
         [
-            dbc.Label("Event/Seq", html_for="sequence", width="auto"),
+            dbc.Label("Event/Seq", html_for=id, width="auto"),
             dbc.RadioItems(
-                id="sequence",
+                id=id,
                 options=[
                     {"label": "Event", "value": False},
                     {"label": "Sequence", "value": True},
                 ],
+                value=False,
                 inline=True,
             ),
         ]
     )
 
 
-def test_frac_input():
+def test_frac_input(id):
     return dbc.Row(
         [
-            dbc.Label("Test fraction", html_for="test_frac"),
-            dcc.Slider(id="test_frac", min=0.0, max=1.0, step=0.1, value=0.9),
+            dbc.Label("Test fraction", html_for=id),
+            dcc.Slider(id=id, min=0.0, max=1.0, step=0.1, value=0.9),
         ],
-        class_name="mb-3",
+        class_name="dbc mb-3",
     )

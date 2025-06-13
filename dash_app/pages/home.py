@@ -17,16 +17,23 @@ from dash_app.components.form_inputs import (
 dash.register_page(__name__, path="/", title="home")
 
 submit_btn = dbc.Button("Submit", id="submit", n_clicks=0, class_name="mb-3")
-plot = html.Div(dcc.Graph(id="plot-area"))
+plot = html.Div(dcc.Graph(id="plot_area"))
 
 form = dbc.Form(
     [
-        dbc.Row([log_format_input(), directory_input()], class_name="mb-3"),
         dbc.Row(
-            [detectors_input(), enhancement_input(), sequence_input()],
+            [log_format_input("log_format"), directory_input("directory")],
             class_name="mb-3",
         ),
-        test_frac_input(),
+        dbc.Row(
+            [
+                detectors_input("detectors"),
+                enhancement_input("enhancement"),
+                sequence_input("sequence"),
+            ],
+            class_name="mb-3",
+        ),
+        test_frac_input("test_frac"),
         submit_btn,
     ],
     class_name="border border-primary-subtle p-3 mb-3",
@@ -36,7 +43,7 @@ layout = dbc.Container([form, plot])
 
 
 @callback(
-    Output("plot-area", "figure"),
+    Output("plot_area", "figure"),
     Input("submit", "n_clicks"),
     State("log_format", "value"),
     State("directory", "value"),

@@ -13,5 +13,6 @@ def color_mode_switch():
                 persistence=True,
             ),
             dbc.Label(className="fa fa-sun", html_for="switch"),
-        ]
+        ],
+        className="pe-3",
     )

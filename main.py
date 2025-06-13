@@ -7,6 +7,7 @@ from api.routes import analyze_bp
 from dash_app.components.color_mode_switch import color_mode_switch
 from dash_app.callbacks.color_switch_callback import color_switch_callback
 
+
 dbc_css = "https://cdn.jsdelivr.net/gh/AnnMarieW/dash-bootstrap-templates/dbc.min.css"
 
 server = Flask(__name__)
@@ -26,11 +27,16 @@ dash_app.layout = dbc.Container(
         dbc.Row(
             [
                 html.H1("Visual Log Analyzer", style={"textAlign": "center"}),
-                color_mode_switch(),
             ],
             class_name="p-3",
         ),
-        html.Div([dcc.Location(id="url", refresh=False)]),
+        dbc.Row(
+            [
+                dbc.Col(),
+                dbc.Col(),
+                dbc.Col(color_mode_switch(), class_name="d-flex justify-content-end"),
+            ]
+        ),
         dash.page_container,
     ]
 )
