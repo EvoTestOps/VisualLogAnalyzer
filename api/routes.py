@@ -51,7 +51,7 @@ def analyze():
         pipeline.enhance()
         pipeline.analyze()
 
-        results = pipeline.results
+        results = pipeline.results.sort(["run", "m_timestamp"])
 
         buffer = io.BytesIO()
         results.write_parquet(buffer, compression="zstd")  # zstd lz4
@@ -121,7 +121,7 @@ def manual_test_train():
         pipeline.enhance()
         pipeline.analyze()
 
-        results = pipeline.results
+        results = pipeline.results.sort(["run", "m_timestamp"])
 
         buffer = io.BytesIO()
         results.write_parquet(buffer, compression="zstd")
