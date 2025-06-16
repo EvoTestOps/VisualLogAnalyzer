@@ -16,7 +16,7 @@ from dash_app.components.form_inputs import (
     test_data_input,
 )
 
-dash.register_page(__name__, path="/manual-split", title="Manual Split")
+dash.register_page(__name__, path="/manual-split", title="Manual Split Analysis")
 
 plot_tr = html.Div(dcc.Graph(id="plot_area_tr"))
 submit_btn_tr = dbc.Button("Submit", id="submit_tr", n_clicks=0, class_name="mb-3")

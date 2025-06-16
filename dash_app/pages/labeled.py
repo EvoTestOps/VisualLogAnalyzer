@@ -14,8 +14,9 @@ from dash_app.components.form_inputs import (
     sequence_input,
     test_frac_input,
 )
+from dash_app.utils.plots import get_options, create_plot
 
-dash.register_page(__name__, path="/", title="home")
+dash.register_page(__name__, path="/labeled", title="Labeled Data Analysis")
 
 submit_btn = dbc.Button("Submit", id="submit", n_clicks=0, class_name="mb-3")
 plot = html.Div(dcc.Graph(id="plot_area"))
@@ -88,8 +89,7 @@ def get_and_generate_dropdown(
         parquet_bytes = io.BytesIO(response.content)
         df = pl.read_parquet(parquet_bytes)
 
-        seq_ids = df["seq_id"].unique().to_list()[:5]
-        options = [{"label": seq_id, "value": seq_id} for seq_id in seq_ids]
+        options = get_options(df)
 
         buffer = io.BytesIO()
         df.write_parquet(buffer)
@@ -120,9 +120,6 @@ def render_plot(selected_plot, data):
     decoded_df = base64.b64decode(data)
     df = pl.read_parquet(io.BytesIO(decoded_df))
 
-    prediction_columns = [col for col in df.columns if "pred_ano_proba" in col]
-    df = df.filter(pl.col("seq_id") == selected_plot).with_row_index()
-
-    fig = px.scatter(df, x="index", y=prediction_columns[0])  # change later
+    fig = create_plot(df, selected_plot)
 
     return dcc.Graph(figure=fig)

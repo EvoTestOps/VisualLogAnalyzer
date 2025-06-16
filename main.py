@@ -6,6 +6,7 @@ from flask import Flask
 from api.routes import analyze_bp
 from dash_app.components.color_mode_switch import color_mode_switch
 from dash_app.callbacks.color_switch_callback import color_switch_callback
+from dash_app.components.nav import nav
 
 
 dbc_css = "https://cdn.jsdelivr.net/gh/AnnMarieW/dash-bootstrap-templates/dbc.min.css"
@@ -32,7 +33,7 @@ dash_app.layout = dbc.Container(
         ),
         dbc.Row(
             [
-                dbc.Col(),
+                dbc.Col(nav()),
                 dbc.Col(),
                 dbc.Col(color_mode_switch(), class_name="d-flex justify-content-end"),
             ]
