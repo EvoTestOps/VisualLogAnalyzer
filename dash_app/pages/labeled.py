@@ -2,77 +2,17 @@ import dash
 import dash_bootstrap_components as dbc
 import polars as pl
 import requests
-from dash import Input, Output, State, callback, dcc, html
+from dash import Input, Output, State, callback, html
 import io
 import base64
-from dash_app.components.form_inputs import (
-    log_format_input,
-    directory_input,
-    detectors_input,
-    enhancement_input,
-    sequence_input,
-    test_frac_input,
-)
+from dash_app.components.forms import labeled_form
+from dash_app.components.layouts import create_default_layout
 from dash_app.utils.plots import get_options, create_plot
 
 dash.register_page(__name__, path="/labeled", title="Labeled Data Analysis")
 
-submit_btn = dbc.Button("Analyze", id="submit", n_clicks=0)
-
-form = dbc.Form(
-    [
-        dbc.Row(
-            [log_format_input("log_format"), directory_input("directory")],
-            class_name="mb-3",
-        ),
-        dbc.Row(
-            [
-                detectors_input("detectors"),
-                enhancement_input("enhancement"),
-                sequence_input("sequence"),
-            ],
-            class_name="mb-3",
-        ),
-        test_frac_input("test_frac"),
-        dbc.Row(dbc.Col(submit_btn, class_name="text-end")),
-    ],
-    class_name="border border-primary-subtle p-3",
-)
-
-layout = dbc.Container(
-    [
-        form,
-        dcc.Loading(
-            type="circle",
-            id="loading-default",
-            children=[
-                dcc.Store(id="stored_data"),
-                dcc.Dropdown(
-                    id="plot_selector",
-                    placeholder="Select plot to display",
-                    searchable=True,
-                    className="dbc mt-3 border border-primary-subtle",
-                ),
-            ],
-        ),
-        dcc.Loading(
-            type="default",
-            children=[
-                dcc.Graph(
-                    id="plot_content",
-                    config={"responsive": True},
-                    style={
-                        "resize": "both",
-                        "overflow": "auto",
-                        "minHeight": "400px",
-                        "minWidth": "600px",
-                    },
-                    className="dbc mt-3",
-                ),
-            ],
-        ),
-    ]
-)
+form = labeled_form()
+layout = create_default_layout(form, "stored_data", "plot_selector", "plot_content")
 
 
 @callback(

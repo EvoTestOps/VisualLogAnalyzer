@@ -25,24 +25,31 @@ dash_app = Dash(
     external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.icons.FONT_AWESOME, dbc_css],
 )
 
-dash_app.layout = dbc.Container(
+dash_app.layout = html.Div(
     [
-        dbc.Row(
+        dbc.Container(
             [
-                html.H1("Visual Log Analyzer", style={"textAlign": "center"}),
+                dbc.Row(
+                    [
+                        html.H1("Visual Log Analyzer", style={"textAlign": "center"}),
+                    ],
+                    class_name="p-3",
+                ),
+                dbc.Row(
+                    [
+                        dbc.Col(nav()),
+                        dbc.Col(),
+                        dbc.Col(
+                            color_mode_switch(), class_name="d-flex justify-content-end"
+                        ),
+                    ]
+                ),
             ],
-            class_name="p-3",
-        ),
-        dbc.Row(
-            [
-                dbc.Col(nav()),
-                dbc.Col(),
-                dbc.Col(color_mode_switch(), class_name="d-flex justify-content-end"),
-            ]
         ),
         dash.page_container,
     ]
 )
+
 
 color_switch_callback()
 

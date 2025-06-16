@@ -113,3 +113,7 @@ def test_frac_input(id):
         ],
         class_name="dbc mb-3",
     )
+
+
+def submit_button(id, label):
+    return dbc.Button(label, id=id, n_clicks=0)
