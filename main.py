@@ -4,6 +4,7 @@ from dash import Dash, dcc, html
 from flask import Flask
 
 from api.routes import analyze_bp
+from api.dash_redirects import dash_redirects_bp
 from dash_app.components.color_mode_switch import color_mode_switch
 from dash_app.callbacks.color_switch_callback import color_switch_callback
 from dash_app.components.nav import nav
@@ -13,6 +14,7 @@ dbc_css = "https://cdn.jsdelivr.net/gh/AnnMarieW/dash-bootstrap-templates/dbc.mi
 
 server = Flask(__name__)
 server.register_blueprint(analyze_bp, url_prefix="/api")
+server.register_blueprint(dash_redirects_bp)
 
 dash_app = Dash(
     __name__,

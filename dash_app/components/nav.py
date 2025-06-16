@@ -6,5 +6,6 @@ def nav():
         [
             dbc.NavItem(dbc.NavLink("Labeled", href="/dash/labeled")),
             dbc.NavItem(dbc.NavLink("Manual Split", href="/dash/manual-split")),
-        ]
+        ],
+        class_name="h5",
     )

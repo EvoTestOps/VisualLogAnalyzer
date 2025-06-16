@@ -193,8 +193,3 @@ def run_line_lens():
     finally:
         if buffer:
             buffer.close()
-
-
-# @analyze_bp.route("/")
-# def home():
-#     return redirect("/dash")
