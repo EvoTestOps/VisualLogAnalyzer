@@ -18,6 +18,7 @@ class LogAnalyzer:
             "dt": self._train_dt,
             "rm": self._train_rm,
             "oovd": self._train_oovd,
+            "if": self._train_if,
         }
 
     # TODO: Change names since also predicts
@@ -39,6 +40,10 @@ class LogAnalyzer:
 
     def _train_oovd(self):
         self._sad.train_OOVDetector()
+        return self._sad.predict()
+
+    def _train_if(self):
+        self._sad.train_IsolationForest()
         return self._sad.predict()
 
     def train_split(self, test_frac=0.9, sequence=False):
@@ -95,8 +100,7 @@ class LogAnalyzer:
                 {"pred_ano_proba": f"{model_name}_pred_ano_proba"}
             )
         else:
-            predictions_series = predictions.select(
-                "pred_ano_proba").to_series()
+            predictions_series = predictions.select("pred_ano_proba").to_series()
             df_result = df_result.with_columns(
                 predictions_series.alias(f"{model_name}_pred_ano_proba")
             )
