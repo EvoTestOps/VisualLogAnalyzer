@@ -15,7 +15,7 @@ class Enhancer:
 
     def enhance_event(self, item_list_col="e_words"):
         enhancer = EventLogEnhancer(self._df)
-        
+
         self._df = enhancer.normalize()
 
         if item_list_col == "e_words":
@@ -54,7 +54,7 @@ class Enhancer:
             self._df_seq = self._sequence_enhancer.tokens(token=item_list_col)
         else:
             raise ValueError(f"Unsupported sequence enhancer: {item_list_col}")
-        
+
         return self._df_seq
 
     def _check_prerequisites(self, item_list_col):
@@ -65,9 +65,7 @@ class Enhancer:
     @property
     def df(self):
         return self._df
-    
+
     @property
     def df_seq(self):
         return self._df_seq
-
-        

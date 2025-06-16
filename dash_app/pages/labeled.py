@@ -12,7 +12,8 @@ from dash_app.utils.plots import get_options, create_plot
 dash.register_page(__name__, path="/labeled", title="Labeled Data Analysis")
 
 form = labeled_form()
-layout = create_default_layout(form, "stored_data", "plot_selector", "plot_content")
+layout = create_default_layout(
+    form, "stored_data", "plot_selector", "plot_content")
 
 
 @callback(

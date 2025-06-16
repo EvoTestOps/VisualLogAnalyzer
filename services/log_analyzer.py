@@ -95,7 +95,8 @@ class LogAnalyzer:
                 {"pred_ano_proba": f"{model_name}_pred_ano_proba"}
             )
         else:
-            predictions_series = predictions.select("pred_ano_proba").to_series()
+            predictions_series = predictions.select(
+                "pred_ano_proba").to_series()
             df_result = df_result.with_columns(
                 predictions_series.alias(f"{model_name}_pred_ano_proba")
             )

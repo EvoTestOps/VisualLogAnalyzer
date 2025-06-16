@@ -10,7 +10,8 @@ from dash_app.components.layouts import create_default_layout
 
 from dash_app.utils.plots import get_options, create_plot
 
-dash.register_page(__name__, path="/manual-split", title="Manual Split Analysis")
+dash.register_page(__name__, path="/manual-split",
+                   title="Manual Split Analysis")
 
 form = test_train_form()
 layout = create_default_layout(

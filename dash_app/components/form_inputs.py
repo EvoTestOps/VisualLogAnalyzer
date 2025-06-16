@@ -21,7 +21,8 @@ def directory_input(id):
     return dbc.Col(
         [
             dbc.Label("Directory Path", html_for=id, width="auto"),
-            dbc.Input(type="text", id=id, placeholder="path/to/your/root/log/folder"),
+            dbc.Input(type="text", id=id,
+                      placeholder="path/to/your/root/log/folder"),
         ]
     )
 
@@ -29,7 +30,8 @@ def directory_input(id):
 def train_data_input(id):
     return dbc.Col(
         [
-            dbc.Label("Directory path to train data", html_for=id, width="auto"),
+            dbc.Label("Directory path to train data",
+                      html_for=id, width="auto"),
             dbc.Input(
                 type="text", id=id, placeholder="path/to/your/train/data/directory"
             ),
@@ -40,7 +42,8 @@ def train_data_input(id):
 def test_data_input(id):
     return dbc.Col(
         [
-            dbc.Label("Directory path to test data", html_for=id, width="auto"),
+            dbc.Label("Directory path to test data",
+                      html_for=id, width="auto"),
             dbc.Input(
                 type="text", id=id, placeholder="path/to/your/test/data/directory"
             ),

@@ -22,7 +22,8 @@ dash_app = Dash(
     url_base_pathname="/dash/",
     use_pages=True,
     pages_folder="dash_app/pages",
-    external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.icons.FONT_AWESOME, dbc_css],
+    external_stylesheets=[dbc.themes.BOOTSTRAP,
+                          dbc.icons.FONT_AWESOME, dbc_css],
 )
 
 dash_app.layout = html.Div(
@@ -31,7 +32,8 @@ dash_app.layout = html.Div(
             [
                 dbc.Row(
                     [
-                        html.H1("Visual Log Analyzer", style={"textAlign": "center"}),
+                        html.H1("Visual Log Analyzer", style={
+                                "textAlign": "center"}),
                     ],
                     class_name="p-3",
                 ),
