@@ -51,7 +51,10 @@ def analyze():
         pipeline.enhance()
         pipeline.analyze()
 
-        results = pipeline.results.sort(["run", "m_timestamp"])
+        if not sequence_enhancement:
+            results = pipeline.results.sort(["run", "m_timestamp"])
+        else:
+            results = pipeline.results.sort(["seq_id"])
 
         buffer = io.BytesIO()
         results.write_parquet(buffer, compression="zstd")  # zstd lz4
