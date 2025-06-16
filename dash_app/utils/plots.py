@@ -11,7 +11,9 @@ def create_plot(df, selected_plot):
     prediction_columns = [col for col in df.columns if "pred_ano_proba" in col]
     df = df.filter(pl.col("seq_id") == selected_plot).with_row_index()
 
-    df = _normalize_prediction_columns(df, prediction_columns)
+    # Normalize if multiple models
+    if len(prediction_columns) > 1:
+        df = _normalize_prediction_columns(df, prediction_columns)
 
     # polars documentation says that map_elements is slow.
     # Change if it becomes an issue.
@@ -45,14 +47,15 @@ def create_plot(df, selected_plot):
 
 
 def _wrap_log(text, width=80):
-    return "<br>".join([text[i : i + width] for i in range(0, len(text), width)])
+    return "<br>".join([text[i: i + width] for i in range(0, len(text), width)])
 
 
 # Edited version of _normalize_measure_columns from LogDelta by Mika Mäntylä
 # https://github.com/EvoTestOps/LogDelta/blob/main/logdelta/log_analysis_functions.py
 def _normalize_prediction_columns(df, columns):
 
-    filled = df.select(columns).with_columns(pl.all().fill_null(pl.all().median()))
+    filled = df.select(columns).with_columns(
+        pl.all().fill_null(pl.all().median()))
 
     measure_min = filled.min().to_numpy().min()
     measure_max = filled.max().to_numpy().max()
