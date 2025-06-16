@@ -1,5 +1,5 @@
 import dash_bootstrap_components as dbc
-from dash import dcc
+from dash import dcc, html
 
 
 def log_format_input(id):
@@ -62,9 +62,9 @@ def detectors_input(id):
                 ],
                 multi=True,
                 id=id,
-                className="dbc",
+                className="dbc border border-light-subtle rounded",
             ),
-        ]
+        ],
     )
 
 

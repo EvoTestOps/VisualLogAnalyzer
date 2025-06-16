@@ -82,7 +82,7 @@ def analyze():
         gc.collect()
 
 
-@analyze_bp.route("/manual_test_train", methods=["POST"])
+@analyze_bp.route("/manual-test-train", methods=["POST"])
 def manual_test_train():
     params = request.get_json()
 
@@ -150,7 +150,7 @@ def manual_test_train():
         gc.collect()
 
 
-@analyze_bp.route("/run_line_counts", methods=["POST"])
+@analyze_bp.route("/run-line-counts", methods=["POST"])
 def run_line_lens():
     params = request.get_json()
 

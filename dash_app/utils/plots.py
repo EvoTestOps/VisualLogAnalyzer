@@ -29,6 +29,7 @@ def create_plot(df, selected_plot):
                 x=df["index"],
                 y=df[col],
                 mode="markers",
+                name=col,
                 customdata=df["m_message_wrapped"],
                 hovertemplate="Index: %{x}<br>Score: %{y}<br>Log: %{customdata}<extra></extra>",
             )

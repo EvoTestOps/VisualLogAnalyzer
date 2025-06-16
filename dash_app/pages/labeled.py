@@ -1,6 +1,5 @@
 import dash
 import dash_bootstrap_components as dbc
-import plotly.express as px
 import polars as pl
 import requests
 from dash import Input, Output, State, callback, dcc, html
@@ -18,8 +17,7 @@ from dash_app.utils.plots import get_options, create_plot
 
 dash.register_page(__name__, path="/labeled", title="Labeled Data Analysis")
 
-submit_btn = dbc.Button("Submit", id="submit", n_clicks=0, class_name="mb-3")
-plot = html.Div(dcc.Graph(id="plot_area"))
+submit_btn = dbc.Button("Analyze", id="submit", n_clicks=0, class_name="mb-3")
 
 form = dbc.Form(
     [
@@ -36,7 +34,7 @@ form = dbc.Form(
             class_name="mb-3",
         ),
         test_frac_input("test_frac"),
-        submit_btn,
+        dbc.Row(dbc.Col(submit_btn, class_name="text-end")),
     ],
     class_name="border border-primary-subtle p-3 mb-3",
 )
@@ -46,9 +44,11 @@ layout = dbc.Container(
         form,
         dcc.Store(id="stored_data"),
         dcc.Dropdown(
-            id="plot_selector", placeholder="Select plot to display", searchable=True
+            id="plot_selector",
+            placeholder="Select plot to display",
+            searchable=True,
+            className="dbc",
         ),
-        html.Div(id="plot_content"),
     ]
 )
 
