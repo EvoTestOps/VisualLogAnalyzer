@@ -19,7 +19,7 @@ from dash_app.utils.plots import get_options, create_plot
 dash.register_page(__name__, path="/manual-split", title="Manual Split Analysis")
 
 plot_tr = html.Div(dcc.Graph(id="plot_area_tr"))
-submit_btn_tr = dbc.Button("Analyze", id="submit_tr", n_clicks=0, class_name="mb-3")
+submit_btn_tr = dbc.Button("Analyze", id="submit_tr", n_clicks=0)
 
 form_tr = dbc.Form(
     [
@@ -41,21 +41,42 @@ form_tr = dbc.Form(
         ),
         dbc.Row(dbc.Col(submit_btn_tr, class_name="text-end")),
     ],
-    class_name="border border-primary-subtle p-3 mb-3",
+    class_name="border border-primary-subtle p-3",
 )
 
 layout = dbc.Container(
     [
         form_tr,
-        dcc.Store(id="stored_data_tr"),
-        dcc.Dropdown(
-            id="plot_selector_tr",
-            placeholder="Select plot to display",
-            searchable=True,
-            className="dbc",
+        dcc.Loading(
+            type="circle",
+            id="loading-default-2",
+            children=[
+                dcc.Store(id="stored_data_tr"),
+                dcc.Dropdown(
+                    id="plot_selector_tr",
+                    placeholder="Select plot to display",
+                    searchable=True,
+                    className="dbc mt-3 border border-primary-subtle",
+                ),
+            ],
         ),
-        html.Div(id="plot_content_tr"),
-    ]
+        dcc.Loading(
+            type="default",
+            children=[
+                dcc.Graph(
+                    id="plot_content_tr",
+                    config={"responsive": True},
+                    style={
+                        "resize": "both",
+                        "overflow": "auto",
+                        "minHeight": "400px",
+                        "minWidth": "600px",
+                    },
+                    className="dbc mt-3",
+                ),
+            ],
+        ),
+    ],
 )
 
 
@@ -114,7 +135,7 @@ def get_and_generate_dropdown(
 
 
 @callback(
-    Output("plot_content_tr", "children"),
+    Output("plot_content_tr", "figure"),
     Input("plot_selector_tr", "value"),
     State("stored_data_tr", "data"),
     prevent_initial_call=True,
@@ -128,4 +149,4 @@ def render_plot(selected_plot, data):
 
     fig = create_plot(df, selected_plot)
 
-    return dcc.Graph(figure=fig)
+    return fig

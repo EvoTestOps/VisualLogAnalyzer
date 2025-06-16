@@ -17,7 +17,7 @@ from dash_app.utils.plots import get_options, create_plot
 
 dash.register_page(__name__, path="/labeled", title="Labeled Data Analysis")
 
-submit_btn = dbc.Button("Analyze", id="submit", n_clicks=0, class_name="mb-3")
+submit_btn = dbc.Button("Analyze", id="submit", n_clicks=0)
 
 form = dbc.Form(
     [
@@ -36,18 +36,40 @@ form = dbc.Form(
         test_frac_input("test_frac"),
         dbc.Row(dbc.Col(submit_btn, class_name="text-end")),
     ],
-    class_name="border border-primary-subtle p-3 mb-3",
+    class_name="border border-primary-subtle p-3",
 )
 
 layout = dbc.Container(
     [
         form,
-        dcc.Store(id="stored_data"),
-        dcc.Dropdown(
-            id="plot_selector",
-            placeholder="Select plot to display",
-            searchable=True,
-            className="dbc",
+        dcc.Loading(
+            type="circle",
+            id="loading-default",
+            children=[
+                dcc.Store(id="stored_data"),
+                dcc.Dropdown(
+                    id="plot_selector",
+                    placeholder="Select plot to display",
+                    searchable=True,
+                    className="dbc mt-3 border border-primary-subtle",
+                ),
+            ],
+        ),
+        dcc.Loading(
+            type="default",
+            children=[
+                dcc.Graph(
+                    id="plot_content",
+                    config={"responsive": True},
+                    style={
+                        "resize": "both",
+                        "overflow": "auto",
+                        "minHeight": "400px",
+                        "minWidth": "600px",
+                    },
+                    className="dbc mt-3",
+                ),
+            ],
         ),
     ]
 )
@@ -108,7 +130,7 @@ def get_and_generate_dropdown(
 
 
 @callback(
-    Output("plot_content", "children"),
+    Output("plot_content", "figure"),
     Input("plot_selector", "value"),
     State("stored_data", "data"),
     prevent_initial_call=True,
@@ -122,4 +144,4 @@ def render_plot(selected_plot, data):
 
     fig = create_plot(df, selected_plot)
 
-    return dcc.Graph(figure=fig)
+    return fig
