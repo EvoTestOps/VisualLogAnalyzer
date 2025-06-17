@@ -70,6 +70,25 @@ def detectors_input(id):
     )
 
 
+def detectors_unsupervised_input(id):
+    return dbc.Col(
+        [
+            dbc.Label("Detectors", html_for=id, width="auto"),
+            dcc.Dropdown(
+                options=[
+                    {"label": "K-Means", "value": "kmeans"},
+                    {"label": "Rarity Model", "value": "rm"},
+                    {"label": "OOVD", "value": "oovd"},
+                    {"label": "Isolation Forest", "value": "if"},
+                ],
+                multi=True,
+                id=id,
+                className="dbc border border-light-subtle rounded",
+            ),
+        ],
+    )
+
+
 def enhancement_input(id):
     return dbc.Col(
         [
