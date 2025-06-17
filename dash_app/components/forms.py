@@ -57,7 +57,6 @@ def test_train_form():
                 [
                     detectors_unsupervised_input("detectors_tr"),
                     enhancement_input("enhancement_tr"),
-                    sequence_input("sequence_tr"),
                 ],
                 class_name="mb-3",
             ),

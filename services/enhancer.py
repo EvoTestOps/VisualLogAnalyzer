@@ -10,8 +10,14 @@ class Enhancer:
         self._sequence_enhancer = None
 
         # in the future should probably be handled through validators
-        self._event_cols = ["e_event_drain_id", "e_event_spell_id", "e_event_tip_id",
-                            "e_event_pliplom_id", "e_event_iplom_id", "e_event_brain_id"]
+        self._event_cols = [
+            "e_event_drain_id",
+            "e_event_spell_id",
+            "e_event_tip_id",
+            "e_event_pliplom_id",
+            "e_event_iplom_id",
+            "e_event_brain_id",
+        ]
 
     def enhance_event(self, item_list_col="e_words"):
         enhancer = EventLogEnhancer(self._df)
@@ -26,8 +32,6 @@ class Enhancer:
             self._df = enhancer.parse_drain()
         elif item_list_col == "e_event_tip_id":
             self._df = enhancer.parse_tip()
-        # elif item_list_col == "e_message_normalized":
-        #     self._df = enhancer.normalize()
         elif item_list_col == "e_event_brain_id":
             self._df = enhancer.parse_brain()
         elif item_list_col == "e_event_spell_id":

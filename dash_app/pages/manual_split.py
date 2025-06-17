@@ -10,8 +10,7 @@ from dash_app.components.layouts import create_default_layout
 
 from dash_app.utils.plots import get_options, create_plot
 
-dash.register_page(__name__, path="/manual-split",
-                   title="Manual Split Analysis")
+dash.register_page(__name__, path="/manual-split", title="Manual Split Analysis")
 
 form = test_train_form()
 layout = create_default_layout(
@@ -28,11 +27,15 @@ layout = create_default_layout(
     State("test_data_tr", "value"),
     State("detectors_tr", "value"),
     State("enhancement_tr", "value"),
-    State("sequence_tr", "value"),
     prevent_initial_call=True,
 )
 def get_and_generate_dropdown(
-    n_clicks, log_format, train_data, test_data, detectors, enhancement, sequence
+    n_clicks,
+    log_format,
+    train_data,
+    test_data,
+    detectors,
+    enhancement,
 ):
     if n_clicks == 0:
         return dash.no_update, dash.no_update
@@ -47,7 +50,7 @@ def get_and_generate_dropdown(
                 "log_format": log_format,
                 "models": detectors,
                 "item_list_col": enhancement,
-                "seq": sequence,
+                "seq": False,
             },
         )
         response.raise_for_status()
