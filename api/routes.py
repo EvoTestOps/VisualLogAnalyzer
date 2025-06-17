@@ -51,7 +51,9 @@ def analyze():
         pipeline.enhance()
         pipeline.analyze()
 
-        if not sequence_enhancement:
+        if log_format == "raw":
+            results = pipeline.results
+        elif not sequence_enhancement:
             results = pipeline.results.sort(["run", "m_timestamp"])
         else:
             results = pipeline.results.sort(["seq_id"])
@@ -124,7 +126,9 @@ def manual_test_train():
         pipeline.enhance()
         pipeline.analyze()
 
-        if not sequence_enhancement:
+        if log_format == "raw":
+            results = pipeline.results
+        elif not sequence_enhancement:
             results = pipeline.results.sort(["run", "m_timestamp"])
         else:
             results = pipeline.results.sort(["seq_id"])

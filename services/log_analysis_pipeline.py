@@ -49,9 +49,8 @@ class LogAnalysisPipeline:
                 self._test_data_path
             )
             # might need to change to work with other datasets
-            self._df_test = self._df_test.drop(["normal", "anomaly"])
-            self._df_seq_test = self._df_seq_test.drop(["normal", "anomaly"])
-
+            # self._df_test = self._df_test.drop(["normal", "anomaly"])
+            # self._df_seq_test = self._df_seq_test.drop(["normal", "anomaly"])
         else:
             loader = Loader(
                 self._directory_path, self._log_format, self._labels_file_name
@@ -62,8 +61,7 @@ class LogAnalysisPipeline:
             self._df_seq = loader.df_seq
 
     def _load_test_train(self, directory_path):
-        loader = Loader(directory_path, self._log_format,
-                        self._labels_file_name)
+        loader = Loader(directory_path, self._log_format, self._labels_file_name)
         loader.load()
 
         return loader.df, loader.df_seq
@@ -100,16 +98,14 @@ class LogAnalysisPipeline:
         if self._manual_split:
             analyzer = LogAnalyzer(item_list_col=self._item_list_col)
             if self._sequence_enhancement:
-                analyzer.manual_train_split(
-                    self._df_seq_train, self._df_seq_test)
+                analyzer.manual_train_split(self._df_seq_train, self._df_seq_test)
             else:
                 analyzer.manual_train_split(self._df_train, self._df_test)
 
             self._results = analyzer.run_models(self._model_names)
         else:
             analyzer = LogAnalyzer(self._df, self._df_seq, self._item_list_col)
-            analyzer.train_split(
-                self._test_frac, sequence=self._sequence_enhancement)
+            analyzer.train_split(self._test_frac, sequence=self._sequence_enhancement)
 
             self._results = analyzer.run_models(self._model_names)
 

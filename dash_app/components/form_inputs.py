@@ -10,7 +10,8 @@ def log_format_input(id):
                 id=id,
                 options=[
                     {"label": "LO2", "value": "lo2"},
-                    {"label": "Hadoop", "value": "hadoop"},
+                    {"label": "Raw", "value": "raw"},
+                    # {"label": "Hadoop", "value": "hadoop"},
                 ],
             ),
         ],

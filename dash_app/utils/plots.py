@@ -9,12 +9,18 @@ def get_options(df):
 
 def create_plot(df, selected_plot):
     prediction_columns = [col for col in df.columns if "pred_ano_proba" in col]
-    df = df.filter(pl.col("seq_id") == selected_plot).with_row_index()
 
-    # Normalize if multiple models
-    if len(prediction_columns) > 1:
-        for col in prediction_columns:
-            df = _normalize_prediction_columns(df, [col])
+    df = df.filter(pl.col("seq_id") == selected_plot)
+    if df.get_column("line_number", default=None) is None:
+        df = df.with_row_index()
+        xaxis_title = "Index"
+        x_column = "index"
+    else:
+        xaxis_title = "Line Number"
+        x_column = "line_number"
+
+    for col in prediction_columns:
+        df = _normalize_prediction_columns(df, [col])
 
     # polars documentation says that map_elements is slow.
     # Change if it becomes an issue.
@@ -31,17 +37,19 @@ def create_plot(df, selected_plot):
     for col in prediction_columns:
         fig.add_trace(
             go.Scatter(
-                x=df["index"],
+                x=df[x_column],
                 y=df[col],
                 mode="markers",
                 name=col,
                 customdata=df["m_message_wrapped"],
-                hovertemplate="Index: %{x}<br>Score: %{y}<br>Log: %{customdata}<extra></extra>",
+                hovertemplate=f"{xaxis_title}: %{{x}}<br>Score: %{{y}}<br>Log: %{{customdata}}<extra></extra>",
             )
         )
 
     fig.update_layout(
-        title=selected_plot, xaxis_title="Index", yaxis_title="Anomaly Score"
+        title=selected_plot,
+        xaxis_title=xaxis_title,
+        yaxis_title="Anomaly Score (0 - 1)",
     )
 
     return fig
