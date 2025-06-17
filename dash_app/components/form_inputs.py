@@ -9,10 +9,10 @@ def log_format_input(id):
             dbc.Select(
                 id=id,
                 options=[
-                    {"label": "LO2", "value": "lo2"},
                     {"label": "Raw", "value": "raw"},
-                    # {"label": "Hadoop", "value": "hadoop"},
+                    {"label": "LO2", "value": "lo2"},
                 ],
+                value="raw",
             ),
         ],
     )

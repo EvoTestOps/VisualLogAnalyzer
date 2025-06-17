@@ -3,6 +3,7 @@ from dash_app.components.form_inputs import (
     log_format_input,
     directory_input,
     detectors_input,
+    detectors_unsupervised_input,
     enhancement_input,
     sequence_input,
     test_frac_input,
@@ -54,7 +55,7 @@ def test_train_form():
             ),
             dbc.Row(
                 [
-                    detectors_input("detectors_tr"),
+                    detectors_unsupervised_input("detectors_tr"),
                     enhancement_input("enhancement_tr"),
                     sequence_input("sequence_tr"),
                 ],

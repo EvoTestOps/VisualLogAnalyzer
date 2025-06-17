@@ -1,5 +1,5 @@
 import polars as pl
-from loglead.loaders import HadoopLoader, LO2Loader, RawLoader
+from loglead.loaders import LO2Loader, RawLoader
 
 
 class Loader:
@@ -15,8 +15,6 @@ class Loader:
             self._load_lo2()
         elif self._log_format == "raw":
             self._load_raw()
-        elif self._log_format == "hadoop":
-            self._load_hadoop()
         else:
             raise ValueError(f"Unsupported log format: {self._log_format}")
 
@@ -59,31 +57,6 @@ class Loader:
         df = self._prepare_raw_data(df)
 
         self._df = df
-
-    # Fix this makes no sense
-    def _load_hadoop(self):
-        loader = HadoopLoader(
-            filename=self._directory_path,
-            filename_pattern="*.log",
-            labels_file_name=self._labels_file_name,
-        )
-
-        loader.load()
-        loader.preprocess()
-
-        if loader.df is None:
-            raise ValueError("No data loaded")
-
-        # Do we need these??
-        self._df = loader.df.join(
-            loader.df_seq.select(["seq_id", "normal"]), on="seq_id", how="left"
-        )
-
-        self._df = self._cast_normal_to_anomaly()
-        self._df_seq = loader.df_seq
-
-    def _cast_normal_to_anomaly(self):
-        return self._df.with_columns([(~pl.col("normal")).cast(bool).alias("anomaly")])
 
     def _prepare_raw_data(self, df):
         df = df.filter(pl.col("m_message").is_not_null())
