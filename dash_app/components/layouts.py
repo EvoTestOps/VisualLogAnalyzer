@@ -29,12 +29,15 @@ def create_default_layout(form, stored_data_id, plot_selector_id, plot_content_i
                     dcc.Graph(
                         id=plot_content_id,
                         config={"responsive": True},
+                        # style={
+                        #     "resize": "both",
+                        #     "overflow": "auto",
+                        #     "minHeight": "500px",
+                        #     "minWidth": "600px",
+                        #     "width": "90%",
+                        # },
                         style={
-                            "resize": "both",
-                            "overflow": "auto",
-                            "minHeight": "500px",
-                            "minWidth": "600px",
-                            "width": "90%",
+                            "display": "none",
                         },
                         className="dbc mt-3 ps-4 pe-4",
                     ),

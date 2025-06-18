@@ -78,20 +78,35 @@ def get_and_generate_dropdown(
 
 @callback(
     Output("plot_content_tr", "figure"),
+    Output("plot_content_tr", "style"),
     Input("plot_selector_tr", "value"),
+    Input("switch", "value"),
     State("stored_data_tr", "data"),
     prevent_initial_call=True,
 )
-def render_plot(selected_plot, data):
+def render_plot(selected_plot, switch_on, data):
     if not data or not selected_plot:
         return html.Div("Select a plot to display.")
+
+    style = {
+        "resize": "both",
+        "overflow": "auto",
+        "minHeight": "500px",
+        "minWidth": "600px",
+        "width": "90%",
+    }
 
     decoded_df = base64.b64decode(data)
     df = pl.read_parquet(io.BytesIO(decoded_df))
 
-    fig = create_plot(df, selected_plot)
+    if not switch_on:
+        theme = "plotly_dark"
+    else:
+        theme = "plotly_white"
 
-    return fig
+    fig = create_plot(df, selected_plot, theme)
+
+    return fig, style
 
 
 @callback(
@@ -102,7 +117,7 @@ def render_plot(selected_plot, data):
     prevent_initial_call=True,
 )
 def populate_table(data, selected_plot):
-    if not data:
+    if not data or not selected_plot:
         return [], []
 
     df = pl.read_parquet(io.BytesIO(base64.b64decode(data))).filter(
@@ -122,7 +137,7 @@ def populate_table(data, selected_plot):
     State("data_table_tr", "page_size"),
     prevent_initial_call=True,
 )
-def highlight_table_on_click(clickData, data, page_size):
+def highlight_row_on_click(clickData, data, page_size):
     if not clickData or not data:
         return [], [], None, dash.no_update
 

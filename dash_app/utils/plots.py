@@ -7,7 +7,7 @@ def get_options(df):
     return [{"label": seq_id, "value": seq_id} for seq_id in seq_ids]
 
 
-def create_plot(df, selected_plot):
+def create_plot(df, selected_plot, theme="plotly_white"):
     prediction_columns = [col for col in df.columns if "pred_ano_proba" in col]
 
     df = df.filter(pl.col("seq_id") == selected_plot)
@@ -50,6 +50,7 @@ def create_plot(df, selected_plot):
         title=selected_plot,
         xaxis_title=xaxis_title,
         yaxis_title="Anomaly Score (0 - 1)",
+        template=theme,
     )
 
     return fig
