@@ -3,7 +3,7 @@ import os
 import gc
 
 import polars as pl
-from flask import Blueprint, Response, jsonify, redirect, request
+from flask import Blueprint, Response, jsonify, request
 
 import logging
 import traceback

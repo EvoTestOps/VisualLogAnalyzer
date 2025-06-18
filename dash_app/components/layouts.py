@@ -1,5 +1,30 @@
 import dash_bootstrap_components as dbc
 from dash import dcc, html, dash_table
+from dash_app.components.color_mode_switch import color_mode_switch
+from dash_app.components.nav import nav
+from dash_app.components.toasts import error_toast, success_toast
+
+
+def create_root_layout():
+    return dbc.Container(
+        [
+            dbc.Row(
+                [
+                    html.H1("Visual Log Analyzer", style={"textAlign": "center"}),
+                ],
+                class_name="p-3",
+            ),
+            dbc.Row(
+                [
+                    dbc.Col(nav()),
+                    dbc.Col(),
+                    dbc.Col(
+                        color_mode_switch(), class_name="d-flex justify-content-end"
+                    ),
+                ]
+            ),
+        ],
+    )
 
 
 def create_default_layout(
@@ -13,29 +38,9 @@ def create_default_layout(
 
     form_row = dbc.Row(form)
 
-    error_toast = dbc.Row(
-        dbc.Toast(
-            id=error_toast_id,
-            header="Error",
-            icon="danger",
-            is_open=False,
-            dismissable=True,
-            duration=15000,
-            style={"position": "fixed", "top": 40, "right": 10, "width": 400},
-        ),
-    )
+    error_toast_row = dbc.Row(error_toast(error_toast_id))
 
-    success_toast = dbc.Row(
-        dbc.Toast(
-            id=success_toast_id,
-            header="Success",
-            icon="success",
-            is_open=False,
-            dismissable=True,
-            duration=10000,
-            style={"position": "fixed", "top": 40, "right": 10, "width": 400},
-        ),
-    )
+    success_toast_row = dbc.Row(success_toast(success_toast_id))
 
     plot_selector_row = dbc.Row(
         dcc.Loading(
@@ -114,7 +119,9 @@ def create_default_layout(
     )
 
     layout = [
-        dbc.Container([form_row, plot_selector_row, error_toast, success_toast]),
+        dbc.Container(
+            [form_row, plot_selector_row, error_toast_row, success_toast_row]
+        ),
         dbc.Container(plot_row, fluid=True),
         dbc.Container(data_table_row, fluid=True),
     ]

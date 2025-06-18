@@ -1,8 +1,7 @@
 import dash
-import dash_bootstrap_components as dbc
 import polars as pl
 import requests
-from dash import Input, Output, State, callback, html
+from dash import Input, Output, State, callback
 import io
 import base64
 from dash_app.components.forms import test_train_form
@@ -92,7 +91,6 @@ def get_and_generate_dropdown(
         )
 
     except requests.exceptions.RequestException as e:
-        # return {"error": str(e)}, [{"label": str(e), "value": "error"}]
         try:
             error_message = response.json().get("error", str(e))
         except Exception:
@@ -122,7 +120,7 @@ def get_and_generate_dropdown(
 )
 def render_plot(selected_plot, switch_on, data):
     if not data or not selected_plot:
-        return html.Div("Select a plot to display.")
+        return dash.no_update, dash.no_update
 
     style = {
         "resize": "both",
