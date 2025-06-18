@@ -92,3 +92,72 @@ def render_plot(selected_plot, data):
     fig = create_plot(df, selected_plot)
 
     return fig
+
+
+@callback(
+    Output("data_table_tr", "data"),
+    Output("data_table_tr", "columns"),
+    Input("stored_data_tr", "data"),
+    Input("plot_selector_tr", "value"),
+    prevent_initial_call=True,
+)
+def populate_table(data, selected_plot):
+    if not data:
+        return [], []
+
+    df = pl.read_parquet(io.BytesIO(base64.b64decode(data))).filter(
+        pl.col("seq_id") == selected_plot
+    )
+    columns = [{"name": col, "id": col} for col in df.columns]
+    return df.to_dicts(), columns
+
+
+@callback(
+    Output("data_table_tr", "selected_rows"),
+    Output("data_table_tr", "selected_cells"),
+    Output("data_table_tr", "active_cell"),
+    Output("data_table_tr", "page_current"),
+    Input("plot_content_tr", "clickData"),
+    State("stored_data_tr", "data"),
+    State("data_table_tr", "page_size"),
+    prevent_initial_call=True,
+)
+def highlight_table_on_click(clickData, data, page_size):
+    if not clickData or not data:
+        return [], [], None, dash.no_update
+
+    decoded_df = base64.b64decode(data)
+    df = pl.read_parquet(io.BytesIO(decoded_df))
+
+    clicked_x = clickData["points"][0]["x"]
+
+    if "line_number" in df.columns:
+        try:
+            selected_idx = (
+                df.select("line_number").to_series().to_list().index(clicked_x)
+            )
+        except ValueError:
+            selected_idx = None
+    elif "index" in df.columns:
+        try:
+            selected_idx = df.select("index").to_series().to_list().index(clicked_x)
+        except ValueError:
+            selected_idx = None
+    else:
+        selected_idx = None
+
+    if selected_idx is None:
+        return [], [], None, dash.no_update
+
+    page = selected_idx // page_size
+
+    selected_cells = []
+    for i, col in enumerate(df.columns):
+        cell = {
+            "row": selected_idx % page_size,
+            "column": i,
+            "column_id": col,
+        }
+        selected_cells.append(cell)
+
+    return [selected_idx], selected_cells, selected_cells[0], page

@@ -1,5 +1,5 @@
 import dash_bootstrap_components as dbc
-from dash import dcc, html
+from dash import dcc, html, dash_table
 
 
 def create_default_layout(form, stored_data_id, plot_selector_id, plot_content_id):
@@ -48,9 +48,37 @@ def create_default_layout(form, stored_data_id, plot_selector_id, plot_content_i
         ),
     )
 
+    data_table_row = dbc.Row(
+        html.Div(
+            dash_table.DataTable(
+                id="data_table_tr",
+                row_selectable="single",
+                selected_rows=[],
+                active_cell=None,
+                selected_cells=[],
+                fixed_rows={"headers": True},
+                style_table={
+                    "overflowY": "auto",
+                    "height": 600,
+                },
+                style_cell={
+                    "textAlign": "left",
+                    "whiteSpace": "nowrap",
+                    "textOverflow": "ellipsis",
+                    "maxWidth": "100px",
+                },
+                page_action="native",
+                page_current=0,
+                page_size=250,
+            ),
+        ),
+        className="dbc mt-3 ms-4 me-4",
+    )
+
     layout = [
         dbc.Container([form_row, plot_selector_row]),
         dbc.Container(plot_row, fluid=True),
+        dbc.Container(data_table_row, fluid=True),
     ]
 
     return layout
