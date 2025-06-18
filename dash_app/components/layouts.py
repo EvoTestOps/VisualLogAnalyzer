@@ -59,13 +59,17 @@ def create_default_layout(form, stored_data_id, plot_selector_id, plot_content_i
                 fixed_rows={"headers": True},
                 style_table={
                     "overflowY": "auto",
+                    "overflowX": "auto",
                     "height": 600,
                 },
                 style_cell={
                     "textAlign": "left",
-                    "whiteSpace": "nowrap",
-                    "textOverflow": "ellipsis",
-                    "maxWidth": "100px",
+                    "minWidth": "100px",
+                },
+                style_header={
+                    "whiteSpace": "normal",
+                    "height": "auto",
+                    "textAlign": "left",
                 },
                 page_action="native",
                 page_current=0,

@@ -131,18 +131,8 @@ def highlight_table_on_click(clickData, data, page_size):
 
     clicked_x = clickData["points"][0]["x"]
 
-    if "line_number" in df.columns:
-        try:
-            selected_idx = (
-                df.select("line_number").to_series().to_list().index(clicked_x)
-            )
-        except ValueError:
-            selected_idx = None
-    elif "index" in df.columns:
-        try:
-            selected_idx = df.select("index").to_series().to_list().index(clicked_x)
-        except ValueError:
-            selected_idx = None
+    if "line_number" in df.columns or "index" in df.columns:
+        selected_idx = clicked_x - 1
     else:
         selected_idx = None
 

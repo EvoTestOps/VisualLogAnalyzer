@@ -83,6 +83,8 @@ class Loader:
             [pl.col("seq_id").cum_count().over("seq_id").alias("line_number")]
         )
 
+        df = df.drop("orig_file_name")
+
         return df
 
     @property
