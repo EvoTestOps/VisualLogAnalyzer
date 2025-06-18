@@ -90,9 +90,9 @@ def manual_test_train():
 
     train_data_path = params.get("train_data_path")
     test_data_path = params.get("test_data_path")
-    models = params.get("models", ["lr"])
+    models = params.get("models", ["kmeans"])
     item_list_col = params.get("item_list_col", "e_words")
-    log_format = params.get("log_format", "lo2")
+    log_format = params.get("log_format", "raw")
     labels_file_name = params.get("labels_file_name", None)
     sequence_enhancement = params.get("seq", False)
 
@@ -104,6 +104,16 @@ def manual_test_train():
     ):
         return (
             jsonify({"error": "No directory specified or directory does not exist"}),
+            400,
+        )
+
+    if len(models) < 1:
+        return (
+            jsonify(
+                {
+                    "error": "No detectors selected. Select atleast one model to run analysis."
+                }
+            ),
             400,
         )
 

@@ -14,13 +14,22 @@ dash.register_page(__name__, path="/manual-split", title="Manual Split Analysis"
 
 form = test_train_form()
 layout = create_default_layout(
-    form, "stored_data_tr", "plot_selector_tr", "plot_content_tr"
+    form,
+    "stored_data_tr",
+    "plot_selector_tr",
+    "plot_content_tr",
+    "error_toast_tr",
+    "success_toast_tr",
 )
 
 
 @callback(
     Output("stored_data_tr", "data"),
     Output("plot_selector_tr", "options"),
+    Output("error_toast_tr", "children"),
+    Output("error_toast_tr", "is_open"),
+    Output("success_toast_tr", "children"),
+    Output("success_toast_tr", "is_open"),
     Input("submit_tr", "n_clicks"),
     State("log_format_tr", "value"),
     State("train_data_tr", "value"),
@@ -38,7 +47,14 @@ def get_and_generate_dropdown(
     enhancement,
 ):
     if n_clicks == 0:
-        return dash.no_update, dash.no_update
+        return (
+            dash.no_update,
+            dash.no_update,
+            dash.no_update,
+            dash.no_update,
+            dash.no_update,
+            dash.no_update,
+        )
 
     buffer = None
     try:
@@ -66,10 +82,30 @@ def get_and_generate_dropdown(
 
         encoded_df = base64.b64encode(buffer.read()).decode("utf-8")
 
-        return encoded_df, options
+        return (
+            encoded_df,
+            options,
+            "",
+            False,
+            "Analysis complete. Select plot to display from the dropdown.",
+            True,
+        )
 
-    except Exception as e:
-        return {"error": str(e)}, [{"label": str(e), "value": "error"}]
+    except requests.exceptions.RequestException as e:
+        # return {"error": str(e)}, [{"label": str(e), "value": "error"}]
+        try:
+            error_message = response.json().get("error", str(e))
+        except Exception:
+            error_message = str(e)
+
+        return (
+            dash.no_update,
+            dash.no_update,
+            error_message,
+            True,
+            dash.no_update,
+            False,
+        )
 
     finally:
         if buffer:

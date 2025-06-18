@@ -80,6 +80,11 @@ class LogAnalyzer:
         self._sad.prepare_train_test_data()
 
     def run_models(self, models):
+        if len(models) < 1:
+            raise ValueError(
+                "Error: No detectors selected. Select atleast one model to run analysis."
+            )
+
         df_result = None
         for model_name in models:
             df_result = self._run_model(model_name, df_result)

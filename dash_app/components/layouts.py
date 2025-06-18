@@ -2,9 +2,40 @@ import dash_bootstrap_components as dbc
 from dash import dcc, html, dash_table
 
 
-def create_default_layout(form, stored_data_id, plot_selector_id, plot_content_id):
+def create_default_layout(
+    form,
+    stored_data_id,
+    plot_selector_id,
+    plot_content_id,
+    error_toast_id,
+    success_toast_id,
+):
 
     form_row = dbc.Row(form)
+
+    error_toast = dbc.Row(
+        dbc.Toast(
+            id=error_toast_id,
+            header="Error",
+            icon="danger",
+            is_open=False,
+            dismissable=True,
+            duration=15000,
+            style={"position": "fixed", "top": 40, "right": 10, "width": 400},
+        ),
+    )
+
+    success_toast = dbc.Row(
+        dbc.Toast(
+            id=success_toast_id,
+            header="Success",
+            icon="success",
+            is_open=False,
+            dismissable=True,
+            duration=10000,
+            style={"position": "fixed", "top": 40, "right": 10, "width": 400},
+        ),
+    )
 
     plot_selector_row = dbc.Row(
         dcc.Loading(
@@ -83,7 +114,7 @@ def create_default_layout(form, stored_data_id, plot_selector_id, plot_content_i
     )
 
     layout = [
-        dbc.Container([form_row, plot_selector_row]),
+        dbc.Container([form_row, plot_selector_row, error_toast, success_toast]),
         dbc.Container(plot_row, fluid=True),
         dbc.Container(data_table_row, fluid=True),
     ]
