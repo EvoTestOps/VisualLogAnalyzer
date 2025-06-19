@@ -42,7 +42,7 @@ def create_plot(df, selected_plot, theme="plotly_white"):
                 mode="markers",
                 name=col,
                 customdata=df["m_message_wrapped"],
-                hovertemplate=f"{xaxis_title}: %{{x}}<br>Score: %{{y}}<br>Log: %{{customdata}}<extra></extra>",
+                hovertemplate=f"{xaxis_title}: %{{x}}<br>Score ({col}): %{{y}}<br>Log: %{{customdata}}<extra></extra>",
             )
         )
 
@@ -50,6 +50,30 @@ def create_plot(df, selected_plot, theme="plotly_white"):
         title=selected_plot,
         xaxis_title=xaxis_title,
         yaxis_title="Anomaly Score (0 - 1)",
+        template=theme,
+    )
+
+    return fig
+
+
+def create_unique_term_count_plot(df, theme="plotly_white"):
+    fig = go.Figure()
+
+    fig.add_trace(
+        go.Scatter(
+            x=df["unique_term_count"],
+            y=df["line_count"],
+            mode="markers",
+            text=df["run"],
+            hovertemplate="Run: %{text}<br>Unique terms: %{x}<br>Lines:%{y}<extra></extra>",
+            name="Runs",
+        )
+    )
+
+    fig.update_layout(
+        title="Unique term count by run",
+        xaxis_title="Unique terms",
+        yaxis_title="Lines",
         template=theme,
     )
 

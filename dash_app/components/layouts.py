@@ -106,9 +106,11 @@ def create_default_layout(
                     "minWidth": "100px",
                 },
                 style_header={
-                    "whiteSpace": "normal",
-                    "height": "auto",
+                    "overflow": "hidden",
+                    "textOverflow": "ellipsis",
+                    "whiteSpace": "nowrap",
                     "textAlign": "left",
+                    "minWidth": "100px",
                 },
                 page_action="native",
                 page_current=0,
@@ -124,6 +126,51 @@ def create_default_layout(
         ),
         dbc.Container(plot_row, fluid=True),
         dbc.Container(data_table_row, fluid=True),
+    ]
+
+    return layout
+
+
+def create_unique_term_count_layout(
+    form, plot_content_id, error_toast_id, success_toast_id
+):
+
+    error_toast_row = dbc.Row(error_toast(error_toast_id))
+    success_toast_row = dbc.Row(success_toast(success_toast_id))
+
+    plot_row = dbc.Row(
+        dcc.Loading(
+            type="default",
+            children=[
+                html.Div(
+                    dcc.Graph(
+                        id=plot_content_id,
+                        config={"responsive": True},
+                        # style={
+                        #     "resize": "both",
+                        #     "overflow": "auto",
+                        #     "minHeight": "500px",
+                        #     "minWidth": "600px",
+                        #     "width": "90%",
+                        # },
+                        style={
+                            "display": "none",
+                        },
+                        className="dbc mt-3 ps-4 pe-4",
+                    ),
+                    style={
+                        "display": "flex",
+                        "justifyContent": "center",
+                        "overflow": "visible",
+                    },
+                ),
+            ],
+        ),
+    )
+
+    layout = [
+        dbc.Container([form, error_toast_row, success_toast_row]),
+        dbc.Container(plot_row),
     ]
 
     return layout

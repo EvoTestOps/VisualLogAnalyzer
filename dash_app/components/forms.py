@@ -13,7 +13,7 @@ from dash_app.components.form_inputs import (
 )
 
 
-# Currently hardcoded id values
+# TODO: Currently hardcoded id values
 def labeled_form():
     submit_btn = submit_button("submit", "Analyze")
 
@@ -61,6 +61,23 @@ def test_train_form():
                 class_name="mb-3",
             ),
             dbc.Row(dbc.Col(submit_btn_tr, class_name="text-end")),
+        ],
+        class_name="border border-primary-subtle border-2 p-3",
+    )
+
+    return form_tr
+
+
+def unique_terms_form():
+    submit_btn_ut = submit_button("submit_ut", "Analyze")
+
+    form_tr = dbc.Form(
+        [
+            dbc.Row(
+                [directory_input("directory_ut")],
+                class_name="mb-3",
+            ),
+            dbc.Row(dbc.Col(submit_btn_ut, class_name="text-end")),
         ],
         class_name="border border-primary-subtle border-2 p-3",
     )
