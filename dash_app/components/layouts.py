@@ -33,6 +33,7 @@ def create_default_layout(
     plot_content_id,
     error_toast_id,
     success_toast_id,
+    datatable_id,
 ):
 
     form_row = dbc.Row(form)
@@ -89,7 +90,7 @@ def create_default_layout(
     data_table_row = dbc.Row(
         html.Div(
             dash_table.DataTable(
-                id="data_table_tr",
+                id=datatable_id,
                 row_selectable="single",
                 selected_rows=[],
                 active_cell=None,
@@ -170,6 +171,60 @@ def create_unique_term_count_layout(
     layout = [
         dbc.Container([form, error_toast_row, success_toast_row]),
         dbc.Container(plot_row, fluid=True),
+    ]
+
+    return layout
+
+
+def create_ano_run_level_layout(
+    form,
+    error_toast_id,
+    success_toast_id,
+    datatable_id,
+):
+
+    form_row = dbc.Row(form)
+
+    error_toast_row = dbc.Row(error_toast(error_toast_id))
+
+    success_toast_row = dbc.Row(success_toast(success_toast_id))
+
+    data_table_row = dbc.Row(
+        html.Div(
+            dash_table.DataTable(
+                id=datatable_id,
+                row_selectable="single",
+                selected_rows=[],
+                active_cell=None,
+                selected_cells=[],
+                fixed_rows={"headers": True},
+                style_table={
+                    "overflowY": "auto",
+                    "overflowX": "auto",
+                    "height": 600,
+                },
+                style_cell={
+                    "textAlign": "left",
+                    "minWidth": "100px",
+                },
+                style_header={
+                    "overflow": "hidden",
+                    "textOverflow": "ellipsis",
+                    "whiteSpace": "nowrap",
+                    "textAlign": "left",
+                    "minWidth": "100px",
+                },
+                page_action="native",
+                page_current=0,
+                page_size=250,
+            ),
+        ),
+        className="dbc mt-3 ms-4 me-4",
+    )
+
+    layout = [
+        dbc.Container([form_row, error_toast_row, success_toast_row]),
+        dbc.Container(data_table_row, fluid=True),
     ]
 
     return layout

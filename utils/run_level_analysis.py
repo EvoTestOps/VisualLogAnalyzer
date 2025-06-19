@@ -36,3 +36,14 @@ def files_and_lines_count(df):
     )
 
     return files_and_lines
+
+
+def aggregate_run_level(df, item_list_col):
+    df = (
+        df.select("run", item_list_col)
+        .explode(item_list_col)
+        .group_by("run")
+        .agg(pl.col(item_list_col))
+    )
+
+    return df

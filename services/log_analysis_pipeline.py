@@ -2,6 +2,7 @@ from services.loader import Loader
 from services.enhancer import Enhancer
 from services.log_analyzer import LogAnalyzer
 from utils.data_filtering import filter_runs
+from utils.run_level_analysis import aggregate_run_level
 
 
 class LogAnalysisPipeline:
@@ -127,6 +128,10 @@ class ManualTrainTestPipeline:
             analyzer.manual_train_split(self._df_train, self._df_test)
 
         self._results = analyzer.run_models(self._model_names)
+
+    def aggregate_to_run_level(self):
+        self._df_train = aggregate_run_level(self._df_train, self._item_list_col)
+        self._df_test = aggregate_run_level(self._df_test, self._item_list_col)
 
     @property
     def results(self):

@@ -10,9 +10,19 @@ from dash_app.components.layouts import create_default_layout
 from dash_app.utils.plots import get_options, create_plot
 from dash_app.utils.data_directories import get_runs
 
-dash.register_page(__name__, path="/manual-split", title="Manual Split Analysis")
+dash.register_page(
+    __name__, path="/ano-line-level", title="Line Level Anomaly Detection"
+)
 
-form = test_train_form()
+form = test_train_form(
+    "submit_tr",
+    "log_format_tr",
+    "train_data_tr",
+    "test_data_tr",
+    "detectors_tr",
+    "enhancement_tr",
+    "runs_filter_tr",
+)
 layout = create_default_layout(
     form,
     "stored_data_tr",
@@ -20,6 +30,7 @@ layout = create_default_layout(
     "plot_content_tr",
     "error_toast_tr",
     "success_toast_tr",
+    "data_table_tr",
 )
 
 

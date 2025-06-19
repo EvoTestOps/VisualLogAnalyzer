@@ -6,7 +6,10 @@ def nav():
         [
             dbc.NavItem(dbc.NavLink("Home", href="/dash/")),
             dbc.DropdownMenu(
-                [dbc.DropdownMenuItem("Line Level", href="/dash/manual-split")],
+                [
+                    dbc.DropdownMenuItem("Run Level", href="/dash/ano-run-level"),
+                    dbc.DropdownMenuItem("Line Level", href="/dash/ano-line-level"),
+                ],
                 label="Anomaly Detection",
                 nav=True,
             ),

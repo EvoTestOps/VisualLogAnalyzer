@@ -95,6 +95,7 @@ def manual_test_train():
     log_format = params.get("log_format", "raw")
     sequence_enhancement = params.get("seq", False)
     runs_to_include = params.get("runs_to_include", None)
+    run_level = params.get("run_level", False)
 
     if (
         not train_data_path
@@ -137,6 +138,10 @@ def manual_test_train():
 
         pipeline.load()
         pipeline.enhance()
+
+        if run_level:
+            pipeline.aggregate_to_run_level()
+
         pipeline.analyze()
 
         if log_format == "raw":
@@ -145,6 +150,9 @@ def manual_test_train():
             results = pipeline.results.sort(["run", "m_timestamp"])
         else:
             results = pipeline.results.sort(["seq_id"])
+
+        if run_level:
+            results = results.drop(item_list_col)
 
         buffer = io.BytesIO()
         results.write_parquet(buffer, compression="zstd")
@@ -274,7 +282,7 @@ def run_line_lens():
         )
 
         buffer = io.BytesIO()
-        line_counts.write_parquet(buffer, compression="zstd")  # zstd lz4
+        line_counts.write_parquet(buffer, compression="zstd")
         buffer.seek(0)
 
         return Response(buffer.getvalue(), mimetype="application/octet-stream")

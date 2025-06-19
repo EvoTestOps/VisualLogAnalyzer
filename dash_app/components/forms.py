@@ -42,24 +42,32 @@ def labeled_form():
     return form
 
 
-def test_train_form():
-    submit_btn_tr = submit_button("submit_tr", "Analyze")
+def test_train_form(
+    submit_id,
+    log_format_id,
+    train_data_id,
+    test_data_id,
+    detectors_id,
+    enhancement_id,
+    runs_filter_id,
+):
+    submit_btn_tr = submit_button(submit_id, "Analyze")
 
     form_tr = dbc.Form(
         [
             dbc.Row(
                 [
-                    log_format_input("log_format_tr"),
-                    train_data_input("train_data_tr"),
-                    test_data_input("test_data_tr"),
+                    log_format_input(log_format_id),
+                    train_data_input(train_data_id),
+                    test_data_input(test_data_id),
                 ],
                 class_name="mb-3",
             ),
             dbc.Row(
                 [
-                    detectors_unsupervised_input("detectors_tr"),
-                    enhancement_input("enhancement_tr"),
-                    runs_filter_input("runs_filter_tr"),
+                    detectors_unsupervised_input(detectors_id),
+                    enhancement_input(enhancement_id),
+                    runs_filter_input(runs_filter_id),
                 ],
                 class_name="mb-3",
             ),
