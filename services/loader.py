@@ -85,20 +85,6 @@ class Loader:
 
         return df
 
-    # def filter_runs(self, runs: list[str], include=True):
-    #     self._df = (
-    #         self._df.filter(pl.col("run").is_in(runs))
-    #         if include
-    #         else self._df.filter(~pl.col("run").is_in(runs))
-    #     )
-
-    # def filter_files(self, file_seq_ids: list[str], include=True):
-    #     self._df = (
-    #         self._df.filter(pl.col("seq_id").is_in(file_seq_ids))
-    #         if include
-    #         else self._df.filter(~pl.col("seq_id").is_in(file_seq_ids))
-    #     )
-
     @property
     def df(self):
         return self._df
