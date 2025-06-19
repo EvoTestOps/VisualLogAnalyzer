@@ -170,7 +170,7 @@ def create_unique_term_count_layout(
 
     layout = [
         dbc.Container([form, error_toast_row, success_toast_row]),
-        dbc.Container(plot_row),
+        dbc.Container(plot_row, fluid=True),
     ]
 
     return layout

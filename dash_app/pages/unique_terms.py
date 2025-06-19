@@ -3,7 +3,6 @@ import polars as pl
 import requests
 from dash import Input, Output, State, callback
 import io
-import base64
 from dash_app.components.forms import unique_terms_form
 from dash_app.components.layouts import create_unique_term_count_layout
 from dash_app.utils.plots import create_unique_term_count_plot
