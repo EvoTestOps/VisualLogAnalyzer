@@ -10,7 +10,7 @@ import traceback
 
 from services.loader import Loader
 from services.log_analysis_pipeline import LogAnalysisPipeline, ManualTrainTestPipeline
-from utils.run_level_analysis import unique_terms_count_by_run
+from utils.run_level_analysis import unique_terms_count_by_run, files_and_lines_count
 
 analyze_bp = Blueprint("main", __name__)
 
@@ -192,6 +192,42 @@ def run_unique_terms():
 
         buffer = io.BytesIO()
         run_unique_terms_count.write_parquet(buffer, compression="zstd")
+        buffer.seek(0)
+
+        return Response(buffer.getvalue(), mimetype="application/octet-stream")
+
+    except Exception as e:
+        trace = traceback.format_exc()
+        logging.error(trace)
+
+        return jsonify({"error": str(e)}), 500
+    finally:
+        if buffer:
+            buffer.close()
+
+
+@analyze_bp.route("/run-file-counts", methods=["POST"])
+def run_file_counts():
+    params = request.get_json()
+
+    dir_path = params.get("dir_path")
+
+    if not dir_path or not os.path.exists(dir_path):
+        return (
+            jsonify({"error": "No directory specified or directory does not exist"}),
+            400,
+        )
+
+    buffer = None
+    try:
+        loader = Loader(dir_path, "raw")
+        loader.load()
+        df = loader.df
+
+        result = files_and_lines_count(df)
+
+        buffer = io.BytesIO()
+        result.write_parquet(buffer, compression="zstd")
         buffer.seek(0)
 
         return Response(buffer.getvalue(), mimetype="application/octet-stream")

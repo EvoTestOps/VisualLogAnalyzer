@@ -11,6 +11,7 @@ from dash_app.components.form_inputs import (
     train_data_input,
     test_data_input,
     runs_filter_input,
+    terms_files_input,
 )
 
 
@@ -76,7 +77,10 @@ def unique_terms_form():
     form_tr = dbc.Form(
         [
             dbc.Row(
-                [directory_input("directory_ut")],
+                [
+                    directory_input("directory_ut"),
+                    terms_files_input("terms_files_ut"),
+                ],
                 class_name="mb-3",
             ),
             dbc.Row(dbc.Col(submit_btn_ut, class_name="text-end")),

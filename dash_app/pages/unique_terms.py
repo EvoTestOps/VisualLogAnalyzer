@@ -5,9 +5,13 @@ from dash import Input, Output, State, callback
 import io
 from dash_app.components.forms import unique_terms_form
 from dash_app.components.layouts import create_unique_term_count_layout
-from dash_app.utils.plots import create_unique_term_count_plot
+from dash_app.utils.plots import create_unique_term_count_plot, create_files_count_plot
 
-dash.register_page(__name__, path="/unique-terms", title="Unique Terms Analysis")
+dash.register_page(
+    __name__,
+    path="/directory-level-visualisations",
+    title="Directory Level Visualisations",
+)
 
 form = unique_terms_form()
 layout = create_unique_term_count_layout(
@@ -26,9 +30,10 @@ layout = create_unique_term_count_layout(
     Input("submit_ut", "n_clicks"),
     Input("switch", "value"),
     State("directory_ut", "value"),
+    State("terms_files_ut", "value"),
     prevent_initial_call=True,
 )
-def create_plot(n_clicks, switch_on, directory_path):
+def create_plot(n_clicks, switch_on, directory_path, terms_files):
     if n_clicks == 0:
         return (
             dash.no_update,
@@ -41,10 +46,17 @@ def create_plot(n_clicks, switch_on, directory_path):
 
     buffer = None
     try:
-        response = requests.post(
-            "http://localhost:5000/api/run-unique-terms",
-            json={"dir_path": directory_path},
-        )
+        if terms_files == "terms":
+            response = requests.post(
+                "http://localhost:5000/api/run-unique-terms",
+                json={"dir_path": directory_path},
+            )
+        else:
+            response = requests.post(
+                "http://localhost:5000/api/run-file-counts",
+                json={"dir_path": directory_path},
+            )
+
         response.raise_for_status()
 
         parquet_bytes = io.BytesIO(response.content)
@@ -63,7 +75,10 @@ def create_plot(n_clicks, switch_on, directory_path):
         else:
             theme = "plotly_white"
 
-        fig = create_unique_term_count_plot(df, theme)
+        if terms_files == "terms":
+            fig = create_unique_term_count_plot(df, theme)
+        else:
+            fig = create_files_count_plot(df, theme)
 
         return (
             fig,

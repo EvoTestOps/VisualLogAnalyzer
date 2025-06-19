@@ -80,6 +80,30 @@ def create_unique_term_count_plot(df, theme="plotly_white"):
     return fig
 
 
+def create_files_count_plot(df, theme="plotly_white"):
+    fig = go.Figure()
+
+    fig.add_trace(
+        go.Scatter(
+            x=df["file_count"],
+            y=df["line_count"],
+            mode="markers",
+            text=df["run"],
+            hovertemplate="Run: %{text}<br>Files: %{x}<br>Lines:%{y}<extra></extra>",
+            name="Runs",
+        )
+    )
+
+    fig.update_layout(
+        title="File count by run",
+        xaxis_title="Files",
+        yaxis_title="Lines",
+        template=theme,
+    )
+
+    return fig
+
+
 def _wrap_log(text, width=80):
     return "<br>".join([text[i : i + width] for i in range(0, len(text), width)])
 

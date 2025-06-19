@@ -21,3 +21,18 @@ def unique_terms_count_by_run(df, item_list_col):
     )
 
     return run_unique_terms.sort("run")
+
+
+def files_and_lines_count(df):
+    files_and_lines = (
+        df.group_by("run")
+        .agg(
+            [
+                pl.len().alias("line_count"),
+                pl.col("file_name").n_unique().alias("file_count"),
+            ]
+        )
+        .sort("run")
+    )
+
+    return files_and_lines

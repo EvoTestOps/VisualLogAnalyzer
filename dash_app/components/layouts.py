@@ -17,7 +17,6 @@ def create_root_layout():
             dbc.Row(
                 [
                     dbc.Col(nav()),
-                    dbc.Col(),
                     dbc.Col(
                         color_mode_switch(), class_name="d-flex justify-content-end"
                     ),
