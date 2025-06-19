@@ -9,7 +9,7 @@ import logging
 import traceback
 
 from services.loader import Loader
-from services.log_analysis_pipeline import LogAnalysisPipeline
+from services.log_analysis_pipeline import LogAnalysisPipeline, ManualTrainTestPipeline
 from utils.run_level_analysis import unique_terms_count_by_run
 
 analyze_bp = Blueprint("main", __name__)
@@ -25,7 +25,6 @@ def analyze():
     test_frac = float(params.get("test_frac", 0.9))
     item_list_col = params.get("item_list_col", "e_words")
     log_format = params.get("log_format", "lo2")
-    labels_file_name = params.get("labels_file_name", None)
     sequence_enhancement = params.get("seq", False)
 
     if not dir_path or not os.path.exists(dir_path):
@@ -45,7 +44,6 @@ def analyze():
             item_list_col=item_list_col,
             test_frac=test_frac,
             log_format=log_format,
-            labels_file_name=labels_file_name,
             sequence_enhancement=sequence_enhancement,
         )
         pipeline.load()
@@ -94,7 +92,6 @@ def manual_test_train():
     models = params.get("models", ["kmeans"])
     item_list_col = params.get("item_list_col", "e_words")
     log_format = params.get("log_format", "raw")
-    labels_file_name = params.get("labels_file_name", None)
     sequence_enhancement = params.get("seq", False)
 
     if (
@@ -123,16 +120,15 @@ def manual_test_train():
     buffer = None
 
     try:
-        pipeline = LogAnalysisPipeline(
+        pipeline = ManualTrainTestPipeline(
             model_names=models,
             item_list_col=item_list_col,
             log_format=log_format,
-            labels_file_name=labels_file_name,
             sequence_enhancement=sequence_enhancement,
-            manual_split=True,
             train_data_path=train_data_path,
             test_data_path=test_data_path,
         )
+
         pipeline.load()
         pipeline.enhance()
         pipeline.analyze()

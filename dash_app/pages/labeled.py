@@ -73,6 +73,7 @@ def get_and_generate_dropdown(
 
 @callback(
     Output("plot_content", "figure"),
+    Output("plot_content", "style"),
     Input("plot_selector", "value"),
     State("stored_data", "data"),
     prevent_initial_call=True,
@@ -84,6 +85,14 @@ def render_plot(selected_plot, data):
     decoded_df = base64.b64decode(data)
     df = pl.read_parquet(io.BytesIO(decoded_df))
 
+    style = {
+        "resize": "both",
+        "overflow": "auto",
+        "minHeight": "500px",
+        "minWidth": "600px",
+        "width": "90%",
+    }
+
     fig = create_plot(df, selected_plot)
 
-    return fig
+    return fig, style
