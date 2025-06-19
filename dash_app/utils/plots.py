@@ -80,6 +80,30 @@ def create_unique_term_count_plot(df, theme="plotly_white"):
     return fig
 
 
+def create_unique_term_count_plot_by_file(df, theme="plotly_white"):
+    fig = go.Figure()
+
+    fig.add_trace(
+        go.Scatter(
+            x=df["unique_term_count"],
+            y=df["line_count"],
+            mode="markers",
+            text=df["seq_id"],
+            hovertemplate="File: %{text}<br>Unique terms: %{x}<br>Lines:%{y}<extra></extra>",
+            name="Files",
+        )
+    )
+
+    fig.update_layout(
+        title="Unique term count by file",
+        xaxis_title="Unique terms",
+        yaxis_title="Lines",
+        template=theme,
+    )
+
+    return fig
+
+
 def create_files_count_plot(df, theme="plotly_white"):
     fig = go.Figure()
 

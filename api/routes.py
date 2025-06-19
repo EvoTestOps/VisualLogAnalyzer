@@ -11,6 +11,7 @@ import traceback
 from services.loader import Loader
 from services.log_analysis_pipeline import LogAnalysisPipeline, ManualTrainTestPipeline
 from utils.run_level_analysis import unique_terms_count_by_run, files_and_lines_count
+from utils.file_level_analysis import unique_terms_count_by_file
 
 analyze_bp = Blueprint("main", __name__)
 
@@ -175,6 +176,7 @@ def run_unique_terms():
 
     dir_path = params.get("dir_path")
     item_list_col = params.get("item_list_col", "e_words")
+    file_level = params.get("file_level", False)
 
     if not dir_path or not os.path.exists(dir_path):
         return (
@@ -188,10 +190,13 @@ def run_unique_terms():
         loader.load()
         df = loader.df
 
-        run_unique_terms_count = unique_terms_count_by_run(df, item_list_col)
+        if not file_level:
+            unique_terms_count = unique_terms_count_by_run(df, item_list_col)
+        else:
+            unique_terms_count = unique_terms_count_by_file(df, item_list_col)
 
         buffer = io.BytesIO()
-        run_unique_terms_count.write_parquet(buffer, compression="zstd")
+        unique_terms_count.write_parquet(buffer, compression="zstd")
         buffer.seek(0)
 
         return Response(buffer.getvalue(), mimetype="application/octet-stream")
@@ -270,6 +275,40 @@ def run_line_lens():
 
         buffer = io.BytesIO()
         line_counts.write_parquet(buffer, compression="zstd")  # zstd lz4
+        buffer.seek(0)
+
+        return Response(buffer.getvalue(), mimetype="application/octet-stream")
+
+    except Exception as e:
+        trace = traceback.format_exc()
+        logging.error(trace)
+
+        return jsonify({"error": str(e)}), 500
+    finally:
+        if buffer:
+            buffer.close()
+
+
+@analyze_bp.route("/loader-test", methods=["POST"])
+def loader_test():
+    params = request.get_json()
+
+    dir_path = params.get("dir_path")
+
+    if not dir_path or not os.path.exists(dir_path):
+        return (
+            jsonify({"error": "No directory specified or directory does not exist"}),
+            400,
+        )
+
+    buffer = None
+    try:
+        loader = Loader(dir_path, "raw")
+        loader.load()
+        df = loader.df
+
+        buffer = io.BytesIO()
+        df.write_parquet(buffer, compression="zstd")
         buffer.seek(0)
 
         return Response(buffer.getvalue(), mimetype="application/octet-stream")

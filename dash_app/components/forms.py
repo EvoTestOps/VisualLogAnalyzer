@@ -89,3 +89,22 @@ def unique_terms_form():
     )
 
     return form_tr
+
+
+def unique_terms_by_file_form():
+    submit_btn_ut_file = submit_button("submit_ut_file", "Analyze")
+
+    form_tr = dbc.Form(
+        [
+            dbc.Row(
+                [
+                    directory_input("directory_ut_file"),
+                ],
+                class_name="mb-3",
+            ),
+            dbc.Row(dbc.Col(submit_btn_ut_file, class_name="text-end")),
+        ],
+        class_name="border border-primary-subtle border-2 p-3",
+    )
+
+    return form_tr

@@ -5,13 +5,22 @@ def nav():
     return dbc.Nav(
         [
             dbc.NavItem(dbc.NavLink("Home", href="/dash/")),
-            # dbc.NavItem(dbc.NavLink("Labeled", href="/dash/labeled")),
-            dbc.NavItem(dbc.NavLink("Manual Split", href="/dash/manual-split")),
-            dbc.NavItem(
-                dbc.NavLink(
-                    "Directory Level Visualisations",
-                    href="/dash/directory-level-visualisations",
-                )
+            dbc.DropdownMenu(
+                [dbc.DropdownMenuItem("Line Level", href="/dash/manual-split")],
+                label="Anomaly Detection",
+                nav=True,
+            ),
+            dbc.DropdownMenu(
+                [
+                    dbc.DropdownMenuItem(
+                        "Directory Level", href="/dash/directory-level-visualisations"
+                    ),
+                    dbc.DropdownMenuItem(
+                        "File Level", href="/dash/file-level-visualisations"
+                    ),
+                ],
+                label="High level Visualisations",
+                nav=True,
             ),
         ],
         class_name="h5",
