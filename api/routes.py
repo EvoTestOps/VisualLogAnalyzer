@@ -93,6 +93,7 @@ def manual_test_train():
     item_list_col = params.get("item_list_col", "e_words")
     log_format = params.get("log_format", "raw")
     sequence_enhancement = params.get("seq", False)
+    runs_to_include = params.get("runs_to_include", None)
 
     if (
         not train_data_path
@@ -115,6 +116,9 @@ def manual_test_train():
             400,
         )
 
+    if runs_to_include is not None and len(runs_to_include) == 0:
+        runs_to_include = None
+
     results = None
     pipeline = None
     buffer = None
@@ -127,6 +131,7 @@ def manual_test_train():
             sequence_enhancement=sequence_enhancement,
             train_data_path=train_data_path,
             test_data_path=test_data_path,
+            runs_to_include=runs_to_include,
         )
 
         pipeline.load()

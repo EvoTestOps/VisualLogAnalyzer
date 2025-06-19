@@ -1,3 +1,4 @@
+import polars as pl
 from services.loader import Loader
 from services.enhancer import Enhancer
 from services.log_analyzer import LogAnalyzer
@@ -66,6 +67,7 @@ class ManualTrainTestPipeline:
         sequence_enhancement=False,
         train_data_path=None,
         test_data_path=None,
+        runs_to_include=None,
     ):
 
         self._model_names = model_names
@@ -75,6 +77,7 @@ class ManualTrainTestPipeline:
 
         self._train_data_path = train_data_path
         self._test_data_path = test_data_path
+        self._runs_to_include = runs_to_include
 
         self._df_test = None
         self._df_train = None
@@ -89,8 +92,11 @@ class ManualTrainTestPipeline:
         )
         self._df_test, self._df_seq_test = self._load_test_train(self._test_data_path)
 
+        if self._runs_to_include is not None:
+            self._df_test = self._filter_test_data_runs(self._df_test)
+
     def _load_test_train(self, directory_path):
-        loader = Loader(directory_path, self._log_format)
+        loader = Loader(directory_path, self._log_format, self._runs_to_include)
         loader.load()
 
         return loader.df, loader.df_seq
@@ -112,6 +118,9 @@ class ManualTrainTestPipeline:
             enhancer.enhance_event(self._item_list_col)
 
         return enhancer.df, enhancer.df_seq
+
+    def _filter_test_data_runs(self, df):
+        return df.filter(pl.col("run").is_in(self._runs_to_include))
 
     def analyze(self):
         analyzer = LogAnalyzer(item_list_col=self._item_list_col)

@@ -50,6 +50,7 @@ def get_filter_options(test_data_path):
     State("test_data_tr", "value"),
     State("detectors_tr", "value"),
     State("enhancement_tr", "value"),
+    State("runs_filter_tr", "value"),
     prevent_initial_call=True,
 )
 def get_and_generate_dropdown(
@@ -59,6 +60,7 @@ def get_and_generate_dropdown(
     test_data,
     detectors,
     enhancement,
+    runs_to_include,
 ):
     if n_clicks == 0:
         return (
@@ -81,6 +83,7 @@ def get_and_generate_dropdown(
                 "models": detectors,
                 "item_list_col": enhancement,
                 "seq": False,
+                "runs_to_include": runs_to_include,
             },
         )
         response.raise_for_status()

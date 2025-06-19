@@ -22,4 +22,4 @@ def get_runs(log_directory):
         if os.path.isdir(log_directory + item)
     ]
 
-    return runs
+    return sorted(runs)
