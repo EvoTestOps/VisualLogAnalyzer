@@ -138,3 +138,17 @@ def test_frac_input(id):
 
 def submit_button(id, label):
     return dbc.Button(label, id=id, n_clicks=0)
+
+
+def runs_filter_input(id):
+    return dbc.Col(
+        [
+            dbc.Label("Runs to include in test data", html_for=id, width="auto"),
+            dcc.Dropdown(
+                multi=True,
+                id=id,
+                placeholder="Defaults to all runs",
+                className="dbc border border-light-subtle rounded",
+            ),
+        ],
+    )

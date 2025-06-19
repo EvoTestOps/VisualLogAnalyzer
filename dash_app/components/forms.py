@@ -10,6 +10,7 @@ from dash_app.components.form_inputs import (
     submit_button,
     train_data_input,
     test_data_input,
+    runs_filter_input,
 )
 
 
@@ -57,6 +58,7 @@ def test_train_form():
                 [
                     detectors_unsupervised_input("detectors_tr"),
                     enhancement_input("enhancement_tr"),
+                    runs_filter_input("runs_filter_tr"),
                 ],
                 class_name="mb-3",
             ),

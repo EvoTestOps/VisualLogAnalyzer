@@ -8,6 +8,7 @@ from dash_app.components.forms import test_train_form
 from dash_app.components.layouts import create_default_layout
 
 from dash_app.utils.plots import get_options, create_plot
+from dash_app.utils.data_directories import get_runs
 
 dash.register_page(__name__, path="/manual-split", title="Manual Split Analysis")
 
@@ -20,6 +21,20 @@ layout = create_default_layout(
     "error_toast_tr",
     "success_toast_tr",
 )
+
+
+@callback(
+    Output("runs_filter_tr", "options"),
+    Input("test_data_tr", "value"),
+)
+def get_filter_options(test_data_path):
+    if test_data_path is None:
+        return {}
+
+    runs = get_runs(test_data_path)
+
+    options = [{"label": run, "value": run} for run in runs]
+    return options
 
 
 @callback(
