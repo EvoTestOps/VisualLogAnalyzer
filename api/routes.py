@@ -16,7 +16,7 @@ from utils.run_level_analysis import (
     calculate_zscore_sum_anos,
     aggregate_run_level,
 )
-from utils.file_level_analysis import unique_terms_count_by_file
+from utils.file_level_analysis import unique_terms_count_by_file, aggregate_file_level
 from utils.data_filtering import get_prediction_cols
 from utils.umap_analysis import create_umap_embeddings, create_umap_df
 
@@ -259,7 +259,14 @@ def create_umap():
             embeddings = create_umap_embeddings(df_run)
             result = create_umap_df(df, embeddings)
         else:
-            pass
+            df_file = (
+                aggregate_file_level(df, item_list_col)
+                .select(item_list_col)
+                .to_series()
+                .to_list()
+            )
+            embeddings = create_umap_embeddings(df_file)
+            result = create_umap_df(df, embeddings, group_col="seq_id")
 
         buffer = io.BytesIO()
         result.write_parquet(buffer, compression="zstd")
