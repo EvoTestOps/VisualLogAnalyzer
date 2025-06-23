@@ -25,6 +25,7 @@ def get_runs(log_directory):
     return sorted(runs)
 
 
+# TODO: Only *.log files
 def get_all_filenames(log_directory):
     if not log_directory or not os.path.exists(log_directory):
         return []
