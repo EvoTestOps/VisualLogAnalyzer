@@ -154,6 +154,20 @@ def runs_filter_input(id):
     )
 
 
+def files_filter_input(id):
+    return dbc.Col(
+        [
+            dbc.Label("Files to include in test data", html_for=id, width="auto"),
+            dcc.Dropdown(
+                multi=True,
+                id=id,
+                placeholder="Defaults to all files",
+                className="dbc border border-light-subtle rounded",
+            ),
+        ],
+    )
+
+
 def terms_files_input(id):
     return dbc.Col(
         [

@@ -103,6 +103,7 @@ def manual_test_train():
     sequence_enhancement = params.get("seq", False)
     runs_to_include = params.get("runs_to_include", None)
     run_level = params.get("run_level", False)
+    file_level = params.get("file_level", False)
 
     if (
         not train_data_path
@@ -148,6 +149,8 @@ def manual_test_train():
 
         if run_level:
             pipeline.aggregate_to_run_level()
+        elif file_level:
+            pipeline.aggregate_to_file_level()
 
         pipeline.analyze()
 
@@ -158,7 +161,7 @@ def manual_test_train():
         else:
             results = pipeline.results.sort(["seq_id"])
 
-        if run_level:
+        if run_level or file_level:
             results = calculate_zscore_sum_anos(
                 results, distance_columns=get_prediction_cols(results)
             )

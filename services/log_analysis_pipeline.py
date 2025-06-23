@@ -1,8 +1,9 @@
 from services.loader import Loader
 from services.enhancer import Enhancer
 from services.log_analyzer import LogAnalyzer
-from utils.data_filtering import filter_runs
+from utils.data_filtering import filter_runs, filter_files
 from utils.run_level_analysis import aggregate_run_level
+from utils.file_level_analysis import aggregate_file_level
 
 
 class LogAnalysisPipeline:
@@ -69,6 +70,7 @@ class ManualTrainTestPipeline:
         train_data_path=None,
         test_data_path=None,
         runs_to_include=None,
+        files_to_include=None,
     ):
 
         self._model_names = model_names
@@ -79,6 +81,7 @@ class ManualTrainTestPipeline:
         self._train_data_path = train_data_path
         self._test_data_path = test_data_path
         self._runs_to_include = runs_to_include
+        self._files_to_include = files_to_include
 
         self._df_test = None
         self._df_train = None
@@ -95,6 +98,8 @@ class ManualTrainTestPipeline:
 
         if self._runs_to_include is not None:
             self._df_test = filter_runs(self._df_test, self._runs_to_include)
+        elif self._files_to_include is not None:
+            self._df_test = filter_files(self._df_test, self._files_to_include)
 
     def _load_test_train(self, directory_path):
         loader = Loader(directory_path, self._log_format, self._runs_to_include)
@@ -132,6 +137,10 @@ class ManualTrainTestPipeline:
     def aggregate_to_run_level(self):
         self._df_train = aggregate_run_level(self._df_train, self._item_list_col)
         self._df_test = aggregate_run_level(self._df_test, self._item_list_col)
+
+    def aggregate_to_file_level(self):
+        self._df_train = aggregate_file_level(self._df_train, self._item_list_col)
+        self._df_test = aggregate_file_level(self._df_test, self._item_list_col)
 
     @property
     def results(self):

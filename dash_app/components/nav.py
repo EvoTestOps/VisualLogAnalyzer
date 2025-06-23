@@ -8,6 +8,7 @@ def nav():
             dbc.DropdownMenu(
                 [
                     dbc.DropdownMenuItem("Run Level", href="/dash/ano-run-level"),
+                    dbc.DropdownMenuItem("File Level", href="/dash/ano-file-level"),
                     dbc.DropdownMenuItem("Line Level", href="/dash/ano-line-level"),
                 ],
                 label="Anomaly Detection",
