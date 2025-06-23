@@ -190,30 +190,33 @@ def create_ano_run_level_layout(
     success_toast_row = dbc.Row(success_toast(success_toast_id))
 
     data_table_row = dbc.Row(
-        html.Div(
-            dash_table.DataTable(
-                id=datatable_id,
-                sort_action="native",
-                fixed_rows={"headers": True},
-                style_table={
-                    "overflowY": "auto",
-                    "overflowX": "auto",
-                    "height": 600,
-                },
-                style_cell={
-                    "textAlign": "left",
-                    "minWidth": "100px",
-                },
-                style_header={
-                    "overflow": "hidden",
-                    "textOverflow": "ellipsis",
-                    "whiteSpace": "nowrap",
-                    "textAlign": "left",
-                    "minWidth": "100px",
-                },
-                page_action="native",
-                page_current=0,
-                page_size=250,
+        dcc.Loading(
+            type="default",
+            children=html.Div(
+                dash_table.DataTable(
+                    id=datatable_id,
+                    sort_action="native",
+                    fixed_rows={"headers": True},
+                    style_table={
+                        "overflowY": "auto",
+                        "overflowX": "auto",
+                        "height": 600,
+                    },
+                    style_cell={
+                        "textAlign": "left",
+                        "minWidth": "100px",
+                    },
+                    style_header={
+                        "overflow": "hidden",
+                        "textOverflow": "ellipsis",
+                        "whiteSpace": "nowrap",
+                        "textAlign": "left",
+                        "minWidth": "100px",
+                    },
+                    page_action="native",
+                    page_current=0,
+                    page_size=250,
+                ),
             ),
         ),
         className="dbc mt-3 ms-4 me-4",
