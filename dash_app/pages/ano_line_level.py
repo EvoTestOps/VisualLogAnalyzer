@@ -99,8 +99,7 @@ def get_and_generate_dropdown(
         )
         response.raise_for_status()
 
-        parquet_bytes = io.BytesIO(response.content)
-        df = pl.read_parquet(parquet_bytes)
+        df = pl.read_parquet(io.BytesIO(response.content))
 
         options = get_options(df)
 
@@ -151,6 +150,10 @@ def render_plot(selected_plot, switch_on, data):
     if not data or not selected_plot:
         return dash.no_update, dash.no_update
 
+    decoded_df = base64.b64decode(data)
+    df = pl.read_parquet(io.BytesIO(decoded_df))
+
+    theme = "plotly_white" if switch_on else "plotly_dark"
     style = {
         "resize": "both",
         "overflow": "auto",
@@ -158,14 +161,6 @@ def render_plot(selected_plot, switch_on, data):
         "minWidth": "600px",
         "width": "90%",
     }
-
-    decoded_df = base64.b64decode(data)
-    df = pl.read_parquet(io.BytesIO(decoded_df))
-
-    if not switch_on:
-        theme = "plotly_dark"
-    else:
-        theme = "plotly_white"
 
     fig = create_plot(df, selected_plot, theme)
 

@@ -3,7 +3,6 @@ import polars as pl
 import requests
 from dash import Input, Output, State, callback
 import io
-import base64
 from dash_app.components.forms import test_train_form
 from dash_app.components.layouts import create_ano_run_level_layout
 
@@ -93,8 +92,7 @@ def populate_table(
         )
         response.raise_for_status()
 
-        parquet_bytes = io.BytesIO(response.content)
-        df = pl.read_parquet(parquet_bytes)
+        df = pl.read_parquet(io.BytesIO(response.content))
 
         columns = [{"name": col, "id": col} for col in df.columns]
 
