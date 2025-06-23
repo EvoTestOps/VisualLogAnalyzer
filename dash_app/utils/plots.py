@@ -128,6 +128,29 @@ def create_files_count_plot(df, theme="plotly_white"):
     return fig
 
 
+def create_umap_plot(df, group_col, theme="plotly_white"):
+    fig = go.Figure()
+
+    fig.add_trace(
+        go.Scatter(
+            x=df["UMAP1"],
+            y=df["UMAP2"],
+            mode="markers",
+            text=df[group_col],
+            hovertemplate=f"{group_col}: %{{text}}<br>UMAP1: %{{x}}<br>UMAP2:%{{y}}<extra></extra>",
+        )
+    )
+
+    fig.update_layout(
+        title="UMAP comparison",
+        xaxis_title="UMAP1",
+        yaxis_title="UMAP2",
+        template=theme,
+    )
+
+    return fig
+
+
 def _wrap_log(text, width=80):
     return "<br>".join([text[i : i + width] for i in range(0, len(text), width)])
 

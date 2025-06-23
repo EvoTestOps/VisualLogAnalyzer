@@ -157,12 +157,13 @@ def runs_filter_input(id):
 def terms_files_input(id):
     return dbc.Col(
         [
-            dbc.Label("Terms & Lines / Files & Lines", html_for=id, width="auto"),
+            dbc.Label("Type", html_for=id, width="auto"),
             dbc.RadioItems(
                 id=id,
                 options=[
                     {"label": "Terms & Lines", "value": "terms"},
                     {"label": "Files & Lines", "value": "files"},
+                    {"label": "UMAP", "value": "umap"},
                 ],
                 value="terms",
                 inline=True,
