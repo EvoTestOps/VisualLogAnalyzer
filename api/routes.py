@@ -14,9 +14,11 @@ from utils.run_level_analysis import (
     unique_terms_count_by_run,
     files_and_lines_count,
     calculate_zscore_sum_anos,
+    aggregate_run_level,
 )
 from utils.file_level_analysis import unique_terms_count_by_file
 from utils.data_filtering import get_prediction_cols
+from utils.umap_analysis import create_umap_embeddings, create_umap_df
 
 analyze_bp = Blueprint("main", __name__)
 
@@ -213,6 +215,54 @@ def run_unique_terms():
 
         buffer = io.BytesIO()
         unique_terms_count.write_parquet(buffer, compression="zstd")
+        buffer.seek(0)
+
+        return Response(buffer.getvalue(), mimetype="application/octet-stream")
+
+    except Exception as e:
+        trace = traceback.format_exc()
+        logging.error(trace)
+
+        return jsonify({"error": str(e)}), 500
+    finally:
+        if buffer:
+            buffer.close()
+
+
+@analyze_bp.route("/umap", methods=["POST"])
+def create_umap():
+    params = request.get_json()
+
+    dir_path = params.get("dir_path")
+    item_list_col = params.get("item_list_col", "e_words")
+    file_level = params.get("file_level", False)
+
+    if not dir_path or not os.path.exists(dir_path):
+        return (
+            jsonify({"error": "No directory specified or directory does not exist"}),
+            400,
+        )
+
+    buffer = None
+    try:
+        loader = Loader(dir_path, "raw")
+        loader.load()
+        df = loader.df
+
+        if not file_level:
+            df_run = (
+                aggregate_run_level(df, item_list_col)
+                .select(item_list_col)
+                .to_series()
+                .to_list()
+            )
+            embeddings = create_umap_embeddings(df_run)
+            result = create_umap_df(df, embeddings)
+        else:
+            pass
+
+        buffer = io.BytesIO()
+        result.write_parquet(buffer, compression="zstd")
         buffer.seek(0)
 
         return Response(buffer.getvalue(), mimetype="application/octet-stream")
