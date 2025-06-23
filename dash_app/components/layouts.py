@@ -193,10 +193,7 @@ def create_ano_run_level_layout(
         html.Div(
             dash_table.DataTable(
                 id=datatable_id,
-                row_selectable="single",
-                selected_rows=[],
-                active_cell=None,
-                selected_cells=[],
+                sort_action="native",
                 fixed_rows={"headers": True},
                 style_table={
                     "overflowY": "auto",

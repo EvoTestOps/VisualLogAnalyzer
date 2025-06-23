@@ -10,8 +10,13 @@ import traceback
 
 from services.loader import Loader
 from services.log_analysis_pipeline import LogAnalysisPipeline, ManualTrainTestPipeline
-from utils.run_level_analysis import unique_terms_count_by_run, files_and_lines_count
+from utils.run_level_analysis import (
+    unique_terms_count_by_run,
+    files_and_lines_count,
+    calculate_zscore_sum_anos,
+)
 from utils.file_level_analysis import unique_terms_count_by_file
+from utils.data_filtering import get_prediction_cols
 
 analyze_bp = Blueprint("main", __name__)
 
@@ -152,6 +157,9 @@ def manual_test_train():
             results = pipeline.results.sort(["seq_id"])
 
         if run_level:
+            results = calculate_zscore_sum_anos(
+                results, distance_columns=get_prediction_cols(results)
+            )
             results = results.drop(item_list_col)
 
         buffer = io.BytesIO()

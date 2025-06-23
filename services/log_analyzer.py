@@ -1,6 +1,5 @@
 import polars as pl
 from loglead import AnomalyDetector
-from loglead.enhancers import EventLogEnhancer
 
 
 class LogAnalyzer:
@@ -9,7 +8,6 @@ class LogAnalyzer:
         self._df_seq = df_seq
         self._item_list_col = item_list_col
 
-        # self._sad = AnomalyDetector()
         self._sad = None
 
         self._model_to_func = {
@@ -68,11 +66,6 @@ class LogAnalyzer:
             numeric_cols=None,
             print_scores=False,  # will crash otherwise
         )
-
-        self._sad.item_list_col = self._item_list_col
-        self._sad.numeric_cols = None
-        self._sad.auc_roc = True
-        self._sad.store_scores = False
 
         self._sad.train_df = train_df
         self._sad.test_df = test_df
