@@ -7,22 +7,24 @@ from dash_app.components.toasts import error_toast, success_toast
 
 def create_root_layout():
     return dbc.Container(
-        [
-            dbc.Row(
-                [
-                    html.H1("Visual Log Analyzer", style={"textAlign": "center"}),
-                ],
-                class_name="p-3",
-            ),
-            dbc.Row(
-                [
-                    dbc.Col(nav()),
-                    dbc.Col(
-                        color_mode_switch(), class_name="d-flex justify-content-end"
-                    ),
-                ]
-            ),
-        ],
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        html.H2(
+                            "Visual Log Analyzer",
+                            style={"textAlign": "center"},
+                        ),
+                    ],
+                    class_name="p-3",
+                ),
+                dbc.Col(nav(), width=6, class_name="d-flex align-items-center"),
+                dbc.Col(
+                    color_mode_switch(),
+                    class_name="d-flex justify-content-end align-items-center",
+                ),
+            ],
+        ),
     )
 
 
