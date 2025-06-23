@@ -5,7 +5,7 @@ from dash import Input, Output, State, callback
 import io
 from dash_app.components.forms import unique_terms_by_file_form
 from dash_app.components.layouts import create_unique_term_count_layout
-from dash_app.utils.plots import create_unique_term_count_plot_by_file
+from dash_app.utils.plots import create_unique_term_count_plot_by_file, create_umap_plot
 
 dash.register_page(
     __name__,
@@ -29,9 +29,10 @@ layout = create_unique_term_count_layout(
     Input("submit_ut_file", "n_clicks"),
     Input("switch", "value"),
     State("directory_ut_file", "value"),
+    State("terms_umap_ut_file", "value"),
     prevent_initial_call=True,
 )
-def create_plot(n_clicks, switch_on, directory_path):
+def create_plot(n_clicks, switch_on, directory_path, terms_umap):
     if n_clicks == 0:
         return (
             dash.no_update,
@@ -42,18 +43,24 @@ def create_plot(n_clicks, switch_on, directory_path):
             dash.no_update,
         )
 
-    buffer = None
+    endpoint_map = {
+        "terms": "run-unique-terms",
+        "umap": "umap",
+    }
+
+    endpoint = endpoint_map.get(terms_umap, endpoint_map["umap"])
+    url = f"http://localhost:5000/api/{endpoint}"
+
     try:
         response = requests.post(
-            "http://localhost:5000/api/run-unique-terms",
+            url,
             json={"dir_path": directory_path, "file_level": True},
         )
-
         response.raise_for_status()
 
-        parquet_bytes = io.BytesIO(response.content)
-        df = pl.read_parquet(parquet_bytes)
+        df = pl.read_parquet(io.BytesIO(response.content))
 
+        theme = "plotly_white" if switch_on else "plotly_dark"
         style = {
             "resize": "both",
             "overflow": "auto",
@@ -62,12 +69,10 @@ def create_plot(n_clicks, switch_on, directory_path):
             "width": "90%",
         }
 
-        if not switch_on:
-            theme = "plotly_dark"
+        if terms_umap == "terms":
+            fig = create_unique_term_count_plot_by_file(df, theme)
         else:
-            theme = "plotly_white"
-
-        fig = create_unique_term_count_plot_by_file(df, theme)
+            fig = create_umap_plot(df, "seq_id", theme)
 
         return (
             fig,
@@ -92,7 +97,3 @@ def create_plot(n_clicks, switch_on, directory_path):
             dash.no_update,
             False,
         )
-
-    finally:
-        if buffer:
-            buffer.close()

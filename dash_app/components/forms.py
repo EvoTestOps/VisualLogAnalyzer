@@ -12,6 +12,7 @@ from dash_app.components.form_inputs import (
     test_data_input,
     runs_filter_input,
     terms_files_input,
+    terms_umap_input,
 )
 
 
@@ -107,6 +108,7 @@ def unique_terms_by_file_form():
             dbc.Row(
                 [
                     directory_input("directory_ut_file"),
+                    terms_umap_input("terms_umap_ut_file"),
                 ],
                 class_name="mb-3",
             ),
