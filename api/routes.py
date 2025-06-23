@@ -103,6 +103,7 @@ def manual_test_train():
     sequence_enhancement = params.get("seq", False)
     runs_to_include = params.get("runs_to_include", None)
     run_level = params.get("run_level", False)
+    files_to_include = params.get("files_to_include", None)
     file_level = params.get("file_level", False)
 
     if (
@@ -129,6 +130,9 @@ def manual_test_train():
     if runs_to_include is not None and len(runs_to_include) == 0:
         runs_to_include = None
 
+    if files_to_include is not None and len(files_to_include) == 0:
+        files_to_include = None
+
     results = None
     pipeline = None
     buffer = None
@@ -142,6 +146,7 @@ def manual_test_train():
             train_data_path=train_data_path,
             test_data_path=test_data_path,
             runs_to_include=runs_to_include,
+            files_to_include=files_to_include,
         )
 
         pipeline.load()

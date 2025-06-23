@@ -23,3 +23,15 @@ def get_runs(log_directory):
     ]
 
     return sorted(runs)
+
+
+def get_all_filenames(log_directory):
+    if not log_directory or not os.path.exists(log_directory):
+        return []
+
+    all_files = []
+    for dirpath, _, filenames in os.walk(log_directory):
+        for filename in filenames:
+            full_path = os.path.join(dirpath, filename)
+            all_files.append(full_path)
+    return sorted(all_files)

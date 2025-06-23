@@ -32,7 +32,9 @@ def train_data_input(id):
         [
             dbc.Label("Directory path to train data", html_for=id, width="auto"),
             dbc.Input(
-                type="text", id=id, placeholder="path/to/your/train/data/directory"
+                type="text",
+                id=id,
+                placeholder="path/to/your/train/data/directory",
             ),
         ]
     )
@@ -43,7 +45,10 @@ def test_data_input(id):
         [
             dbc.Label("Directory path to test data", html_for=id, width="auto"),
             dbc.Input(
-                type="text", id=id, placeholder="path/to/your/test/data/directory"
+                type="text",
+                id=id,
+                placeholder="path/to/your/test/data/directory",
+                debounce=True,
             ),
         ]
     )

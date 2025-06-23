@@ -10,11 +10,11 @@ def filter_runs(df, runs: list[str], include=True):
     return df
 
 
-def filter_files(df, file_seq_ids: list[str], include=True):
+def filter_files(df, files: list[str], column: str = "orig_file_name", include=True):
     df = (
-        df.filter(pl.col("seq_id").is_in(file_seq_ids))
+        df.filter(pl.col(column).is_in(files))
         if include
-        else df.filter(~pl.col("seq_id").is_in(file_seq_ids))
+        else df.filter(~pl.col(column).is_in(files))
     )
     return df
 

@@ -106,6 +106,11 @@ def test_train_file_level_form(
                 [
                     detectors_unsupervised_input(detectors_id),
                     enhancement_input(enhancement_id),
+                ],
+                class_name="mb-3",
+            ),
+            dbc.Row(
+                [
                     files_filter_input(files_filter_id),
                 ],
                 class_name="mb-3",
