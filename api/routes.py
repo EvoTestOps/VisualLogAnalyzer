@@ -8,6 +8,9 @@ from flask import Blueprint, Response, jsonify, request
 import logging
 import traceback
 
+from pydantic import ValidationError
+from api.models.anomaly_detection_params import AnomalyDetectionParams
+
 from services.loader import Loader
 from services.enhancer import Enhancer
 from services.log_analysis_pipeline import LogAnalysisPipeline, ManualTrainTestPipeline
@@ -95,45 +98,23 @@ def analyze():
 
 @analyze_bp.route("/manual-test-train", methods=["POST"])
 def manual_test_train():
-    params = request.get_json()
+    try:
+        validated_data = AnomalyDetectionParams(**request.get_json())
+    except ValidationError as e:
+        error = e.errors()[0]  # take the first one
 
-    train_data_path = params.get("train_data_path")
-    test_data_path = params.get("test_data_path")
-    models = params.get("models", ["kmeans"])
-    item_list_col = params.get("item_list_col", "e_words")
-    log_format = params.get("log_format", "raw")
-    sequence_enhancement = params.get("seq", False)
-    runs_to_include = params.get("runs_to_include", None)
-    run_level = params.get("run_level", False)
-    files_to_include = params.get("files_to_include", None)
-    file_level = params.get("file_level", False)
+        return jsonify({"error": f"{error['loc'][0]}: {error['msg']}"}), 400
 
-    if (
-        not train_data_path
-        or not os.path.exists(train_data_path)
-        or not test_data_path
-        or not os.path.exists(test_data_path)
-    ):
-        return (
-            jsonify({"error": "No directory specified or directory does not exist"}),
-            400,
-        )
-
-    if len(models) < 1:
-        return (
-            jsonify(
-                {
-                    "error": "No detectors selected. Select atleast one model to run analysis."
-                }
-            ),
-            400,
-        )
-
-    if runs_to_include is not None and len(runs_to_include) == 0:
-        runs_to_include = None
-
-    if files_to_include is not None and len(files_to_include) == 0:
-        files_to_include = None
+    train_data_path = validated_data.train_data_path
+    test_data_path = validated_data.test_data_path
+    models = validated_data.models
+    item_list_col = validated_data.item_list_col
+    log_format = validated_data.log_format
+    sequence_enhancement = validated_data.sequence_enhancement
+    runs_to_include = validated_data.runs_to_include
+    run_level = validated_data.run_level
+    files_to_include = validated_data.files_to_include
+    file_level = validated_data.file_level
 
     results = None
     pipeline = None
