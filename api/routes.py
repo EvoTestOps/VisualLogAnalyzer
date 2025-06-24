@@ -10,6 +10,11 @@ import traceback
 
 from pydantic import ValidationError
 from api.models.anomaly_detection_params import AnomalyDetectionParams
+from api.models.high_level_analysis_params import (
+    UniqueTermsParams,
+    UmapParams,
+    FileCountsParams,
+)
 
 from services.loader import Loader
 from services.enhancer import Enhancer
@@ -34,7 +39,6 @@ def manual_test_train():
         validated_data = AnomalyDetectionParams(**request.get_json())
     except ValidationError as e:
         error = e.errors()[0]  # take the first one
-
         return jsonify({"error": f"{error['loc'][0]}: {error['msg']}"}), 400
 
     train_data_path = validated_data.train_data_path
@@ -115,17 +119,15 @@ def manual_test_train():
 
 @analyze_bp.route("/run-unique-terms", methods=["POST"])
 def run_unique_terms():
-    params = request.get_json()
+    try:
+        validated_data = UniqueTermsParams(**request.get_json())
+    except ValidationError as e:
+        error = e.errors()[0]
+        return jsonify({"error": f"{error['loc'][0]}: {error['msg']}"}), 400
 
-    dir_path = params.get("dir_path")
-    item_list_col = params.get("item_list_col", "e_words")
-    file_level = params.get("file_level", False)
-
-    if not dir_path or not os.path.exists(dir_path):
-        return (
-            jsonify({"error": "No directory specified or directory does not exist"}),
-            400,
-        )
+    dir_path = validated_data.directory_path
+    item_list_col = validated_data.item_list_col
+    file_level = validated_data.file_level
 
     buffer = None
     try:
@@ -156,17 +158,15 @@ def run_unique_terms():
 
 @analyze_bp.route("/umap", methods=["POST"])
 def create_umap():
-    params = request.get_json()
+    try:
+        validated_data = UniqueTermsParams(**request.get_json())
+    except ValidationError as e:
+        error = e.errors()[0]
+        return jsonify({"error": f"{error['loc'][0]}: {error['msg']}"}), 400
 
-    dir_path = params.get("dir_path")
-    item_list_col = params.get("item_list_col", "e_words")
-    file_level = params.get("file_level", False)
-
-    if not dir_path or not os.path.exists(dir_path):
-        return (
-            jsonify({"error": "No directory specified or directory does not exist"}),
-            400,
-        )
+    dir_path = validated_data.directory_path
+    item_list_col = validated_data.item_list_col
+    file_level = validated_data.file_level
 
     buffer = None
     try:
@@ -211,15 +211,13 @@ def create_umap():
 
 @analyze_bp.route("/run-file-counts", methods=["POST"])
 def run_file_counts():
-    params = request.get_json()
+    try:
+        validated_data = FileCountsParams(**request.get_json())
+    except ValidationError as e:
+        error = e.errors()[0]
+        return jsonify({"error": f"{error['loc'][0]}: {error['msg']}"}), 400
 
-    dir_path = params.get("dir_path")
-
-    if not dir_path or not os.path.exists(dir_path):
-        return (
-            jsonify({"error": "No directory specified or directory does not exist"}),
-            400,
-        )
+    dir_path = validated_data.directory_path
 
     buffer = None
     try:

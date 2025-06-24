@@ -20,14 +20,18 @@ class AnomalyDetectionParams(BaseModel):
     @classmethod
     def validate_train_data_path(cls, value: str) -> str:
         if not os.path.exists(value):
-            raise ValueError(f"Training data path does not exists: {value}")
+            raise ValueError(
+                f"Training data path does not exists: {value if value else 'None'}"
+            )
         return value
 
     @field_validator("test_data_path", mode="after")
     @classmethod
     def validate_test_data_path(cls, value: str) -> str:
         if not os.path.exists(value):
-            raise ValueError(f"Test data path does not exists: {value}")
+            raise ValueError(
+                f"Test data path does not exists: {value if value else 'None'}"
+            )
         return value
 
     @field_validator("models", mode="after")
