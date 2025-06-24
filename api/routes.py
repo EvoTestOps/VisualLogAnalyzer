@@ -1,20 +1,19 @@
 import io
 import os
 import gc
-
 import polars as pl
 from flask import Blueprint, Response, jsonify, request
-
 import logging
 import traceback
-
 from pydantic import ValidationError
+
 from api.models.anomaly_detection_params import AnomalyDetectionParams
 from api.models.high_level_analysis_params import (
     UniqueTermsParams,
     UmapParams,
     FileCountsParams,
 )
+from api.models.log_distance_params import LogDistanceParams
 
 from services.loader import Loader
 from services.enhancer import Enhancer
@@ -159,7 +158,7 @@ def run_unique_terms():
 @analyze_bp.route("/umap", methods=["POST"])
 def create_umap():
     try:
-        validated_data = UniqueTermsParams(**request.get_json())
+        validated_data = UmapParams(**request.get_json())
     except ValidationError as e:
         error = e.errors()[0]
         return jsonify({"error": f"{error['loc'][0]}: {error['msg']}"}), 400
@@ -245,25 +244,17 @@ def run_file_counts():
 
 @analyze_bp.route("/run-distance", methods=["POST"])
 def run_distance():
-    params = request.get_json()
+    try:
+        validated_data = LogDistanceParams(**request.get_json())
+    except ValidationError as e:
+        error = e.errors()[0]
+        return jsonify({"error": f"{error['loc'][0]}: {error['msg']}"}), 400
 
-    dir_path = params.get("dir_path")
-    target_run = params.get("target_run")
-    comparison_runs = params.get("comparison_runs", None)
-    item_list_col = params.get("item_list_col", "e_words")
-    file_level = params.get("file_level", False)
-
-    if not dir_path or not os.path.exists(dir_path):
-        return (
-            jsonify({"error": "No directory specified or directory does not exist"}),
-            400,
-        )
-
-    if not target_run:
-        return (
-            jsonify({"error": "No target run specified."}),
-            400,
-        )
+    dir_path = validated_data.directory_path
+    target_run = validated_data.target_run
+    comparison_runs = validated_data.comparison_runs
+    item_list_col = validated_data.item_list_col
+    file_level = validated_data.file_level
 
     buffer = None
     try:
