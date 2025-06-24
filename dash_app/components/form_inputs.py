@@ -22,7 +22,12 @@ def directory_input(id):
     return dbc.Col(
         [
             dbc.Label("Directory Path", html_for=id, width="auto"),
-            dbc.Input(type="text", id=id, placeholder="path/to/your/root/log/folder"),
+            dbc.Input(
+                type="text",
+                id=id,
+                placeholder="path/to/your/root/log/folder",
+                debounce=True,
+            ),
         ]
     )
 
@@ -168,6 +173,18 @@ def files_filter_input(id):
                 multi=True,
                 id=id,
                 placeholder="Defaults to all files",
+                className="dbc border border-light-subtle rounded",
+            ),
+        ],
+    )
+
+
+def target_run_input(id):
+    return dbc.Col(
+        [
+            dbc.Label("Target run", html_for=id, width="auto"),
+            dcc.Dropdown(
+                id=id,
                 className="dbc border border-light-subtle rounded",
             ),
         ],

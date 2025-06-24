@@ -26,6 +26,15 @@ def nav():
                 label="High level Visualisations",
                 nav=True,
             ),
+            dbc.DropdownMenu(
+                [
+                    dbc.DropdownMenuItem(
+                        "Directory Level", href="/dash/distance-run-level"
+                    ),
+                ],
+                label="Log Distance",
+                nav=True,
+            ),
         ],
         class_name="h5",
     )
