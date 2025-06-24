@@ -3,26 +3,32 @@ from loglead.anomaly_detection import LogDistance
 from utils.run_level_analysis import calculate_zscore_sum_anos
 
 
-def measure_distances(df, item_list_col, target_run, comparison_runs=None):
+def measure_distances(
+    df, item_list_col, target_run, run_column="run", comparison_runs=None
+):
     comparison_run_names = (
         df.filter(
-            (pl.col("run") != target_run)
+            (pl.col(run_column) != target_run)
             & (
-                pl.col("run").is_in(comparison_runs)
+                pl.col(run_column).is_in(comparison_runs)
                 if comparison_runs is not None
                 else True
             )
         )
-        .select("run")
+        .select(run_column)
         .unique()
         .to_series()
         .to_list()
     )
-    df_target = df.filter(pl.col("run") == target_run)
+
+    if len(comparison_run_names) == 0:
+        raise ValueError("No comparison runs found.")
+
+    df_target = df.filter(pl.col(run_column) == target_run)
 
     distances = []
     for comparison_run in sorted(comparison_run_names):
-        df_comparison = df.filter(pl.col("run") == comparison_run)
+        df_comparison = df.filter(pl.col(run_column) == comparison_run)
         distances.append(
             _measure_distance(
                 df_target, df_comparison, target_run, comparison_run, item_list_col

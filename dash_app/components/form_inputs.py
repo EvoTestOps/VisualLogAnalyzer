@@ -160,6 +160,8 @@ def runs_filter_input(id):
                 id=id,
                 placeholder="Defaults to all runs",
                 className="dbc border border-light-subtle rounded",
+                optionHeight=40,
+                maxHeight=350,
             ),
         ],
     )
@@ -174,6 +176,8 @@ def files_filter_input(id):
                 id=id,
                 placeholder="Defaults to all files",
                 className="dbc border border-light-subtle rounded",
+                optionHeight=40,
+                maxHeight=350,
             ),
         ],
     )
@@ -186,6 +190,8 @@ def target_run_input(id):
             dcc.Dropdown(
                 id=id,
                 className="dbc border border-light-subtle rounded",
+                optionHeight=40,
+                maxHeight=350,
             ),
         ],
     )

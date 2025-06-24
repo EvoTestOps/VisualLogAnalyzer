@@ -31,6 +31,9 @@ def nav():
                     dbc.DropdownMenuItem(
                         "Directory Level", href="/dash/distance-run-level"
                     ),
+                    dbc.DropdownMenuItem(
+                        "File Level", href="/dash/distance-file-level"
+                    ),
                 ],
                 label="Log Distance",
                 nav=True,

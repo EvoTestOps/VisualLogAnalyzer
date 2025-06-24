@@ -338,6 +338,7 @@ def run_distance():
     target_run = params.get("target_run")
     comparison_runs = params.get("comparison_runs", None)
     item_list_col = params.get("item_list_col", "e_words")
+    file_level = params.get("file_level", False)
 
     if not dir_path or not os.path.exists(dir_path):
         return (
@@ -359,7 +360,15 @@ def run_distance():
         enhancer = Enhancer(loader.df)
         df = enhancer.enhance_event(item_list_col)
 
-        result = measure_distances(df, item_list_col, target_run, comparison_runs)
+        run_column = "run" if not file_level else "orig_file_name"
+
+        result = measure_distances(
+            df,
+            item_list_col,
+            target_run,
+            run_column=run_column,
+            comparison_runs=comparison_runs,
+        )
 
         buffer = io.BytesIO()
         result.write_parquet(buffer, compression="zstd")

@@ -191,3 +191,37 @@ def distance_run_level_form(
     )
 
     return form
+
+
+def distance_file_level_form(
+    submit_id, directory_id, enhancement_id, target_run_id, runs_filter_id
+):
+    submit_btn = submit_button(submit_id, "Analyze")
+
+    form = dbc.Form(
+        [
+            dbc.Row(
+                [
+                    directory_input(directory_id),
+                    enhancement_input(enhancement_id),
+                ],
+                class_name="mb-3",
+            ),
+            dbc.Row(
+                [
+                    target_run_input(target_run_id),
+                ],
+                class_name="mb-3",
+            ),
+            dbc.Row(
+                [
+                    runs_filter_input(runs_filter_id),
+                ],
+                class_name="mb-3",
+            ),
+            dbc.Row(dbc.Col(submit_btn, class_name="text-end")),
+        ],
+        class_name="border border-primary-subtle border-2 p-3",
+    )
+
+    return form
