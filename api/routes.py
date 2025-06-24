@@ -9,6 +9,7 @@ import logging
 import traceback
 
 from services.loader import Loader
+from services.enhancer import Enhancer
 from services.log_analysis_pipeline import LogAnalysisPipeline, ManualTrainTestPipeline
 from utils.run_level_analysis import (
     unique_terms_count_by_run,
@@ -19,6 +20,7 @@ from utils.run_level_analysis import (
 from utils.file_level_analysis import unique_terms_count_by_file, aggregate_file_level
 from utils.data_filtering import get_prediction_cols
 from utils.umap_analysis import create_umap_embeddings, create_umap_df
+from utils.log_distance import measure_distances
 
 analyze_bp = Blueprint("main", __name__)
 
@@ -311,6 +313,53 @@ def run_file_counts():
         df = loader.df
 
         result = files_and_lines_count(df)
+
+        buffer = io.BytesIO()
+        result.write_parquet(buffer, compression="zstd")
+        buffer.seek(0)
+
+        return Response(buffer.getvalue(), mimetype="application/octet-stream")
+
+    except Exception as e:
+        trace = traceback.format_exc()
+        logging.error(trace)
+
+        return jsonify({"error": str(e)}), 500
+    finally:
+        if buffer:
+            buffer.close()
+
+
+@analyze_bp.route("/run-distance", methods=["POST"])
+def run_distance():
+    params = request.get_json()
+
+    dir_path = params.get("dir_path")
+    target_run = params.get("target_run")
+    comparison_runs = params.get("comparison_runs", None)
+    item_list_col = params.get("item_list_col", "e_words")
+
+    if not dir_path or not os.path.exists(dir_path):
+        return (
+            jsonify({"error": "No directory specified or directory does not exist"}),
+            400,
+        )
+
+    if not target_run:
+        return (
+            jsonify({"error": "No target run specified."}),
+            400,
+        )
+
+    buffer = None
+    try:
+        loader = Loader(dir_path, "raw")
+        loader.load()
+
+        enhancer = Enhancer(loader.df)
+        df = enhancer.enhance_event(item_list_col)
+
+        result = measure_distances(df, item_list_col, target_run, comparison_runs)
 
         buffer = io.BytesIO()
         result.write_parquet(buffer, compression="zstd")
