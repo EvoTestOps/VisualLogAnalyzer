@@ -2,7 +2,10 @@ import dash
 from dash import Input, Output, State, callback
 from dash_app.components.forms import test_train_file_level_form
 from dash_app.components.layouts import create_ano_run_level_layout
-from dash_app.callbacks.callback_functions import get_filter_options, populate_table
+from dash_app.callbacks.callback_functions import (
+    get_filter_options,
+    populate_train_test_table,
+)
 
 dash.register_page(
     __name__, path="/ano-file-level", title="File Level Anomaly Detection"
@@ -58,7 +61,7 @@ def populate_file_table(
     enhancement,
     files_to_include,
 ):
-    return populate_table(
+    return populate_train_test_table(
         n_clicks,
         log_format,
         train_data,

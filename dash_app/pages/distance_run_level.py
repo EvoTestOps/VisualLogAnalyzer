@@ -1,12 +1,11 @@
 import dash
-import polars as pl
-import requests
 from dash import Input, Output, State, callback
-import io
 from dash_app.components.forms import distance_run_level_form
 from dash_app.components.layouts import create_ano_run_level_layout
-
-from dash_app.callbacks.callback_functions import get_filter_options
+from dash_app.callbacks.callback_functions import (
+    get_filter_options,
+    populate_distance_table,
+)
 
 dash.register_page(__name__, path="/distance-run-level", title="Run Level Log Distance")
 
@@ -34,6 +33,7 @@ def get_comparison_and_target_options(directory_path):
     options = get_filter_options(directory_path, runs_or_files="runs")
     return options, options
 
+
 @callback(
     Output("data_table_dis", "data"),
     Output("data_table_dis", "columns"),
@@ -55,52 +55,6 @@ def populate_table(
     comparision_runs,
     enhancement,
 ):
-    if n_clicks == 0:
-        return (
-            dash.no_update,
-            dash.no_update,
-            dash.no_update,
-            dash.no_update,
-            dash.no_update,
-            dash.no_update,
-        )
-
-    try:
-        response = requests.post(
-            "http://localhost:5000/api/run-distance",
-            json={
-                "dir_path": directory_path,
-                "target_run": target_run,
-                "comparison_runs": comparision_runs,
-                "item_list_col": enhancement,
-            },
-        )
-        response.raise_for_status()
-
-        df = pl.read_parquet(io.BytesIO(response.content))
-
-        columns = [{"name": col, "id": col} for col in df.columns]
-
-        return (
-            df.to_dicts(),
-            columns,
-            "",
-            False,
-            "Analysis complete.",
-            True,
-        )
-
-    except requests.exceptions.RequestException as e:
-        try:
-            error_message = response.json().get("error", str(e))
-        except Exception:
-            error_message = str(e)
-
-        return (
-            dash.no_update,
-            dash.no_update,
-            error_message,
-            True,
-            dash.no_update,
-            False,
-        )
+    return populate_distance_table(
+        n_clicks, directory_path, target_run, comparision_runs, enhancement, level="run"
+    )

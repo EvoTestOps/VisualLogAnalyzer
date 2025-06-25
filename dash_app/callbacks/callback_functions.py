@@ -26,7 +26,7 @@ def get_filter_options(data_path, runs_or_files="runs"):
     return options
 
 
-def populate_table(
+def populate_train_test_table(
     n_clicks,
     log_format,
     train_data,
@@ -116,6 +116,69 @@ def _build_test_train_payload(
         raise ValueError("Level must be either 'file' or 'run'")
 
     return payload
+
+
+def populate_distance_table(
+    n_clicks, directory_path, target_run, comparision_runs, enhancement, level="run"
+):
+    if n_clicks == 0:
+        return (
+            dash.no_update,
+            dash.no_update,
+            dash.no_update,
+            dash.no_update,
+            dash.no_update,
+            dash.no_update,
+        )
+
+    payload = {
+        "dir_path": directory_path,
+        "target_run": target_run,
+        "comparison_runs": comparision_runs,
+        "item_list_col": enhancement,
+        "file_level": (level == "file"),
+    }
+    response, error = _make_api_call(payload, "run-distance")
+    if error:
+        return (
+            dash.no_update,
+            dash.no_update,
+            error,
+            True,
+            dash.no_update,
+            False,
+        )
+
+    df_dict, columns = _parse_response_as_table(response)
+    return (
+        df_dict,
+        columns,
+        "",
+        False,
+        "Analysis complete.",
+        True,
+    )
+
+
+def _make_api_call(json_payload, endpoint):
+    try:
+        response = requests.post(
+            f"http://localhost:5000/api/{endpoint}", json=json_payload
+        )
+        response.raise_for_status()
+        return response, None
+
+    except requests.exceptions.RequestException as e:
+        try:
+            return None, response.json().get("error", str(e))
+        except Exception:
+            return None, str(e)
+
+
+def _parse_response_as_table(response):
+    df = pl.read_parquet(io.BytesIO(response.content))
+    columns = [{"name": col, "id": col} for col in df.columns]
+    return df.to_dicts(), columns
 
 
 def create_high_level_plot(n_clicks, switch_on, directory_path, plot_type, level="run"):
