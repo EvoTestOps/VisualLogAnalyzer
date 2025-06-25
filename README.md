@@ -1,7 +1,9 @@
 # Visual Log Analyzer
-Web application for visualizing and benchmarking different anomaly detection models.
+Web application for visualizing and analysing log files.
 
 ## Run locally
+The application has been tested with **Python 3.12**. Other versions might work but with mixed results.
+
 Setup virtual environment and install requirements.
 ```
 python3 -m venv .venv
