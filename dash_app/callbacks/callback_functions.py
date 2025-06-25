@@ -46,47 +46,37 @@ def populate_train_test_table(
             dash.no_update,
         )
 
-    try:
-        json_payload = _build_test_train_payload(
-            train_data,
-            test_data,
-            log_format,
-            detectors,
-            enhancement,
-            include_items,
-            level,
-        )
-        response = requests.post(
-            "http://localhost:5000/api/manual-test-train", json=json_payload
-        )
-        response.raise_for_status()
+    json_payload = _build_test_train_payload(
+        train_data,
+        test_data,
+        log_format,
+        detectors,
+        enhancement,
+        include_items,
+        level,
+    )
 
-        df = pl.read_parquet(io.BytesIO(response.content))
-        columns = [{"name": col, "id": col} for col in df.columns]
-
-        return (
-            df.to_dicts(),
-            columns,
-            "",
-            False,
-            "Analysis complete.",
-            True,
-        )
-
-    except requests.exceptions.RequestException as e:
-        try:
-            error_message = response.json().get("error", str(e))
-        except Exception:
-            error_message = str(e)
-
+    response, error = _make_api_call(json_payload, "manual-test-train")
+    if error:
         return (
             dash.no_update,
             dash.no_update,
-            error_message,
+            error,
             True,
             dash.no_update,
             False,
         )
+
+    df_dict, columns = _parse_response_as_table(response)
+
+    return (
+        df_dict,
+        columns,
+        "",
+        False,
+        "Analysis complete.",
+        True,
+    )
 
 
 def _build_test_train_payload(
@@ -199,58 +189,46 @@ def create_high_level_plot(n_clicks, switch_on, directory_path, plot_type, level
     }
 
     endpoint = endpoint_map.get(plot_type, "run-unique-terms")
-    url = f"http://localhost:5000/api/{endpoint}"
+    payload = {"dir_path": directory_path, "file_level": (level == "file")}
 
-    file_level = level == "file"
-
-    try:
-        response = requests.post(
-            url, json={"dir_path": directory_path, "file_level": file_level}
+    response, error = _make_api_call(payload, endpoint)
+    if error:
+        return (
+            dash.no_update,
+            dash.no_update,
+            error,
+            True,
+            dash.no_update,
+            False,
         )
-        response.raise_for_status()
 
-        df = pl.read_parquet(io.BytesIO(response.content))
+    df = pl.read_parquet(io.BytesIO(response.content))  # type: ignore
 
-        theme = "plotly_white" if switch_on else "plotly_dark"
-        style = {
-            "resize": "both",
-            "overflow": "auto",
-            "minHeight": "500px",
-            "minWidth": "600px",
-            "width": "90%",
-        }
+    theme = "plotly_white" if switch_on else "plotly_dark"
+    style = {
+        "resize": "both",
+        "overflow": "auto",
+        "minHeight": "500px",
+        "minWidth": "600px",
+        "width": "90%",
+    }
 
-        if plot_type == "files":
-            fig = create_files_count_plot(df, theme)
-        elif plot_type == "umap":
-            group_col = "run" if level == "run" else "seq_id"
-            fig = create_umap_plot(df, group_col, theme)
+    if plot_type == "files":
+        fig = create_files_count_plot(df, theme)
+    elif plot_type == "umap":
+        group_col = "run" if level == "run" else "seq_id"
+        fig = create_umap_plot(df, group_col, theme)
+    else:
+        if level == "file":
+            fig = create_unique_term_count_plot_by_file(df, theme)
         else:
-            if level == "file":
-                fig = create_unique_term_count_plot_by_file(df, theme)
-            else:
-                fig = create_unique_term_count_plot(df, theme)
+            fig = create_unique_term_count_plot(df, theme)
 
-        return (
-            fig,
-            style,
-            "",
-            False,
-            "Analysis complete.",
-            True,
-        )
-
-    except requests.exceptions.RequestException as e:
-        try:
-            error_message = response.json().get("error", str(e))
-        except Exception:
-            error_message = str(e)
-
-        return (
-            dash.no_update,
-            dash.no_update,
-            error_message,
-            True,
-            dash.no_update,
-            False,
-        )
+    return (
+        fig,
+        style,
+        "",
+        False,
+        "Analysis complete.",
+        True,
+    )
