@@ -3,6 +3,12 @@ import requests
 import io
 import polars as pl
 from dash_app.utils.data_directories import get_runs, get_all_filenames
+from dash_app.utils.plots import (
+    create_unique_term_count_plot,
+    create_files_count_plot,
+    create_umap_plot,
+    create_unique_term_count_plot_by_file,
+)
 
 
 def get_filter_options(data_path, runs_or_files="runs"):
@@ -110,3 +116,78 @@ def _build_test_train_payload(
         raise ValueError("Level must be either 'file' or 'run'")
 
     return payload
+
+
+def create_high_level_plot(n_clicks, switch_on, directory_path, plot_type, level="run"):
+    if n_clicks == 0:
+        return (
+            dash.no_update,
+            dash.no_update,
+            dash.no_update,
+            dash.no_update,
+            dash.no_update,
+            dash.no_update,
+        )
+
+    endpoint_map = {
+        "files": "run-file-counts",
+        "umap": "umap",
+        "terms": "run-unique-terms",
+    }
+
+    endpoint = endpoint_map.get(plot_type, "run-unique-terms")
+    url = f"http://localhost:5000/api/{endpoint}"
+
+    file_level = level == "file"
+
+    try:
+        response = requests.post(
+            url, json={"dir_path": directory_path, "file_level": file_level}
+        )
+        response.raise_for_status()
+
+        df = pl.read_parquet(io.BytesIO(response.content))
+
+        theme = "plotly_white" if switch_on else "plotly_dark"
+        style = {
+            "resize": "both",
+            "overflow": "auto",
+            "minHeight": "500px",
+            "minWidth": "600px",
+            "width": "90%",
+        }
+
+        if plot_type == "files":
+            fig = create_files_count_plot(df, theme)
+        elif plot_type == "umap":
+            group_col = "run" if level == "run" else "seq_id"
+            fig = create_umap_plot(df, group_col, theme)
+        else:
+            if level == "file":
+                fig = create_unique_term_count_plot_by_file(df, theme)
+            else:
+                fig = create_unique_term_count_plot(df, theme)
+
+        return (
+            fig,
+            style,
+            "",
+            False,
+            "Analysis complete.",
+            True,
+        )
+
+    except requests.exceptions.RequestException as e:
+        try:
+            error_message = response.json().get("error", str(e))
+        except Exception:
+            error_message = str(e)
+
+        return (
+            dash.no_update,
+            dash.no_update,
+            error_message,
+            True,
+            dash.no_update,
+            False,
+        )
