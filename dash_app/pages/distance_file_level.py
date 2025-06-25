@@ -5,8 +5,7 @@ from dash import Input, Output, State, callback
 import io
 from dash_app.components.forms import distance_file_level_form
 from dash_app.components.layouts import create_ano_run_level_layout
-
-from dash_app.utils.data_directories import get_all_filenames
+from dash_app.callbacks.callback_functions import get_filter_options
 
 dash.register_page(
     __name__, path="/distance-file-level", title="File Level Log Distance"
@@ -32,13 +31,8 @@ layout = create_ano_run_level_layout(
     Output("target_run_dis_file", "options"),
     Input("directory_dis_file", "value"),
 )
-def get_comparison_options(directory_path):
-    if directory_path is None:
-        return {}, {}
-
-    files = get_all_filenames(directory_path)
-
-    options = [{"label": file, "value": file} for file in files]
+def get_comparison_and_target_options(directory_path):
+    options = get_filter_options(directory_path, runs_or_files="files")
     return options, options
 
 

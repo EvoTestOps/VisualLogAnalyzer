@@ -6,7 +6,7 @@ import io
 from dash_app.components.forms import distance_run_level_form
 from dash_app.components.layouts import create_ano_run_level_layout
 
-from dash_app.utils.data_directories import get_runs
+from dash_app.callbacks.callback_functions import get_filter_options
 
 dash.register_page(__name__, path="/distance-run-level", title="Run Level Log Distance")
 
@@ -30,15 +30,9 @@ layout = create_ano_run_level_layout(
     Output("target_run_dis", "options"),
     Input("directory_dis", "value"),
 )
-def get_comparison_options(directory_path):
-    if directory_path is None:
-        return {}, {}
-
-    runs = get_runs(directory_path)
-
-    options = [{"label": run, "value": run} for run in runs]
+def get_comparison_and_target_options(directory_path):
+    options = get_filter_options(directory_path, runs_or_files="runs")
     return options, options
-
 
 @callback(
     Output("data_table_dis", "data"),

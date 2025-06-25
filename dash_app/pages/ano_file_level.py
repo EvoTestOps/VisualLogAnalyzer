@@ -6,7 +6,7 @@ import io
 from dash_app.components.forms import test_train_file_level_form
 from dash_app.components.layouts import create_ano_run_level_layout
 
-from dash_app.utils.data_directories import get_all_filenames
+from dash_app.callbacks.callback_functions import get_filter_options
 
 dash.register_page(
     __name__, path="/ano-file-level", title="File Level Anomaly Detection"
@@ -33,14 +33,8 @@ layout = create_ano_run_level_layout(
     Output("files_filter_fl", "options"),
     Input("test_data_fl", "value"),
 )
-def get_filter_options(test_data_path):
-    if test_data_path is None:
-        return {}
-
-    files = get_all_filenames(test_data_path)
-
-    options = [{"label": file, "value": file} for file in files]
-    return options
+def get_file_options(test_data_path):
+    return get_filter_options(test_data_path, runs_or_files="files")
 
 
 @callback(

@@ -8,7 +8,7 @@ from dash_app.components.forms import test_train_form
 from dash_app.components.layouts import create_default_layout
 
 from dash_app.utils.plots import get_options, create_plot
-from dash_app.utils.data_directories import get_runs
+from dash_app.callbacks.callback_functions import get_filter_options
 
 dash.register_page(
     __name__, path="/ano-line-level", title="Line Level Anomaly Detection"
@@ -38,14 +38,8 @@ layout = create_default_layout(
     Output("runs_filter_tr", "options"),
     Input("test_data_tr", "value"),
 )
-def get_filter_options(test_data_path):
-    if test_data_path is None:
-        return {}
-
-    runs = get_runs(test_data_path)
-
-    options = [{"label": run, "value": run} for run in runs]
-    return options
+def get_run_options(test_data_path):
+    return  get_filter_options(test_data_path, runs_or_files="runs")
 
 
 @callback(
