@@ -5,6 +5,7 @@ from dash_app.components.nav import nav
 from dash_app.components.toasts import error_toast, success_toast
 
 
+# TODO: naming is all over the place at the moment
 def create_root_layout():
     return dbc.Container(
         dbc.Row(
@@ -137,6 +138,8 @@ def create_unique_term_count_layout(
     form, plot_content_id, error_toast_id, success_toast_id
 ):
 
+    form_row = dbc.Row(form)
+
     error_toast_row = dbc.Row(error_toast(error_toast_id))
     success_toast_row = dbc.Row(success_toast(success_toast_id))
 
@@ -171,7 +174,7 @@ def create_unique_term_count_layout(
     )
 
     layout = [
-        dbc.Container([form, error_toast_row, success_toast_row]),
+        dbc.Container([form_row, error_toast_row, success_toast_row]),
         dbc.Container(plot_row, fluid=True),
     ]
 

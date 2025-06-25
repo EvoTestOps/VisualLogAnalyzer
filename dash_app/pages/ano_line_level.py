@@ -1,7 +1,8 @@
 import dash
+import dash_bootstrap_components as dbc
 import polars as pl
 import requests
-from dash import Input, Output, State, callback
+from dash import Input, Output, State, callback, html
 import io
 import base64
 from dash_app.components.forms import test_train_form
@@ -23,7 +24,9 @@ form = test_train_form(
     "enhancement_tr",
     "runs_filter_tr",
 )
-layout = create_default_layout(
+layout = [
+    dbc.Container(html.H3("Line Level Anomaly Detection"))
+] + create_default_layout(
     form,
     "stored_data_tr",
     "plot_selector_tr",
@@ -39,7 +42,7 @@ layout = create_default_layout(
     Input("test_data_tr", "value"),
 )
 def get_run_options(test_data_path):
-    return  get_filter_options(test_data_path, runs_or_files="runs")
+    return get_filter_options(test_data_path, runs_or_files="runs")
 
 
 @callback(

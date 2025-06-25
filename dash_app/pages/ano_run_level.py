@@ -1,5 +1,6 @@
 import dash
-from dash import Input, Output, State, callback
+import dash_bootstrap_components as dbc
+from dash import Input, Output, State, callback, html
 from dash_app.components.forms import test_train_form
 from dash_app.components.layouts import create_ano_run_level_layout
 
@@ -19,7 +20,9 @@ form = test_train_form(
     "enhancement_rl",
     "runs_filter_rl",
 )
-layout = create_ano_run_level_layout(
+layout = [
+    dbc.Container(html.H3("Run Level Anomaly Detection"))
+] + create_ano_run_level_layout(
     form,
     "error_toast_rl",
     "success_toast_rl",

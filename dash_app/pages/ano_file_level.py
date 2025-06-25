@@ -1,5 +1,6 @@
 import dash
-from dash import Input, Output, State, callback
+import dash_bootstrap_components as dbc
+from dash import Input, Output, State, callback, html
 from dash_app.components.forms import test_train_file_level_form
 from dash_app.components.layouts import create_ano_run_level_layout
 from dash_app.callbacks.callback_functions import (
@@ -20,7 +21,9 @@ form = test_train_file_level_form(
     "enhancement_fl",
     "files_filter_fl",
 )
-layout = create_ano_run_level_layout(
+layout = [
+    dbc.Container(html.H3("File Level Anomaly Detection"))
+] + create_ano_run_level_layout(
     form,
     "error_toast_fl",
     "success_toast_fl",

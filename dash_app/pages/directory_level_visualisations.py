@@ -1,5 +1,6 @@
 import dash
-from dash import Input, Output, State, callback
+import dash_bootstrap_components as dbc
+from dash import Input, Output, State, callback, html
 from dash_app.components.forms import unique_terms_form
 from dash_app.components.layouts import create_unique_term_count_layout
 from dash_app.callbacks.callback_functions import create_high_level_plot
@@ -11,7 +12,9 @@ dash.register_page(
 )
 
 form = unique_terms_form()
-layout = create_unique_term_count_layout(
+layout = [
+    dbc.Container(html.H3("Directory Level Visualisations"))
+] + create_unique_term_count_layout(
     form, "plot_content_ut", "error_toast_ut", "success_toast_ut"
 )
 
