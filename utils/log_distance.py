@@ -11,7 +11,7 @@ def measure_distances(
             (pl.col(run_column) != target_run)
             & (
                 pl.col(run_column).is_in(comparison_runs)
-                if comparison_runs is not None
+                if comparison_runs not in (None, [])
                 else True
             )
         )
