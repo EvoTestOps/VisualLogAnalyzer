@@ -9,26 +9,25 @@ class LogAnalyzer:
         self._sad = None
 
         self._model_to_func = {
-            "kmeans": self._train_kmeans,
-            "rm": self._train_rm,
-            "oovd": self._train_oovd,
-            "if": self._train_if,
+            "kmeans": self._train_pred_kmeans,
+            "rm": self._train_pred_rm,
+            "oovd": self._train_pred_oovd,
+            "if": self._train_pred_if,
         }
 
-    # TODO: Change names since also predicts
-    def _train_kmeans(self):
+    def _train_pred_kmeans(self):
         self._sad.train_KMeans()
         return self._sad.predict()
 
-    def _train_rm(self):
+    def _train_pred_rm(self):
         self._sad.train_RarityModel()
         return self._sad.predict()
 
-    def _train_oovd(self):
+    def _train_pred_oovd(self):
         self._sad.train_OOVDetector()
         return self._sad.predict()
 
-    def _train_if(self):
+    def _train_pred_if(self):
         self._sad.train_IsolationForest()
         return self._sad.predict()
 
