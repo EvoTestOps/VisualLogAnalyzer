@@ -49,7 +49,8 @@ def test_train_form(
                 [
                     enhancement_input(enhancement_id),
                     mask_input(mask_input_id),
-                ]
+                ],
+                class_name="mb-3",
             ),
             dbc.Row(dbc.Col(submit_btn_tr, class_name="text-end")),
         ],
@@ -144,7 +145,12 @@ def unique_terms_by_file_form():
 
 
 def distance_run_level_form(
-    submit_id, directory_id, enhancement_id, target_run_id, runs_filter_id
+    submit_id,
+    directory_id,
+    enhancement_id,
+    target_run_id,
+    runs_filter_id,
+    mask_input_id,
 ):
     submit_btn = submit_button(submit_id, "Analyze")
 
@@ -155,6 +161,10 @@ def distance_run_level_form(
                     directory_input(directory_id),
                     enhancement_input(enhancement_id),
                 ],
+                class_name="mb-3",
+            ),
+            dbc.Row(
+                [mask_input(mask_input_id)],
                 class_name="mb-3",
             ),
             dbc.Row(
@@ -173,7 +183,12 @@ def distance_run_level_form(
 
 
 def distance_file_level_form(
-    submit_id, directory_id, enhancement_id, target_run_id, runs_filter_id
+    submit_id,
+    directory_id,
+    enhancement_id,
+    target_run_id,
+    runs_filter_id,
+    mask_input_id,
 ):
     submit_btn = submit_button(submit_id, "Analyze")
 
@@ -183,6 +198,12 @@ def distance_file_level_form(
                 [
                     directory_input(directory_id),
                     enhancement_input(enhancement_id),
+                ],
+                class_name="mb-3",
+            ),
+            dbc.Row(
+                [
+                    mask_input(mask_input_id),
                 ],
                 class_name="mb-3",
             ),

@@ -9,6 +9,7 @@ class LogDistanceParams(BaseModel):
     comparison_runs: Optional[List[str]] = None
     item_list_col: str = "e_words"
     file_level: bool = False
+    mask_type: Optional[str] = None
 
     @field_validator("directory_path", mode="after")
     @classmethod

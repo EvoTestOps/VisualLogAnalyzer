@@ -206,6 +206,7 @@ def mask_input(id):
                     {"label": "Drain Original", "value": "drain_orig"},
                 ],
                 id=id,
+                placeholder="Optional",
                 className="dbc border border-light-subtle rounded",
             ),
         ],

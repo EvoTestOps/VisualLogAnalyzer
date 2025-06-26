@@ -113,7 +113,13 @@ def _build_test_train_payload(
 
 
 def populate_distance_table(
-    n_clicks, directory_path, target_run, comparision_runs, enhancement, level="run"
+    n_clicks,
+    directory_path,
+    target_run,
+    comparision_runs,
+    enhancement,
+    mask_type=None,
+    level="run",
 ):
     if n_clicks == 0:
         return (
@@ -130,6 +136,7 @@ def populate_distance_table(
         "target_run": target_run,
         "comparison_runs": comparision_runs,
         "item_list_col": enhancement,
+        "mask_type": mask_type,
         "file_level": (level == "file"),
     }
     response, error = _make_api_call(payload, "run-distance")

@@ -1,32 +1,32 @@
-import io
-import os
 import gc
-from flask import Blueprint, Response, jsonify, request
+import io
 import logging
+import os
 import traceback
+
+from flask import Blueprint, Response, jsonify, request
 from pydantic import ValidationError
 
 from api.models.anomaly_detection_params import AnomalyDetectionParams
 from api.models.high_level_analysis_params import (
-    UniqueTermsParams,
-    UmapParams,
     FileCountsParams,
+    UmapParams,
+    UniqueTermsParams,
 )
 from api.models.log_distance_params import LogDistanceParams
-
-from services.loader import Loader
 from services.enhancer import Enhancer
+from services.loader import Loader
 from services.log_analysis_pipeline import ManualTrainTestPipeline
-from utils.run_level_analysis import (
-    unique_terms_count_by_run,
-    files_and_lines_count,
-    calculate_zscore_sum_anos,
-    aggregate_run_level,
-)
-from utils.file_level_analysis import unique_terms_count_by_file, aggregate_file_level
 from utils.data_filtering import get_prediction_cols
-from utils.umap_analysis import create_umap_embeddings, create_umap_df
+from utils.file_level_analysis import aggregate_file_level, unique_terms_count_by_file
 from utils.log_distance import measure_distances
+from utils.run_level_analysis import (
+    aggregate_run_level,
+    calculate_zscore_sum_anos,
+    files_and_lines_count,
+    unique_terms_count_by_run,
+)
+from utils.umap_analysis import create_umap_df, create_umap_embeddings
 
 analyze_bp = Blueprint("main", __name__)
 
@@ -254,6 +254,7 @@ def run_distance():
     comparison_runs = validated_data.comparison_runs
     item_list_col = validated_data.item_list_col
     file_level = validated_data.file_level
+    mask_type = validated_data.mask_type
 
     buffer = None
     try:
@@ -261,7 +262,7 @@ def run_distance():
         loader.load()
 
         enhancer = Enhancer(loader.df)
-        df = enhancer.enhance_event(item_list_col)
+        df = enhancer.enhance_event(item_list_col, mask_type)
 
         run_column = "run" if not file_level else "orig_file_name"
 
