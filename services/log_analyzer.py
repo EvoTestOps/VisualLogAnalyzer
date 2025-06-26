@@ -1,35 +1,23 @@
-import polars as pl
 from loglead import AnomalyDetector
 
 
 class LogAnalyzer:
-    def __init__(self, df=None, df_seq=None, item_list_col=None):
+    def __init__(self, df=None, item_list_col=None):
         self._df = df
-        self._df_seq = df_seq
         self._item_list_col = item_list_col
 
         self._sad = None
 
         self._model_to_func = {
-            "lr": self._train_lr,
             "kmeans": self._train_kmeans,
-            "dt": self._train_dt,
             "rm": self._train_rm,
             "oovd": self._train_oovd,
             "if": self._train_if,
         }
 
     # TODO: Change names since also predicts
-    def _train_lr(self):
-        self._sad.train_LR()
-        return self._sad.predict()
-
     def _train_kmeans(self):
         self._sad.train_KMeans()
-        return self._sad.predict()
-
-    def _train_dt(self):
-        self._sad.train_DT()
         return self._sad.predict()
 
     def _train_rm(self):
@@ -44,19 +32,16 @@ class LogAnalyzer:
         self._sad.train_IsolationForest()
         return self._sad.predict()
 
-    def train_split(self, test_frac=0.9, sequence=False):
-        # self._sad.item_list_col = item_list_col
-        self._sad = AnomalyDetector()
+    def train_split(self, test_frac=0.9):
+        self._sad = AnomalyDetector(
+            item_list_col=self._item_list_col,
+            store_scores=False,
+            auc_roc=True,
+            numeric_cols=None,
+            print_scores=False,
+        )
 
-        self._sad.item_list_col = self._item_list_col
-        self._sad.numeric_cols = None
-        self._sad.auc_roc = True
-        self._sad.store_scores = False
-
-        if sequence:
-            self._sad.test_train_split(self._df_seq, test_frac=test_frac)
-        else:
-            self._sad.test_train_split(self._df, test_frac=test_frac)
+        self._sad.test_train_split(self._df, test_frac=test_frac)
 
     def manual_train_split(self, train_df, test_df):
         self._sad = AnomalyDetector(
@@ -117,14 +102,6 @@ class LogAnalyzer:
     @df.setter
     def df(self, new_df):
         self._df = new_df
-
-    @property
-    def df_seq(self):
-        return self._df_seq
-
-    @df_seq.setter
-    def df_seq(self, new_df_seq):
-        self._df_seq = new_df_seq
 
     @property
     def item_list_col(self):

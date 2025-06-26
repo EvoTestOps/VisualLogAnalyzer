@@ -57,7 +57,7 @@ def aggregate_run_level(df, item_list_col):
 
 # https://github.com/EvoTestOps/LogDelta/blob/main/logdelta/log_analysis_functions.py
 # Mika Mäntylä
-def calculate_zscore_sum_anos(df, distance_columns: list[str]) -> pl.DataFrame:
+def calculate_zscore_sum_anos(df, distance_columns: list[str]):
     import numpy as np
     from scipy.stats import zscore, rankdata
 

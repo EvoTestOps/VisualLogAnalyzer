@@ -8,7 +8,6 @@ class Loader:
         self._log_format = log_format
         self._runs_to_include = runs_to_include
         self._df = None
-        self._df_seq = None
 
     def load(self):
         if self._log_format == "lo2":
@@ -30,7 +29,6 @@ class Loader:
             )
 
         self._df = loader.df
-        self._df_seq = loader.df_seq
 
     # Asumes format:
     # log_data_root/
@@ -92,7 +90,3 @@ class Loader:
     @df.setter
     def df(self, new_df):
         self._df = new_df
-
-    @property
-    def df_seq(self):
-        return self._df_seq

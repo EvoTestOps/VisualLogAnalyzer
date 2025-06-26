@@ -44,7 +44,6 @@ def manual_test_train():
     models = validated_data.models
     item_list_col = validated_data.item_list_col
     log_format = validated_data.log_format
-    sequence_enhancement = validated_data.sequence_enhancement
     runs_to_include = validated_data.runs_to_include
     run_level = validated_data.run_level
     files_to_include = validated_data.files_to_include
@@ -60,7 +59,6 @@ def manual_test_train():
             model_names=models,
             item_list_col=item_list_col,
             log_format=log_format,
-            sequence_enhancement=sequence_enhancement,
             train_data_path=train_data_path,
             test_data_path=test_data_path,
             runs_to_include=runs_to_include,
@@ -82,12 +80,8 @@ def manual_test_train():
         if results is None:
             raise ValueError("No results found")
 
-        if log_format == "raw":
-            pass
-        elif not sequence_enhancement:
+        if log_format != "raw":
             results = results.sort(["run", "m_timestamp"])
-        else:
-            results = results.sort(["seq_id"])
 
         if run_level or file_level:
             results = calculate_zscore_sum_anos(

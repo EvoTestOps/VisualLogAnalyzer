@@ -59,27 +59,6 @@ def test_data_input(id):
     )
 
 
-def detectors_input(id):
-    return dbc.Col(
-        [
-            dbc.Label("Detectors", html_for=id, width="auto"),
-            dcc.Dropdown(
-                options=[
-                    {"label": "Logistic Regression", "value": "lr"},
-                    {"label": "Decision Tree", "value": "dt"},
-                    {"label": "K-Means", "value": "kmeans"},
-                    {"label": "Rarity Model", "value": "rm"},
-                    {"label": "OOVD", "value": "oovd"},
-                    {"label": "Isolation Forest", "value": "if"},
-                ],
-                multi=True,
-                id=id,
-                className="dbc border border-light-subtle rounded",
-            ),
-        ],
-    )
-
-
 def detectors_unsupervised_input(id):
     return dbc.Col(
         [
@@ -115,23 +94,6 @@ def enhancement_input(id):
                     {"label": "Iplom", "value": "e_event_iplom_id"},
                 ],
                 value="e_words",
-            ),
-        ]
-    )
-
-
-def sequence_input(id):
-    return dbc.Col(
-        [
-            dbc.Label("Event/Seq", html_for=id, width="auto"),
-            dbc.RadioItems(
-                id=id,
-                options=[
-                    {"label": "Event", "value": False},
-                    {"label": "Sequence", "value": True},
-                ],
-                value=False,
-                inline=True,
             ),
         ]
     )
