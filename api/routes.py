@@ -50,6 +50,7 @@ def manual_test_train():
     run_level = validated_data.run_level
     files_to_include = validated_data.files_to_include
     file_level = validated_data.file_level
+    mask_type = validated_data.mask_type
 
     results = None
     pipeline = None
@@ -65,6 +66,7 @@ def manual_test_train():
             test_data_path=test_data_path,
             runs_to_include=runs_to_include,
             files_to_include=files_to_include,
+            mask_type=mask_type,
         )
 
         pipeline.load()
@@ -77,12 +79,16 @@ def manual_test_train():
 
         pipeline.analyze()
 
+        results = pipeline.results
+        if not results:
+            raise ValueError("No results found")
+
         if log_format == "raw":
-            results = pipeline.results
+            pass
         elif not sequence_enhancement:
-            results = pipeline.results.sort(["run", "m_timestamp"])
+            results = results.sort(["run", "m_timestamp"])
         else:
-            results = pipeline.results.sort(["seq_id"])
+            results = results.sort(["seq_id"])
 
         if run_level or file_level:
             results = calculate_zscore_sum_anos(

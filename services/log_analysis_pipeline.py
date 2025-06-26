@@ -71,6 +71,7 @@ class ManualTrainTestPipeline:
         test_data_path=None,
         runs_to_include=None,
         files_to_include=None,
+        mask_type=None,
     ):
 
         self._model_names = model_names
@@ -82,6 +83,8 @@ class ManualTrainTestPipeline:
         self._test_data_path = test_data_path
         self._runs_to_include = runs_to_include
         self._files_to_include = files_to_include
+
+        self._mask_type = mask_type
 
         self._df_test = None
         self._df_train = None
@@ -121,7 +124,7 @@ class ManualTrainTestPipeline:
         if self._sequence_enhancement:
             enhancer.enhance_seq(self._item_list_col)
         else:
-            enhancer.enhance_event(self._item_list_col)
+            enhancer.enhance_event(self._item_list_col, self._mask_type)
 
         return enhancer.df, enhancer.df_seq
 

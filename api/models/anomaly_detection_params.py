@@ -15,6 +15,7 @@ class AnomalyDetectionParams(BaseModel):
     run_level: bool = False
     files_to_include: Optional[List[str]] = None
     file_level: bool = False
+    mask_type: Optional[str] = None
 
     @field_validator("train_data_path", mode="after")
     @classmethod
