@@ -1,7 +1,6 @@
 import io
 import os
 import gc
-import polars as pl
 from flask import Blueprint, Response, jsonify, request
 import logging
 import traceback
@@ -313,6 +312,8 @@ def loader_test():
         loader = Loader(dir_path, "raw")
         loader.load()
         df = loader.df
+        if df is None:
+            raise ValueError("No results found")
 
         buffer = io.BytesIO()
         df.write_parquet(buffer, compression="zstd")

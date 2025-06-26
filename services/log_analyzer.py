@@ -91,6 +91,9 @@ class LogAnalyzer:
         if not train_func:
             raise ValueError(f"error: Unsupported model {model_name}")
 
+        if self._sad is None:
+            raise ValueError("Anomaly detector has not been initialized.")
+
         predictions = train_func()
 
         if df_result is None:

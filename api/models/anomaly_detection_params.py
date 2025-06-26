@@ -46,14 +46,18 @@ class AnomalyDetectionParams(BaseModel):
 
     @field_validator("runs_to_include", mode="after")
     @classmethod
-    def validate_runs_to_include(cls, value: List[str]) -> List[str]:
+    def validate_runs_to_include(
+        cls, value: Optional[List[str]]
+    ) -> Optional[List[str]]:
         if value is not None and len(value) == 0:
             return None
         return value
 
     @field_validator("files_to_include", mode="after")
     @classmethod
-    def validate_files_to_include(cls, value: List[str]) -> List[str]:
+    def validate_files_to_include(
+        cls, value: Optional[List[str]]
+    ) -> Optional[List[str]]:
         if value is not None and len(value) == 0:
             return None
         return value

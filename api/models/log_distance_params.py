@@ -4,7 +4,7 @@ from api.models.validator_utils import validate_directory_path
 
 
 class LogDistanceParams(BaseModel):
-    directory_path: str = Field(default=False, alias="dir_path")
+    directory_path: str = Field(alias="dir_path")
     target_run: str
     comparison_runs: Optional[List[str]] = None
     item_list_col: str = "e_words"
