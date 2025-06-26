@@ -19,6 +19,7 @@ form = test_train_form(
     "detectors_rl",
     "enhancement_rl",
     "runs_filter_rl",
+    "mask_rl",
 )
 layout = [
     dbc.Container(html.H3("Run Level Anomaly Detection"))
@@ -52,6 +53,7 @@ def get_run_options(test_data_path):
     State("detectors_rl", "value"),
     State("enhancement_rl", "value"),
     State("runs_filter_rl", "value"),
+    State("mask_rl", "value"),
     prevent_initial_call=True,
 )
 def populate_run_table(
@@ -62,6 +64,7 @@ def populate_run_table(
     detectors,
     enhancement,
     runs_to_include,
+    mask_type,
 ):
     return populate_train_test_table(
         n_clicks,
@@ -71,5 +74,6 @@ def populate_run_table(
         detectors,
         enhancement,
         runs_to_include,
+        mask_type,
         level="run",
     )

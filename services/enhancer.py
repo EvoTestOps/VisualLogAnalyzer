@@ -28,9 +28,9 @@ class Enhancer:
         enhancer = EventLogEnhancer(self._df)
 
         regex_mask = self._get_regex_mask(mask_type)
-        self._df = (
-            enhancer.normalize(regex_mask) if regex_mask else enhancer.normalize()
-        )
+        if regex_mask:
+            self._df = enhancer.normalize(regex_mask)
+
         field = "e_message_normalized" if regex_mask else "m_message"
 
         if item_list_col == "e_words":
@@ -38,16 +38,16 @@ class Enhancer:
         elif item_list_col == "e_trigrams":
             self._df = enhancer.trigrams(field)
         elif item_list_col == "e_event_drain_id":
-            self._df = enhancer.parse_drain()
+            self._df = enhancer.parse_drain(field)
         elif item_list_col == "e_event_tip_id":
-            self._df = enhancer.parse_tip()
+            self._df = enhancer.parse_tip(field)
         elif item_list_col == "e_event_brain_id":
-            self._df = enhancer.parse_brain()
+            self._df = enhancer.parse_brain(field)
         elif item_list_col == "e_event_pliplom_id":
-            self._df = enhancer.words()
-            self._df = enhancer.parse_pliplom()
+            self._df = enhancer.words(field)
+            self._df = enhancer.parse_pliplom(field)
         elif item_list_col == "e_event_iplom_id":
-            self._df = enhancer.parse_iplom()
+            self._df = enhancer.parse_iplom(field)
         else:
             raise ValueError(f"Unsupported enhance: {item_list_col}")
 

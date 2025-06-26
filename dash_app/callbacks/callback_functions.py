@@ -34,6 +34,7 @@ def populate_train_test_table(
     detectors,
     enhancement,
     include_items,
+    mask_type,
     level="run",
 ):
     if n_clicks == 0:
@@ -53,6 +54,7 @@ def populate_train_test_table(
         detectors,
         enhancement,
         include_items,
+        mask_type,
         level,
     )
 
@@ -86,6 +88,7 @@ def _build_test_train_payload(
     detectors,
     enhancement,
     include_items,
+    mask_type,
     level="run",
 ):
     payload = {
@@ -94,6 +97,7 @@ def _build_test_train_payload(
         "log_format": log_format,
         "models": detectors,
         "item_list_col": enhancement,
+        "mask_type": mask_type,
     }
 
     if level == "run":

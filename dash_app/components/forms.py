@@ -15,6 +15,7 @@ from dash_app.components.form_inputs import (
     terms_umap_input,
     files_filter_input,
     target_run_input,
+    mask_input,
 )
 
 
@@ -53,6 +54,7 @@ def test_train_form(
     detectors_id,
     enhancement_id,
     runs_filter_id,
+    mask_input_id,
 ):
     submit_btn_tr = submit_button(submit_id, "Analyze")
 
@@ -69,10 +71,15 @@ def test_train_form(
             dbc.Row(
                 [
                     detectors_unsupervised_input(detectors_id),
-                    enhancement_input(enhancement_id),
                     runs_filter_input(runs_filter_id),
                 ],
                 class_name="mb-3",
+            ),
+            dbc.Row(
+                [
+                    enhancement_input(enhancement_id),
+                    mask_input(mask_input_id),
+                ]
             ),
             dbc.Row(dbc.Col(submit_btn_tr, class_name="text-end")),
         ],
@@ -90,6 +97,7 @@ def test_train_file_level_form(
     detectors_id,
     enhancement_id,
     files_filter_id,
+    mask_input_id,
 ):
     submit_btn_tr = submit_button(submit_id, "Analyze")
 
@@ -107,6 +115,7 @@ def test_train_file_level_form(
                 [
                     detectors_unsupervised_input(detectors_id),
                     enhancement_input(enhancement_id),
+                    mask_input(mask_input_id),
                 ],
                 class_name="mb-3",
             ),

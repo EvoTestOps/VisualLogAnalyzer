@@ -80,7 +80,7 @@ def manual_test_train():
         pipeline.analyze()
 
         results = pipeline.results
-        if not results:
+        if results is None:
             raise ValueError("No results found")
 
         if log_format == "raw":

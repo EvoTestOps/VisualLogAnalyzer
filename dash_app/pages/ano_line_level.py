@@ -23,6 +23,7 @@ form = test_train_form(
     "detectors_tr",
     "enhancement_tr",
     "runs_filter_tr",
+    "mask_tr",
 )
 layout = [
     dbc.Container(html.H3("Line Level Anomaly Detection"))
@@ -59,6 +60,7 @@ def get_run_options(test_data_path):
     State("detectors_tr", "value"),
     State("enhancement_tr", "value"),
     State("runs_filter_tr", "value"),
+    State("mask_tr", "value"),
     prevent_initial_call=True,
 )
 def get_and_generate_dropdown(
@@ -69,6 +71,7 @@ def get_and_generate_dropdown(
     detectors,
     enhancement,
     runs_to_include,
+    mask_type,
 ):
     if n_clicks == 0:
         return (
@@ -92,6 +95,7 @@ def get_and_generate_dropdown(
                 "item_list_col": enhancement,
                 "seq": False,
                 "runs_to_include": runs_to_include,
+                "mask_type": mask_type,
             },
         )
         response.raise_for_status()

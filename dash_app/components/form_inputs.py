@@ -1,5 +1,5 @@
 import dash_bootstrap_components as dbc
-from dash import dcc, html
+from dash import dcc
 
 
 def log_format_input(id):
@@ -229,4 +229,22 @@ def terms_umap_input(id):
                 inline=True,
             ),
         ]
+    )
+
+
+def mask_input(id):
+    return dbc.Col(
+        [
+            dbc.Label("Regex mask type", html_for=id, width="auto"),
+            dcc.Dropdown(
+                options=[
+                    {"label": "Myllari", "value": "myllari"},
+                    {"label": "Myllari Extended", "value": "myllari_extended"},
+                    {"label": "Drain LogLead", "value": "drain_loglead"},
+                    {"label": "Drain Original", "value": "drain_orig"},
+                ],
+                id=id,
+                className="dbc border border-light-subtle rounded",
+            ),
+        ],
     )

@@ -20,6 +20,7 @@ form = test_train_file_level_form(
     "detectors_fl",
     "enhancement_fl",
     "files_filter_fl",
+    "mask_fl",
 )
 layout = [
     dbc.Container(html.H3("File Level Anomaly Detection"))
@@ -53,6 +54,7 @@ def get_file_options(test_data_path):
     State("detectors_fl", "value"),
     State("enhancement_fl", "value"),
     State("files_filter_fl", "value"),
+    State("mask_fl", "value"),
     prevent_initial_call=True,
 )
 def populate_file_table(
@@ -63,6 +65,7 @@ def populate_file_table(
     detectors,
     enhancement,
     files_to_include,
+    mask_type,
 ):
     return populate_train_test_table(
         n_clicks,
@@ -72,5 +75,6 @@ def populate_file_table(
         detectors,
         enhancement,
         files_to_include,
+        mask_type,
         level="file",
     )

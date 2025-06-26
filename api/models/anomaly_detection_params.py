@@ -40,7 +40,7 @@ class AnomalyDetectionParams(BaseModel):
     def validate_models(cls, value: List[str]) -> List[str]:
         if not value or len(value) < 1:
             raise ValueError(
-                f"No detection models selected. Select atleast one to run analysis."
+                "No detection models selected. Select atleast one to run analysis."
             )
         return value
 
