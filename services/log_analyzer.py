@@ -6,7 +6,7 @@ class LogAnalyzer:
         self._df = df
         self._item_list_col = item_list_col
 
-        self._sad = None
+        # self._sad = None
 
         self._model_to_func = {
             "kmeans": self._train_pred_kmeans,
@@ -42,7 +42,7 @@ class LogAnalyzer:
 
         self._sad.test_train_split(self._df, test_frac=test_frac)
 
-    def manual_train_split(self, train_df, test_df):
+    def manual_train_split(self, train_df, test_df, vectorizer):
         self._sad = AnomalyDetector(
             item_list_col=self._item_list_col,
             store_scores=False,
@@ -54,7 +54,9 @@ class LogAnalyzer:
         self._sad.train_df = train_df
         self._sad.test_df = test_df
 
-        self._sad.prepare_train_test_data()
+        print("VEC:", vectorizer)
+
+        self._sad.prepare_train_test_data(vectorizer)
 
     def run_models(self, models):
         if len(models) < 1:

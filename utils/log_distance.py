@@ -4,7 +4,12 @@ from utils.run_level_analysis import calculate_zscore_sum_anos
 
 
 def measure_distances(
-    df, item_list_col, target_run, run_column="run", comparison_runs=None
+    df,
+    item_list_col,
+    target_run,
+    vectorizer,
+    run_column="run",
+    comparison_runs=None,
 ):
     comparison_run_names = (
         df.filter(
@@ -31,7 +36,12 @@ def measure_distances(
         df_comparison = df.filter(pl.col(run_column) == comparison_run)
         distances.append(
             _measure_distance(
-                df_target, df_comparison, target_run, comparison_run, item_list_col
+                df_target,
+                df_comparison,
+                target_run,
+                comparison_run,
+                item_list_col,
+                vectorizer,
             )
         )
 
@@ -42,9 +52,11 @@ def measure_distances(
 
 
 def _measure_distance(
-    df_target, df_comparison, target_name, comparison_name, item_list_col
+    df_target, df_comparison, target_name, comparison_name, item_list_col, vectorizer
 ):
-    distance = LogDistance(df_target, df_comparison, item_list_col)
+    distance = LogDistance(
+        df_target, df_comparison, item_list_col, vectorizer=vectorizer
+    )
 
     cosine = distance.cosine()
     jaccard = distance.jaccard()

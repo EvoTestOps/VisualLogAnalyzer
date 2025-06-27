@@ -49,6 +49,7 @@ def manual_test_train():
     files_to_include = validated_data.files_to_include
     file_level = validated_data.file_level
     mask_type = validated_data.mask_type
+    vectorizer = validated_data.vectorizer
 
     results = None
     pipeline = None
@@ -59,6 +60,7 @@ def manual_test_train():
             model_names=models,
             item_list_col=item_list_col,
             log_format=log_format,
+            vectorizer=vectorizer,
             train_data_path=train_data_path,
             test_data_path=test_data_path,
             runs_to_include=runs_to_include,
@@ -80,8 +82,9 @@ def manual_test_train():
         if results is None:
             raise ValueError("No results found")
 
+        # TODO: fix sorting for LO2 data
         if log_format != "raw":
-            results = results.sort(["run", "m_timestamp"])
+            results = results.sort(["run"])
 
         if run_level or file_level:
             results = calculate_zscore_sum_anos(
@@ -165,6 +168,7 @@ def create_umap():
     dir_path = validated_data.directory_path
     item_list_col = validated_data.item_list_col
     file_level = validated_data.file_level
+    vectorizer = validated_data.vectorizer
 
     buffer = None
     try:
@@ -179,7 +183,7 @@ def create_umap():
                 .to_series()
                 .to_list()
             )
-            embeddings = create_umap_embeddings(df_run)
+            embeddings = create_umap_embeddings(df_run, vectorizer)
             result = create_umap_df(df, embeddings)
         else:
             df_file = (
@@ -188,7 +192,7 @@ def create_umap():
                 .to_series()
                 .to_list()
             )
-            embeddings = create_umap_embeddings(df_file)
+            embeddings = create_umap_embeddings(df_file, vectorizer)
             result = create_umap_df(df, embeddings, group_col="seq_id")
 
         buffer = io.BytesIO()
@@ -255,6 +259,7 @@ def run_distance():
     item_list_col = validated_data.item_list_col
     file_level = validated_data.file_level
     mask_type = validated_data.mask_type
+    vectorizer = validated_data.vectorizer
 
     buffer = None
     try:
@@ -272,6 +277,7 @@ def run_distance():
             target_run,
             run_column=run_column,
             comparison_runs=comparison_runs,
+            vectorizer=vectorizer,
         )
 
         buffer = io.BytesIO()

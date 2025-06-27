@@ -12,6 +12,7 @@ class ManualTrainTestPipeline:
         model_names,
         item_list_col,
         log_format,
+        vectorizer,
         train_data_path=None,
         test_data_path=None,
         runs_to_include=None,
@@ -29,6 +30,7 @@ class ManualTrainTestPipeline:
         self._files_to_include = files_to_include
 
         self._mask_type = mask_type
+        self._vectorizer = vectorizer
 
         self._df_test = None
         self._df_train = None
@@ -62,7 +64,7 @@ class ManualTrainTestPipeline:
 
     def analyze(self):
         analyzer = LogAnalyzer(item_list_col=self._item_list_col)
-        analyzer.manual_train_split(self._df_train, self._df_test)
+        analyzer.manual_train_split(self._df_train, self._df_test, self._vectorizer)
 
         self._results = analyzer.run_models(self._model_names)
 

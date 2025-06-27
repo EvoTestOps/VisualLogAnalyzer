@@ -1,10 +1,9 @@
 import polars as pl
 import umap
-from sklearn.feature_extraction.text import CountVectorizer
 
 
-def create_umap_embeddings(documents):
-    vectorizer = CountVectorizer(
+def create_umap_embeddings(documents, vectorizer):
+    vectorizer = vectorizer(
         tokenizer=lambda x: x, preprocessor=None, token_pattern=None, lowercase=False
     )
 
