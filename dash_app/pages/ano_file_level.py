@@ -1,12 +1,13 @@
 import dash
 import dash_bootstrap_components as dbc
 from dash import Input, Output, State, callback, html
-from dash_app.components.forms import test_train_file_level_form
-from dash_app.components.layouts import create_ano_run_level_layout
+
 from dash_app.callbacks.callback_functions import (
     get_filter_options,
     populate_train_test_table,
 )
+from dash_app.components.forms import test_train_file_level_form
+from dash_app.components.layouts import create_ano_run_level_layout
 
 dash.register_page(
     __name__, path="/ano-file-level", title="File Level Anomaly Detection"
@@ -21,6 +22,7 @@ form = test_train_file_level_form(
     "enhancement_fl",
     "files_filter_fl",
     "mask_fl",
+    "vectorizer_fl",
 )
 layout = [
     dbc.Container(html.H3("File Level Anomaly Detection"))
@@ -55,6 +57,7 @@ def get_file_options(test_data_path):
     State("enhancement_fl", "value"),
     State("files_filter_fl", "value"),
     State("mask_fl", "value"),
+    State("vectorizer_fl", "value"),
     prevent_initial_call=True,
 )
 def populate_file_table(
@@ -66,6 +69,7 @@ def populate_file_table(
     enhancement,
     files_to_include,
     mask_type,
+    vectorizer_type,
 ):
     return populate_train_test_table(
         n_clicks,
@@ -76,5 +80,6 @@ def populate_file_table(
         enhancement,
         files_to_include,
         mask_type,
+        vectorizer_type,
         level="file",
     )

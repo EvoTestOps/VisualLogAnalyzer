@@ -211,3 +211,19 @@ def mask_input(id):
             ),
         ],
     )
+
+
+def vectorizer_input(id):
+    return dbc.Col(
+        [
+            dbc.Label("Vectorizer type", html_for=id, width="auto"),
+            dbc.Select(
+                id=id,
+                options=[
+                    {"label": "Count", "value": "count"},
+                    {"label": "TF-IDF", "value": "tfidf"},
+                ],
+                value="count",
+            ),
+        ],
+    )

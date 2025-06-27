@@ -35,6 +35,7 @@ def populate_train_test_table(
     enhancement,
     include_items,
     mask_type,
+    vectorizer_type,
     level="run",
 ):
     if n_clicks == 0:
@@ -55,6 +56,7 @@ def populate_train_test_table(
         enhancement,
         include_items,
         mask_type,
+        vectorizer_type,
         level,
     )
 
@@ -89,6 +91,7 @@ def _build_test_train_payload(
     enhancement,
     include_items,
     mask_type,
+    vectorizer_type,
     level="run",
 ):
     payload = {
@@ -98,6 +101,7 @@ def _build_test_train_payload(
         "models": detectors,
         "item_list_col": enhancement,
         "mask_type": mask_type,
+        "vectorizer": vectorizer_type,
     }
 
     if level == "run":

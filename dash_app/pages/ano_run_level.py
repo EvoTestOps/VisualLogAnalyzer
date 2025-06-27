@@ -1,13 +1,13 @@
 import dash
 import dash_bootstrap_components as dbc
 from dash import Input, Output, State, callback, html
-from dash_app.components.forms import test_train_form
-from dash_app.components.layouts import create_ano_run_level_layout
 
 from dash_app.callbacks.callback_functions import (
     get_filter_options,
     populate_train_test_table,
 )
+from dash_app.components.forms import test_train_form
+from dash_app.components.layouts import create_ano_run_level_layout
 
 dash.register_page(__name__, path="/ano-run-level", title="Run Level Anomaly Detection")
 
@@ -20,6 +20,7 @@ form = test_train_form(
     "enhancement_rl",
     "runs_filter_rl",
     "mask_rl",
+    "vectorizer_rl",
 )
 layout = [
     dbc.Container(html.H3("Run Level Anomaly Detection"))
@@ -54,6 +55,7 @@ def get_run_options(test_data_path):
     State("enhancement_rl", "value"),
     State("runs_filter_rl", "value"),
     State("mask_rl", "value"),
+    State("vectorizer_rl", "value"),
     prevent_initial_call=True,
 )
 def populate_run_table(
@@ -65,6 +67,7 @@ def populate_run_table(
     enhancement,
     runs_to_include,
     mask_type,
+    vectorizer_type,
 ):
     return populate_train_test_table(
         n_clicks,
@@ -75,5 +78,6 @@ def populate_run_table(
         enhancement,
         runs_to_include,
         mask_type,
+        vectorizer_type,
         level="run",
     )

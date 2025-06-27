@@ -1,15 +1,16 @@
+import base64
+import io
+
 import dash
 import dash_bootstrap_components as dbc
 import polars as pl
 import requests
 from dash import Input, Output, State, callback, html
-import io
-import base64
+
+from dash_app.callbacks.callback_functions import get_filter_options
 from dash_app.components.forms import test_train_form
 from dash_app.components.layouts import create_default_layout
-
-from dash_app.utils.plots import get_options, create_plot
-from dash_app.callbacks.callback_functions import get_filter_options
+from dash_app.utils.plots import create_plot, get_options
 
 dash.register_page(
     __name__, path="/ano-line-level", title="Line Level Anomaly Detection"
@@ -24,6 +25,7 @@ form = test_train_form(
     "enhancement_tr",
     "runs_filter_tr",
     "mask_tr",
+    "vectorizer_tr",
 )
 layout = [
     dbc.Container(html.H3("Line Level Anomaly Detection"))
@@ -61,6 +63,7 @@ def get_run_options(test_data_path):
     State("enhancement_tr", "value"),
     State("runs_filter_tr", "value"),
     State("mask_tr", "value"),
+    State("vectorizer_tr", "value"),
     prevent_initial_call=True,
 )
 def get_and_generate_dropdown(
@@ -72,6 +75,7 @@ def get_and_generate_dropdown(
     enhancement,
     runs_to_include,
     mask_type,
+    vectorizer_type,
 ):
     if n_clicks == 0:
         return (
@@ -96,6 +100,7 @@ def get_and_generate_dropdown(
                 "seq": False,
                 "runs_to_include": runs_to_include,
                 "mask_type": mask_type,
+                "vectorizer": vectorizer_type,
             },
         )
         response.raise_for_status()
