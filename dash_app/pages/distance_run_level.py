@@ -17,6 +17,7 @@ form = distance_run_level_form(
     "target_run_dis",
     "runs_filter_dis",
     "mask_dis",
+    "vectorizer_dis",
 )
 layout = [
     dbc.Container(html.H3("Directory Level Log Distance"))
@@ -51,10 +52,17 @@ def get_comparison_and_target_options(directory_path):
     State("runs_filter_dis", "value"),
     State("enhancement_dis", "value"),
     State("mask_dis", "value"),
+    State("vectorizer_dis", "value"),
     prevent_initial_call=True,
 )
 def populate_table(
-    n_clicks, directory_path, target_run, comparision_runs, enhancement, mask_type
+    n_clicks,
+    directory_path,
+    target_run,
+    comparision_runs,
+    enhancement,
+    mask_type,
+    vectorizer_type,
 ):
     return populate_distance_table(
         n_clicks,
@@ -62,6 +70,7 @@ def populate_table(
         target_run,
         comparision_runs,
         enhancement,
+        vectorizer_type,
         mask_type,
         level="run",
     )

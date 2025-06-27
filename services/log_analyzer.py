@@ -54,8 +54,6 @@ class LogAnalyzer:
         self._sad.train_df = train_df
         self._sad.test_df = test_df
 
-        print("VEC:", vectorizer)
-
         self._sad.prepare_train_test_data(vectorizer)
 
     def run_models(self, models):

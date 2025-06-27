@@ -19,6 +19,7 @@ form = distance_file_level_form(
     "target_run_dis_file",
     "runs_filter_dis_file",
     "mask_dis_file",
+    "vectorizer_dis_file",
 )
 layout = [
     dbc.Container(html.H3("File Level Log Distance"))
@@ -53,10 +54,17 @@ def get_comparison_and_target_options(directory_path):
     State("runs_filter_dis_file", "value"),
     State("enhancement_dis_file", "value"),
     State("mask_dis_file", "value"),
+    State("vectorizer_dis_file", "value"),
     prevent_initial_call=True,
 )
 def populate_table(
-    n_clicks, directory_path, target_run, comparision_runs, enhancement, mask_type
+    n_clicks,
+    directory_path,
+    target_run,
+    comparision_runs,
+    enhancement,
+    mask_type,
+    vectorizer_type,
 ):
     return populate_distance_table(
         n_clicks,
@@ -64,6 +72,7 @@ def populate_table(
         target_run,
         comparision_runs,
         enhancement,
+        vectorizer_type,
         mask_type,
         level="file",
     )

@@ -161,6 +161,7 @@ def distance_run_level_form(
     target_run_id,
     runs_filter_id,
     mask_input_id,
+    vectorizer_id,
 ):
     submit_btn = submit_button(submit_id, "Analyze")
 
@@ -174,7 +175,7 @@ def distance_run_level_form(
                 class_name="mb-3",
             ),
             dbc.Row(
-                [mask_input(mask_input_id)],
+                [mask_input(mask_input_id), vectorizer_input(vectorizer_id)],
                 class_name="mb-3",
             ),
             dbc.Row(
@@ -199,6 +200,7 @@ def distance_file_level_form(
     target_run_id,
     runs_filter_id,
     mask_input_id,
+    vectorizer_id,
 ):
     submit_btn = submit_button(submit_id, "Analyze")
 
@@ -214,6 +216,7 @@ def distance_file_level_form(
             dbc.Row(
                 [
                     mask_input(mask_input_id),
+                    vectorizer_input(vectorizer_id),
                 ],
                 class_name="mb-3",
             ),

@@ -122,6 +122,7 @@ def populate_distance_table(
     target_run,
     comparision_runs,
     enhancement,
+    vectorizer_type,
     mask_type=None,
     level="run",
 ):
@@ -141,6 +142,7 @@ def populate_distance_table(
         "comparison_runs": comparision_runs,
         "item_list_col": enhancement,
         "mask_type": mask_type,
+        "vectorizer": vectorizer_type,
         "file_level": (level == "file"),
     }
     response, error = _make_api_call(payload, "run-distance")
