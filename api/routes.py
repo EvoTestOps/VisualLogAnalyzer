@@ -55,6 +55,14 @@ def manual_test_train():
     pipeline = None
     buffer = None
 
+    # TODO Rather than getting boolean values, take str for level
+    if file_level:
+        level = "file"
+    elif run_level:
+        level = "run"
+    else:
+        level = "line"
+
     try:
         pipeline = ManualTrainTestPipeline(
             model_names=models,
@@ -71,12 +79,24 @@ def manual_test_train():
         pipeline.load()
         pipeline.enhance()
 
-        if run_level:
-            pipeline.aggregate_to_run_level()
-        elif file_level:
-            pipeline.aggregate_to_file_level()
+        # TODO add setting/input to specify if files are analysed against other files with the same file name,
+        #  or against all files disregarding file name
+        mock_flag = True
 
-        pipeline.analyze()
+        if mock_flag:
+            if level == "file":
+                pipeline.analyze_file_group_by_filenames()
+            elif level == "line":
+                pipeline.analyze_line_group_by_filenames()
+            else:
+                pipeline.aggregate_to_run_level()
+                pipeline.analyze()
+        else:
+            if level == "file":
+                pipeline.aggregate_to_file_level()
+            elif level == "run":
+                pipeline.aggregate_to_run_level()
+            pipeline.analyze()
 
         results = pipeline.results
         if results is None:

@@ -1,9 +1,13 @@
+import polars as pl
 from services.loader import Loader
 from services.enhancer import Enhancer
 from services.log_analyzer import LogAnalyzer
 from utils.data_filtering import filter_runs, filter_files
 from utils.run_level_analysis import aggregate_run_level
-from utils.file_level_analysis import aggregate_file_level
+from utils.file_level_analysis import (
+    aggregate_file_level,
+    aggregate_file_level_with_file_names,
+)
 
 
 class ManualTrainTestPipeline:
@@ -66,7 +70,40 @@ class ManualTrainTestPipeline:
         analyzer = LogAnalyzer(item_list_col=self._item_list_col)
         analyzer.manual_train_split(self._df_train, self._df_test, self._vectorizer)
 
+        print(self._df_train)
+        print(self._df_test)
+
         self._results = analyzer.run_models(self._model_names)
+
+    def _analyze_grouped_by_file(self, common_file_names: list[str]) -> pl.DataFrame:
+        analyzer = LogAnalyzer(item_list_col=self._item_list_col)
+
+        results = []
+        for file_name in common_file_names:
+            train_subset = self._df_train.filter(pl.col("file_name") == file_name)
+            test_subset = self._df_test.filter(pl.col("file_name") == file_name)
+
+            analyzer.manual_train_split(train_subset, test_subset, self._vectorizer)
+            results.append(analyzer.run_models(self._model_names))
+
+        return pl.concat(results, how="vertical")
+
+    def analyze_file_group_by_filenames(self):
+        self._df_train = aggregate_file_level_with_file_names(
+            self._df_train, self._item_list_col
+        )
+        self._df_test = aggregate_file_level_with_file_names(
+            self._df_test, self._item_list_col
+        )
+
+        self._results = self._analyze_grouped_by_file(
+            common_file_names=self._get_common_file_names()
+        )
+
+    def analyze_line_group_by_filenames(self):
+        self._results = self._analyze_grouped_by_file(
+            common_file_names=self._get_common_file_names()
+        )
 
     def aggregate_to_run_level(self):
         self._df_train = aggregate_run_level(self._df_train, self._item_list_col)
@@ -75,6 +112,17 @@ class ManualTrainTestPipeline:
     def aggregate_to_file_level(self):
         self._df_train = aggregate_file_level(self._df_train, self._item_list_col)
         self._df_test = aggregate_file_level(self._df_test, self._item_list_col)
+
+    def _get_common_file_names(self) -> list[str]:
+        return (
+            self._df_train.select("file_name")
+            .unique()
+            .join(
+                self._df_test.select("file_name").unique(), on="file_name", how="inner"
+            )
+            .to_series()
+            .to_list()
+        )
 
     @property
     def results(self):
