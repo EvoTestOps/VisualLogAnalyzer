@@ -17,7 +17,11 @@ from api.models.log_distance_params import LogDistanceParams
 from services.enhancer import Enhancer
 from services.loader import Loader
 from services.log_analysis_pipeline import ManualTrainTestPipeline
-from utils.data_filtering import get_prediction_cols
+from utils.data_filtering import (
+    get_prediction_cols,
+    filter_files,
+    get_file_name_by_orig_file_name,
+)
 from utils.file_level_analysis import aggregate_file_level, unique_terms_count_by_file
 from utils.log_distance import measure_distances
 from utils.run_level_analysis import (
@@ -79,7 +83,7 @@ def manual_test_train():
         pipeline.load()
         pipeline.enhance()
 
-        # TODO add setting/input to specify if files are analysed against other files with the same file name,
+        # TODO: add setting/input to specify if files are analysed against other files with the same file name,
         #  or against all files disregarding file name
         mock_flag = True
 
@@ -290,6 +294,11 @@ def run_distance():
         df = enhancer.enhance_event(item_list_col, mask_type)
 
         run_column = "run" if not file_level else "orig_file_name"
+
+        # TODO: Add a setting to change if comparisons are done against matching file names
+        if file_level and comparison_runs in (None, []):
+            target_file_name = get_file_name_by_orig_file_name(df, target_run)
+            df = filter_files(df, [target_file_name], "file_name")
 
         result = measure_distances(
             df,

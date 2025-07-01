@@ -70,18 +70,17 @@ class ManualTrainTestPipeline:
         analyzer = LogAnalyzer(item_list_col=self._item_list_col)
         analyzer.manual_train_split(self._df_train, self._df_test, self._vectorizer)
 
-        print(self._df_train)
-        print(self._df_test)
-
         self._results = analyzer.run_models(self._model_names)
 
-    def _analyze_grouped_by_file(self, common_file_names: list[str]) -> pl.DataFrame:
+    def _analyze_grouped_by_file(
+        self, df_train, df_test, common_file_names: list[str]
+    ) -> pl.DataFrame:
         analyzer = LogAnalyzer(item_list_col=self._item_list_col)
 
         results = []
         for file_name in common_file_names:
-            train_subset = self._df_train.filter(pl.col("file_name") == file_name)
-            test_subset = self._df_test.filter(pl.col("file_name") == file_name)
+            train_subset = df_train.filter(pl.col("file_name") == file_name)
+            test_subset = df_test.filter(pl.col("file_name") == file_name)
 
             analyzer.manual_train_split(train_subset, test_subset, self._vectorizer)
             results.append(analyzer.run_models(self._model_names))
@@ -97,12 +96,16 @@ class ManualTrainTestPipeline:
         )
 
         self._results = self._analyze_grouped_by_file(
-            common_file_names=self._get_common_file_names()
+            self._df_test,
+            self._df_train,
+            common_file_names=self._get_common_file_names(),
         )
 
     def analyze_line_group_by_filenames(self):
         self._results = self._analyze_grouped_by_file(
-            common_file_names=self._get_common_file_names()
+            self._df_test,
+            self._df_train,
+            common_file_names=self._get_common_file_names(),
         )
 
     def aggregate_to_run_level(self):
