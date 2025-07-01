@@ -59,7 +59,7 @@ def manual_test_train():
     pipeline = None
     buffer = None
 
-    # TODO Rather than getting boolean values, take str for level
+    # TODO: Rather than getting boolean values, take str for level
     if file_level:
         level = "file"
     elif run_level:
@@ -142,7 +142,7 @@ def manual_test_train():
         gc.collect()
 
 
-@analyze_bp.route("/run-unique-terms", methods=["POST"])
+@analyze_bp.route("/unique-terms", methods=["POST"])
 def run_unique_terms():
     try:
         validated_data = UniqueTermsParams(**request.get_json())
@@ -193,6 +193,7 @@ def create_umap():
     item_list_col = validated_data.item_list_col
     file_level = validated_data.file_level
     vectorizer = validated_data.vectorizer
+    mask_type = validated_data.mask_type
 
     buffer = None
     try:
@@ -202,7 +203,7 @@ def create_umap():
 
         if not file_level:
             df_run = (
-                aggregate_run_level(df, item_list_col)
+                aggregate_run_level(df, item_list_col, mask_type)
                 .select(item_list_col)
                 .to_series()
                 .to_list()
@@ -211,7 +212,7 @@ def create_umap():
             result = create_umap_df(df, embeddings)
         else:
             df_file = (
-                aggregate_file_level(df, item_list_col)
+                aggregate_file_level(df, item_list_col, mask_type)
                 .select(item_list_col)
                 .to_series()
                 .to_list()

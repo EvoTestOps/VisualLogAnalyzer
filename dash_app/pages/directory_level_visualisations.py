@@ -1,7 +1,7 @@
 import dash
 import dash_bootstrap_components as dbc
 from dash import Input, Output, State, callback, html
-from dash_app.components.forms import unique_terms_form
+from dash_app.components.forms import directory_level_viz_form
 from dash_app.components.layouts import create_unique_term_count_layout
 from dash_app.callbacks.callback_functions import create_high_level_plot
 
@@ -11,7 +11,9 @@ dash.register_page(
     title="Directory Level Visualisations",
 )
 
-form = unique_terms_form()
+form = directory_level_viz_form(
+    "submit_ut", "directory_ut", "analysis_type_ut", "mask_ut", "vectorizer_ut"
+)
 layout = [
     dbc.Container(html.H3("Directory Level Visualisations"))
 ] + create_unique_term_count_layout(
@@ -29,10 +31,20 @@ layout = [
     Input("submit_ut", "n_clicks"),
     Input("switch", "value"),
     State("directory_ut", "value"),
-    State("terms_files_ut", "value"),
+    State("analysis_type_ut", "value"),
+    State("mask_ut", "value"),
+    State("vectorizer_ut", "value"),
     prevent_initial_call=True,
 )
-def create_plot(n_clicks, switch_on, directory_path, terms_files):
+def create_plot(
+    n_clicks, switch_on, directory_path, terms_files, mask_type, vectorizer_type
+):
     return create_high_level_plot(
-        n_clicks, switch_on, directory_path, terms_files, level="run"
+        n_clicks,
+        switch_on,
+        directory_path,
+        terms_files,
+        mask_type,
+        vectorizer_type,
+        level="run",
     )

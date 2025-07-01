@@ -38,10 +38,10 @@ def files_and_lines_count(df):
     return files_and_lines
 
 
-def aggregate_run_level(df, item_list_col):
+def aggregate_run_level(df, item_list_col, mask_type=None):
     if df.get_column(item_list_col, default=None) is None:
         enhancer = Enhancer(df)
-        df = enhancer.enhance_event(item_list_col)
+        df = enhancer.enhance_event(item_list_col, mask_type)
 
     col_dtype = df.select(pl.col(item_list_col)).dtypes[0]
 

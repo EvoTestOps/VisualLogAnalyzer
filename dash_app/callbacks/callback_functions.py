@@ -188,7 +188,15 @@ def _parse_response_as_table(response):
     return df.to_dicts(), columns
 
 
-def create_high_level_plot(n_clicks, switch_on, directory_path, plot_type, level="run"):
+def create_high_level_plot(
+    n_clicks,
+    switch_on,
+    directory_path,
+    plot_type,
+    mask_type=None,
+    vectorizer_type=None,
+    level="run",
+):
     if n_clicks == 0:
         return (
             dash.no_update,
@@ -202,11 +210,16 @@ def create_high_level_plot(n_clicks, switch_on, directory_path, plot_type, level
     endpoint_map = {
         "files": "run-file-counts",
         "umap": "umap",
-        "terms": "run-unique-terms",
+        "terms": "unique-terms",
     }
 
-    endpoint = endpoint_map.get(plot_type, "run-unique-terms")
-    payload = {"dir_path": directory_path, "file_level": (level == "file")}
+    endpoint = endpoint_map.get(plot_type, "unique-terms")
+    payload = {
+        "dir_path": directory_path,
+        "file_level": (level == "file"),
+        "mask_type": mask_type,
+        "vectorizer": vectorizer_type,
+    }
 
     response, error = _make_api_call(payload, endpoint)
     if error:
@@ -219,7 +232,7 @@ def create_high_level_plot(n_clicks, switch_on, directory_path, plot_type, level
             False,
         )
 
-    df = pl.read_parquet(io.BytesIO(response.content))  # type: ignore
+    df = pl.read_parquet(io.BytesIO(response.content))
 
     theme = "plotly_white" if switch_on else "plotly_dark"
     style = {

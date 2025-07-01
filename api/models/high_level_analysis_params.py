@@ -1,6 +1,8 @@
-from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
-from typing import Any
+from typing import Any, Optional
+
 from pydantic import BaseModel, Field, field_validator
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+
 from api.models.validator_utils import validate_directory_path
 
 
@@ -20,6 +22,7 @@ class UmapParams(BaseModel):
     item_list_col: str = "e_words"
     file_level: bool = False
     vectorizer: object = CountVectorizer
+    mask_type: Optional[str] = None
 
     @field_validator("vectorizer", mode="before")
     @classmethod

@@ -114,17 +114,29 @@ def test_train_file_level_form(
     return form
 
 
-def unique_terms_form():
-    submit_btn_ut = submit_button("submit_ut", "Analyze")
+def directory_level_viz_form(
+    submit_id, directory_id, analysis_type_id, mask_id, vectorizer_id
+):
+    submit_btn_ut = submit_button(submit_id, "Analyze")
 
     form = dbc.Form(
         [
             dbc.Row(
                 [
-                    directory_input("directory_ut"),
-                    terms_files_input("terms_files_ut"),
+                    directory_input(directory_id),
+                    terms_files_input(analysis_type_id),
                 ],
                 class_name="mb-3",
+            ),
+            dbc.Row(
+                [
+                    mask_input(mask_id),
+                    vectorizer_input(vectorizer_id),
+                ],
+            ),
+            dbc.FormText(
+                "Mask type and vectorizer are optional inputs for UMAP analysis.",
+                color="secondary",
             ),
             dbc.Row(dbc.Col(submit_btn_ut, class_name="text-end")),
         ],
@@ -134,17 +146,29 @@ def unique_terms_form():
     return form
 
 
-def unique_terms_by_file_form():
-    submit_btn_ut_file = submit_button("submit_ut_file", "Analyze")
+def file_level_viz_form(
+    submit_id, directory_id, analysis_type_id, mask_id, vectorizer_id
+):
+    submit_btn_ut_file = submit_button(submit_id, "Analyze")
 
     form = dbc.Form(
         [
             dbc.Row(
                 [
-                    directory_input("directory_ut_file"),
-                    terms_umap_input("terms_umap_ut_file"),
+                    directory_input(directory_id),
+                    terms_umap_input(analysis_type_id),
                 ],
                 class_name="mb-3",
+            ),
+            dbc.Row(
+                [
+                    mask_input(mask_id),
+                    vectorizer_input(vectorizer_id),
+                ],
+            ),
+            dbc.FormText(
+                "Mask type and vectorizer are optional inputs for UMAP analysis.",
+                color="secondary",
             ),
             dbc.Row(dbc.Col(submit_btn_ut_file, class_name="text-end")),
         ],
