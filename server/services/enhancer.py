@@ -1,9 +1,9 @@
 from loglead.enhancers import EventLogEnhancer
 import polars as pl
-from regex_masks.myllari import MYLLARI
-from regex_masks.myllari_extended import MYLLARI_EXTENDED
-from regex_masks.drain_loglead import DRAIN_LOGLEAD
-from regex_masks.drain_orig import DRAIN_ORIG
+from server.regex_masks.myllari import MYLLARI
+from server.regex_masks.myllari_extended import MYLLARI_EXTENDED
+from server.regex_masks.drain_loglead import DRAIN_LOGLEAD
+from server.regex_masks.drain_orig import DRAIN_ORIG
 
 
 class Enhancer:

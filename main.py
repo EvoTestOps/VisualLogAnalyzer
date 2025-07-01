@@ -3,8 +3,8 @@ import dash_bootstrap_components as dbc
 from dash import Dash, html
 from flask import Flask
 
-from api.routes import analyze_bp
-from api.dash_redirects import dash_redirects_bp
+from server.api.routes import analyze_bp
+from server.api.dash_redirects import dash_redirects_bp
 from dash_app.callbacks.color_switch_callback import color_switch_callback
 from dash_app.components.layouts import create_root_layout
 

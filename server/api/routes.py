@@ -7,30 +7,33 @@ import traceback
 from flask import Blueprint, Response, jsonify, request
 from pydantic import ValidationError
 
-from api.models.anomaly_detection_params import AnomalyDetectionParams
-from api.models.high_level_analysis_params import (
+from server.api.models.anomaly_detection_params import AnomalyDetectionParams
+from server.api.models.high_level_analysis_params import (
     FileCountsParams,
     UmapParams,
     UniqueTermsParams,
 )
-from api.models.log_distance_params import LogDistanceParams
-from services.enhancer import Enhancer
-from services.loader import Loader
-from services.log_analysis_pipeline import ManualTrainTestPipeline
-from utils.data_filtering import (
+from server.api.models.log_distance_params import LogDistanceParams
+from server.services.enhancer import Enhancer
+from server.services.loader import Loader
+from server.services.log_analysis_pipeline import ManualTrainTestPipeline
+from server.utils.data_filtering import (
     get_prediction_cols,
     filter_files,
     get_file_name_by_orig_file_name,
 )
-from utils.file_level_analysis import aggregate_file_level, unique_terms_count_by_file
-from utils.log_distance import measure_distances
-from utils.run_level_analysis import (
+from server.utils.file_level_analysis import (
+    aggregate_file_level,
+    unique_terms_count_by_file,
+)
+from server.utils.log_distance import measure_distances
+from server.utils.run_level_analysis import (
     aggregate_run_level,
     calculate_zscore_sum_anos,
     files_and_lines_count,
     unique_terms_count_by_run,
 )
-from utils.umap_analysis import create_umap_df, create_umap_embeddings
+from server.utils.umap_analysis import create_umap_df, create_umap_embeddings
 
 analyze_bp = Blueprint("main", __name__)
 

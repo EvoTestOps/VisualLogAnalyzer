@@ -1,7 +1,7 @@
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from pydantic import BaseModel, Field, field_validator
 from typing import Optional, List, Any
-from api.models.validator_utils import validate_directory_path
+from server.api.models.validator_utils import validate_directory_path
 
 
 class LogDistanceParams(BaseModel):
