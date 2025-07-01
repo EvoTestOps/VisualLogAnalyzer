@@ -1,7 +1,10 @@
 services:
   app:
     build: .
-    volumes:
-      - ./log_data/:/app/log_data/
     ports:
       - "5000:5000"
+    volumes:
+      - ./log_data/:/app/log_data/
+      - .:/app
+    environment:
+      FLASK_DEBUG: 1
