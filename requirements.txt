@@ -15,9 +15,11 @@ dash-bootstrap-components==2.0.3
 drain3==0.9.11
 fastjsonschema==2.21.1
 Flask==3.0.3
+Flask-SQLAlchemy==3.1.1
 fonttools==4.58.1
 gitdb==4.0.12
 GitPython==3.1.44
+greenlet==3.2.3
 idna==3.10
 importlib_metadata==8.7.0
 inflate64==1.0.3
@@ -47,6 +49,7 @@ platformdirs==4.3.8
 plotly==6.1.2
 polars==1.30.0
 psutil==7.0.0
+psycopg2-binary==2.9.10
 py7zr==1.0.0
 pyaml==25.5.0
 pyarrow==20.0.0
@@ -76,6 +79,7 @@ shap==0.47.2
 six==1.17.0
 slicer==0.0.8
 smmap==5.0.2
+SQLAlchemy==2.0.41
 texttable==1.7.0
 threadpoolctl==3.6.0
 tipping==0.1.3

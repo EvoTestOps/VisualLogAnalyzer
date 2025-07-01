@@ -7,4 +7,21 @@ services:
       - ./log_data/:/app/log_data/
       - .:/app
     environment:
+      DB_URL: "postgresql://postgres:postgres@db:5432/postgres"
       FLASK_DEBUG: 1
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - db_data:/var/lib/postgresql/data
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8081:8080
+
+volumes:
+  db_data:
