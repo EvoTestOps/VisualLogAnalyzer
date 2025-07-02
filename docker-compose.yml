@@ -5,9 +5,11 @@ services:
       - "5000:5000"
     volumes:
       - ./log_data/:/app/log_data/
+      - ./analysis_results/:/app/analysis_results
       - .:/app
     environment:
       DB_URL: "postgresql://postgres:postgres@db:5432/postgres"
+      RESULTS_DIRECTORY: "./analysis_results/"
       FLASK_DEBUG: 1
   db:
     image: postgres

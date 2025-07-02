@@ -1,4 +1,4 @@
-from server.db import db
+from server.extensions import db
 
 
 class Settings(db.Model):

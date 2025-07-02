@@ -1,6 +1,6 @@
 import polars as pl
 from loglead.anomaly_detection import LogDistance
-from server.utils.run_level_analysis import calculate_zscore_sum_anos
+from .run_level_analysis import calculate_zscore_sum_anos
 
 
 def measure_distances(

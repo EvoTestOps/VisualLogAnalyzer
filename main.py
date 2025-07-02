@@ -3,20 +3,18 @@ from os import getenv
 from flask import Flask
 
 from dash_app import create_dash_app
-from server.db import db
-from server.db.models import settings
+from server.config import Config
+from server.extensions import db
+
+from server.models import settings, analysis
 from server.api.dash_redirects import dash_redirects_bp
 from server.api.routes import analyze_bp
 
 
 def create_app():
     server = Flask(__name__)
+    server.config.from_object(Config)
 
-    db_url = getenv("DB_URL")
-    if not db_url:
-        raise ValueError("DB_URL environment variable not set")
-
-    server.config["SQLALCHEMY_DATABASE_URI"] = db_url
     db.init_app(server)
 
     server.register_blueprint(analyze_bp, url_prefix="/api")
