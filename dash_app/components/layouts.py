@@ -30,7 +30,7 @@ def create_root_layout():
     )
 
 
-def create_default_layout(
+def create_ano_line_level_layout(
     form,
     stored_data_id,
     plot_selector_id,
@@ -43,7 +43,6 @@ def create_default_layout(
     form_row = dbc.Row(form)
 
     error_toast_row = dbc.Row(error_toast(error_toast_id))
-
     success_toast_row = dbc.Row(success_toast(success_toast_id))
 
     plot_selector_row = dbc.Row(
@@ -69,13 +68,6 @@ def create_default_layout(
                     dcc.Graph(
                         id=plot_content_id,
                         config={"responsive": True},
-                        # style={
-                        #     "resize": "both",
-                        #     "overflow": "auto",
-                        #     "minHeight": "500px",
-                        #     "minWidth": "600px",
-                        #     "width": "90%",
-                        # },
                         style={
                             "display": "none",
                         },
@@ -135,54 +127,7 @@ def create_default_layout(
     return layout
 
 
-def create_unique_term_count_layout(
-    form, plot_content_id, error_toast_id, success_toast_id
-):
-
-    form_row = dbc.Row(form)
-
-    error_toast_row = dbc.Row(error_toast(error_toast_id))
-    success_toast_row = dbc.Row(success_toast(success_toast_id))
-
-    plot_row = dbc.Row(
-        dcc.Loading(
-            type="default",
-            children=[
-                html.Div(
-                    dcc.Graph(
-                        id=plot_content_id,
-                        config={"responsive": True},
-                        # style={
-                        #     "resize": "both",
-                        #     "overflow": "auto",
-                        #     "minHeight": "500px",
-                        #     "minWidth": "600px",
-                        #     "width": "90%",
-                        # },
-                        style={
-                            "display": "none",
-                        },
-                        className="dbc mt-3 ps-4 pe-4",
-                    ),
-                    style={
-                        "display": "flex",
-                        "justifyContent": "center",
-                        "overflow": "visible",
-                    },
-                ),
-            ],
-        ),
-    )
-
-    layout = [
-        dbc.Container([form_row, error_toast_row, success_toast_row]),
-        dbc.Container(plot_row, fluid=True),
-    ]
-
-    return layout
-
-
-def create_ano_run_level_layout(
+def create_datatable_layout(
     form,
     error_toast_id,
     success_toast_id,
@@ -192,7 +137,6 @@ def create_ano_run_level_layout(
     form_row = dbc.Row(form)
 
     error_toast_row = dbc.Row(error_toast(error_toast_id))
-
     success_toast_row = dbc.Row(success_toast(success_toast_id))
 
     data_table_row = dbc.Row(
@@ -231,6 +175,46 @@ def create_ano_run_level_layout(
     layout = [
         dbc.Container([form_row, error_toast_row, success_toast_row]),
         dbc.Container(data_table_row, fluid=True),
+    ]
+
+    return layout
+
+
+def create_high_level_viz_layout(
+    form, plot_content_id, error_toast_id, success_toast_id
+):
+
+    form_row = dbc.Row(form)
+
+    error_toast_row = dbc.Row(error_toast(error_toast_id))
+    success_toast_row = dbc.Row(success_toast(success_toast_id))
+
+    plot_row = dbc.Row(
+        dcc.Loading(
+            type="default",
+            children=[
+                html.Div(
+                    dcc.Graph(
+                        id=plot_content_id,
+                        config={"responsive": True},
+                        style={
+                            "display": "none",
+                        },
+                        className="dbc mt-3 ps-4 pe-4",
+                    ),
+                    style={
+                        "display": "flex",
+                        "justifyContent": "center",
+                        "overflow": "visible",
+                    },
+                ),
+            ],
+        ),
+    )
+
+    layout = [
+        dbc.Container([form_row, error_toast_row, success_toast_row]),
+        dbc.Container(plot_row, fluid=True),
     ]
 
     return layout

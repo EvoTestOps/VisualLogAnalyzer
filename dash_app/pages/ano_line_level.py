@@ -9,7 +9,7 @@ from dash import Input, Output, State, callback, html
 
 from dash_app.callbacks.callback_functions import get_filter_options
 from dash_app.components.forms import test_train_form
-from dash_app.components.layouts import create_default_layout
+from dash_app.components.layouts import create_ano_line_level_layout
 from dash_app.utils.plots import create_plot, get_options
 
 dash.register_page(
@@ -29,7 +29,7 @@ form = test_train_form(
 )
 layout = [
     dbc.Container(html.H3("Line Level Anomaly Detection"))
-] + create_default_layout(
+] + create_ano_line_level_layout(
     form,
     "stored_data_tr",
     "plot_selector_tr",

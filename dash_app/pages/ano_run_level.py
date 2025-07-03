@@ -7,9 +7,11 @@ from dash_app.callbacks.callback_functions import (
     populate_train_test_table,
 )
 from dash_app.components.forms import test_train_form
-from dash_app.components.layouts import create_ano_run_level_layout
+from dash_app.components.layouts import create_datatable_layout
 
-dash.register_page(__name__, path="/ano-run-level", title="Run Level Anomaly Detection")
+dash.register_page(
+    __name__, path="/ano-directory-level", title="Directory Level Anomaly Detection"
+)
 
 form = test_train_form(
     "submit_rl",
@@ -23,8 +25,8 @@ form = test_train_form(
     "vectorizer_rl",
 )
 layout = [
-    dbc.Container(html.H3("Run Level Anomaly Detection"))
-] + create_ano_run_level_layout(
+    dbc.Container(html.H3("Directory Level Anomaly Detection"))
+] + create_datatable_layout(
     form,
     "error_toast_rl",
     "success_toast_rl",

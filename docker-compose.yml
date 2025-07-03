@@ -9,6 +9,7 @@ services:
       - .:/app
     environment:
       DB_URL: "postgresql://postgres:postgres@db:5432/postgres"
+      LOG_DATA_DIRECTORY: "./log_data/"
       RESULTS_DIRECTORY: "./analysis_results/"
       FLASK_DEBUG: 1
   db:

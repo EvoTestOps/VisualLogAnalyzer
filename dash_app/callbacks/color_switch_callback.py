@@ -1,5 +1,4 @@
 from dash import clientside_callback, Output, Input
-import dash_bootstrap_components as dbc
 
 
 def color_switch_callback():

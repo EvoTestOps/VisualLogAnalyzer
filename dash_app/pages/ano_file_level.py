@@ -7,7 +7,7 @@ from dash_app.callbacks.callback_functions import (
     populate_train_test_table,
 )
 from dash_app.components.forms import test_train_file_level_form
-from dash_app.components.layouts import create_ano_run_level_layout
+from dash_app.components.layouts import create_datatable_layout
 
 dash.register_page(
     __name__, path="/ano-file-level", title="File Level Anomaly Detection"
@@ -26,7 +26,7 @@ form = test_train_file_level_form(
 )
 layout = [
     dbc.Container(html.H3("File Level Anomaly Detection"))
-] + create_ano_run_level_layout(
+] + create_datatable_layout(
     form,
     "error_toast_fl",
     "success_toast_fl",

@@ -7,7 +7,9 @@ def nav():
             dbc.NavItem(dbc.NavLink("Home", href="/dash/")),
             dbc.DropdownMenu(
                 [
-                    dbc.DropdownMenuItem("Run Level", href="/dash/ano-run-level"),
+                    dbc.DropdownMenuItem(
+                        "Directory Level", href="/dash/ano-directory-level"
+                    ),
                     dbc.DropdownMenuItem("File Level", href="/dash/ano-file-level"),
                     dbc.DropdownMenuItem("Line Level", href="/dash/ano-line-level"),
                 ],
@@ -29,7 +31,7 @@ def nav():
             dbc.DropdownMenu(
                 [
                     dbc.DropdownMenuItem(
-                        "Directory Level", href="/dash/distance-run-level"
+                        "Directory Level", href="/dash/distance-directory-level"
                     ),
                     dbc.DropdownMenuItem(
                         "File Level", href="/dash/distance-file-level"

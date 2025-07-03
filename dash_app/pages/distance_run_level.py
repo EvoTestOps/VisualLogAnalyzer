@@ -2,13 +2,15 @@ import dash
 import dash_bootstrap_components as dbc
 from dash import Input, Output, State, callback, html
 from dash_app.components.forms import distance_run_level_form
-from dash_app.components.layouts import create_ano_run_level_layout
+from dash_app.components.layouts import create_datatable_layout
 from dash_app.callbacks.callback_functions import (
     get_filter_options,
     populate_distance_table,
 )
 
-dash.register_page(__name__, path="/distance-run-level", title="Run Level Log Distance")
+dash.register_page(
+    __name__, path="/distance-directory-level", title="Directory Level Log Distance"
+)
 
 form = distance_run_level_form(
     "submit_dis",
@@ -21,7 +23,7 @@ form = distance_run_level_form(
 )
 layout = [
     dbc.Container(html.H3("Directory Level Log Distance"))
-] + create_ano_run_level_layout(
+] + create_datatable_layout(
     form,
     "error_toast_dis",
     "success_toast_dis",

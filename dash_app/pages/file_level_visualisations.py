@@ -2,7 +2,7 @@ import dash
 import dash_bootstrap_components as dbc
 from dash import Input, Output, State, callback, html
 from dash_app.components.forms import file_level_viz_form
-from dash_app.components.layouts import create_unique_term_count_layout
+from dash_app.components.layouts import create_high_level_viz_layout
 from dash_app.callbacks.callback_functions import create_high_level_plot
 
 dash.register_page(
@@ -20,7 +20,7 @@ form = file_level_viz_form(
 )
 layout = [
     dbc.Container(html.H3("File Level Visualisations"))
-] + create_unique_term_count_layout(
+] + create_high_level_viz_layout(
     form, "plot_content_ut_file", "error_toast_ut_file", "success_toast_ut_file"
 )
 

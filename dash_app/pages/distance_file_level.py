@@ -2,7 +2,7 @@ import dash
 import dash_bootstrap_components as dbc
 from dash import Input, Output, State, callback, html
 from dash_app.components.forms import distance_file_level_form
-from dash_app.components.layouts import create_ano_run_level_layout
+from dash_app.components.layouts import create_datatable_layout
 from dash_app.callbacks.callback_functions import (
     get_filter_options,
     populate_distance_table,
@@ -21,9 +21,7 @@ form = distance_file_level_form(
     "mask_dis_file",
     "vectorizer_dis_file",
 )
-layout = [
-    dbc.Container(html.H3("File Level Log Distance"))
-] + create_ano_run_level_layout(
+layout = [dbc.Container(html.H3("File Level Log Distance"))] + create_datatable_layout(
     form,
     "error_toast_dis_file",
     "success_toast_dis_file",
