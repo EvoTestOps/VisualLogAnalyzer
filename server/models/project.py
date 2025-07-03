@@ -15,8 +15,8 @@ class Project(db.Model):
         "Analysis", back_populates="project", cascade="all, delete-orphan"
     )
 
-    def to_dict(self):
-        return {
+    def to_dict(self, include_analyses=False):
+        data = {
             "id": self.id,
             "name": self.name,
             "time_created": (
@@ -26,3 +26,8 @@ class Project(db.Model):
                 self.time_updated.isoformat() if self.time_updated else None
             ),
         }
+
+        if include_analyses:
+            data["analyses"] = [analysis.to_dict() for analysis in self.analyses]
+
+        return data

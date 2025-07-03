@@ -28,3 +28,10 @@ def create_project():
     db.session.commit()
 
     return jsonify({"id": project.id})
+
+
+@crud_bp.route("/analyses/<int:project_id>", methods=["GET"])
+def get_analyses(project_id: int):
+    project = db.session.get(Project, project_id)
+    result = [analysis.to_dict() for analysis in project.analyses]
+    return jsonify(result)

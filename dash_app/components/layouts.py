@@ -220,7 +220,7 @@ def create_high_level_viz_layout(
     return layout
 
 
-def create_project_layout(
+def create_home_layout(
     form, group_id, error_toast_id, success_toast_id, collapse_id, open_btn_id
 ):
     error_toast_row = dbc.Row(error_toast(error_toast_id))
@@ -255,6 +255,27 @@ def create_project_layout(
             )
         ),
         dbc.Container(form_row),
+        dbc.Container([group_row, error_toast_row, success_toast_row]),
+    ]
+
+    return layout
+
+
+def create_project_layout(group_id, error_toast_id, success_toast_id):
+
+    error_toast_row = dbc.Row(error_toast(error_toast_id))
+    success_toast_row = dbc.Row(success_toast(success_toast_id))
+
+    group_row = dbc.Row(dbc.ListGroup(id=group_id), class_name="mb-3 mt-3")
+
+    layout = [
+        dbc.Container(
+            dbc.Row(
+                [
+                    dbc.Col(html.H3("Analyses")),
+                ]
+            )
+        ),
         dbc.Container([group_row, error_toast_row, success_toast_row]),
     ]
 

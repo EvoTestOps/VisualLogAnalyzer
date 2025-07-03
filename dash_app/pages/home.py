@@ -2,7 +2,7 @@ import dash
 import dash_bootstrap_components as dbc
 from dash import Input, Output, State, callback, dcc, html
 from dash_app.callbacks.callback_functions import make_api_call
-from dash_app.components.layouts import create_project_layout
+from dash_app.components.layouts import create_home_layout
 from dash_app.components.forms import project_form
 
 dash.register_page(__name__, path="/", title="Home")
@@ -12,9 +12,7 @@ form = project_form("submit-proj", "name-proj")
 # dcc.store is needed so that we can easily trigger the get_projects callback
 # after a new project has been created
 
-layout = [
-    dbc.Container(dcc.Store(id="refresh-proj", data=False))
-] + create_project_layout(
+layout = [dbc.Container(dcc.Store(id="refresh-proj", data=False))] + create_home_layout(
     form,
     "project-group",
     "error-toast-proj",
@@ -51,7 +49,7 @@ def get_projects(id, refresh):
                     ],
                     className="d-flex justify-content-between align-items-center",
                 ),
-                href=f"/dash/projects/{project['id']}",
+                href=f"/dash/project/{project['id']}",
                 class_name="pb-3 pt-3",
             )
             for project in project_data

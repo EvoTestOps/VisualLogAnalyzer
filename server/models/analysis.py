@@ -15,3 +15,18 @@ class Analysis(db.Model):
 
     project_id = db.Column(db.Integer, db.ForeignKey("projects.id"), nullable=False)
     project = db.relationship("Project", back_populates="analyses")
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "results_path": self.results_path,
+            "analysis_type": self.analysis_type,
+            "analysis_level": self.analysis_level,
+            "project_id": self.project_id,
+            "time_created": (
+                self.time_created.isoformat() if self.time_created else None
+            ),
+            "time_updated": (
+                self.time_updated.isoformat() if self.time_updated else None
+            ),
+        }
