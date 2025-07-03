@@ -227,3 +227,15 @@ def vectorizer_input(id):
             ),
         ],
     )
+
+
+def name_input(id):
+    return dbc.Col(
+        [
+            dbc.Label("Project name", html_for=id, width="auto"),
+            dbc.Input(
+                type="text",
+                id=id,
+            ),
+        ]
+    )

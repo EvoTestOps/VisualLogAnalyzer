@@ -3,6 +3,7 @@ from dash import dcc, html, dash_table
 from dash_app.components.color_mode_switch import color_mode_switch
 from dash_app.components.nav import nav
 from dash_app.components.toasts import error_toast, success_toast
+from dash_app.components.form_inputs import submit_button
 
 
 # TODO: naming is all over the place at the moment
@@ -235,12 +236,42 @@ def create_ano_run_level_layout(
     return layout
 
 
-def create_project_layout(group_id, error_toast_id, success_toast_id):
+def create_project_layout(
+    form, group_id, error_toast_id, success_toast_id, collapse_id, open_btn_id
+):
     error_toast_row = dbc.Row(error_toast(error_toast_id))
     success_toast_row = dbc.Row(success_toast(success_toast_id))
 
     group_row = dbc.Row(dbc.ListGroup(id=group_id), class_name="mb-3 mt-3")
 
-    layout = [dbc.Container([group_row, error_toast_row, success_toast_row])]
+    open_btn = submit_button(open_btn_id, "Create a new project")
+
+    form_row = dbc.Row(
+        [
+            html.Div(
+                [
+                    dbc.Collapse(
+                        dbc.Card(form, body=True),
+                        id=collapse_id,
+                        is_open=False,
+                        class_name="mt-3",
+                    ),
+                ]
+            ),
+        ]
+    )
+
+    layout = [
+        dbc.Container(
+            dbc.Row(
+                [
+                    dbc.Col(html.H3("Projects")),
+                    dbc.Col(open_btn, class_name="text-end"),
+                ]
+            )
+        ),
+        dbc.Container(form_row),
+        dbc.Container([group_row, error_toast_row, success_toast_row]),
+    ]
 
     return layout

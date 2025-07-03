@@ -14,6 +14,7 @@ from dash_app.components.form_inputs import (
     target_run_input,
     mask_input,
     vectorizer_input,
+    name_input,
 )
 
 
@@ -259,6 +260,25 @@ def distance_file_level_form(
             dbc.Row(dbc.Col(submit_btn, class_name="text-end")),
         ],
         class_name="border border-primary-subtle border-2 p-3",
+    )
+
+    return form
+
+
+def project_form(submit_id, name_id):
+    submit_btn = submit_button(submit_id, "Create")
+    form = dbc.Form(
+        [
+            dbc.Row(
+                [
+                    name_input((name_id)),
+                    dbc.Col(
+                        submit_btn,
+                        class_name="d-flex justify-content-end align-middle align-items-end",
+                    ),
+                ]
+            )
+        ]
     )
 
     return form
