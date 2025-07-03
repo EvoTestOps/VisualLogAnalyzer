@@ -1,6 +1,10 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, jsonify, request
+from pydantic import ValidationError
+
 from server.extensions import db
 from server.models.project import Project
+
+from .validator_models.crud_params import ProjectParams
 
 crud_bp = Blueprint("crud", __name__)
 
@@ -13,8 +17,14 @@ def get_projects():
 
 @crud_bp.route("/projects", methods=["POST"])
 def create_project():
-    params = request.get_json()
-    project = Project(name=params["name"])
+    try:
+        validated_data = ProjectParams(**request.get_json())
+    except ValidationError as e:
+        error = e.errors()[0]  # take the first one
+        return jsonify({"error": f"{error['loc'][0]}: {error['msg']}"}), 400
+
+    project = Project(name=validated_data.name)
     db.session.add(project)
     db.session.commit()
+
     return jsonify({"id": project.id})
