@@ -233,3 +233,14 @@ def create_ano_run_level_layout(
     ]
 
     return layout
+
+
+def create_project_layout(group_id, error_toast_id, success_toast_id):
+    error_toast_row = dbc.Row(error_toast(error_toast_id))
+    success_toast_row = dbc.Row(success_toast(success_toast_id))
+
+    group_row = dbc.Row(dbc.ListGroup(id=group_id), class_name="mb-3 mt-3")
+
+    layout = [dbc.Container([group_row, error_toast_row, success_toast_row])]
+
+    return layout

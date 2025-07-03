@@ -60,7 +60,7 @@ def populate_train_test_table(
         level,
     )
 
-    response, error = _make_api_call(json_payload, "manual-test-train")
+    response, error = make_api_call(json_payload, "manual-test-train")
     if error:
         return (
             dash.no_update,
@@ -145,7 +145,7 @@ def populate_distance_table(
         "vectorizer": vectorizer_type,
         "file_level": (level == "file"),
     }
-    response, error = _make_api_call(payload, "run-distance")
+    response, error = make_api_call(payload, "run-distance")
     if error:
         return (
             dash.no_update,
@@ -167,11 +167,17 @@ def populate_distance_table(
     )
 
 
-def _make_api_call(json_payload, endpoint):
+def make_api_call(json_payload, endpoint, requests_type="POST"):
     try:
-        response = requests.post(
-            f"http://localhost:5000/api/{endpoint}", json=json_payload
-        )
+        if requests_type == "POST":
+            response = requests.post(
+                f"http://localhost:5000/api/{endpoint}", json=json_payload
+            )
+        else:
+            response = requests.get(
+                f"http://localhost:5000/api/{endpoint}", json=json_payload
+            )
+
         response.raise_for_status()
         return response, None
 
@@ -221,7 +227,7 @@ def create_high_level_plot(
         "vectorizer": vectorizer_type,
     }
 
-    response, error = _make_api_call(payload, endpoint)
+    response, error = make_api_call(payload, endpoint)
     if error:
         return (
             dash.no_update,

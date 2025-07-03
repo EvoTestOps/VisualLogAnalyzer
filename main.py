@@ -1,14 +1,13 @@
-from os import getenv
-
 from flask import Flask
 
 from dash_app import create_dash_app
 from server.config import Config
 from server.extensions import db
 
-from server.models import settings, analysis
+from server.models import settings, analysis, project
 from server.api.dash_redirects import dash_redirects_bp
-from server.api.routes import analyze_bp
+from server.api.analyze_routes import analyze_bp
+from server.api.crud_routes import crud_bp
 
 
 def create_app():
@@ -18,6 +17,7 @@ def create_app():
     db.init_app(server)
 
     server.register_blueprint(analyze_bp, url_prefix="/api")
+    server.register_blueprint(crud_bp, url_prefix="/api")
     server.register_blueprint(dash_redirects_bp)
 
     create_dash_app(server)
