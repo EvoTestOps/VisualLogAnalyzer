@@ -1,6 +1,9 @@
 # Visual Log Analyzer
 Web application for visualizing and analysing log files.
 
+> [!WARNING]
+> The frontend of this branch is currently completely broken due to changed api handling.
+
 ## Run locally
 The application has been tested with **Python 3.12**. Other versions might work but with mixed results.
 
