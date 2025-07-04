@@ -250,32 +250,30 @@ def run_file_counts(project_id):
 
     dir_path = validated_data.directory_path
 
-    buffer = None
     try:
         loader = Loader(dir_path, "raw")
         loader.load()
         df = loader.df
-
         result = files_and_lines_count(df)
 
-        result_id = add_result(result, int(project_id), "file-counts", "directory")
+        meta_data = {
+            "analysis_level": "directory",
+            "directory_path": dir_path,
+            "analysis_sub_type": "file-count",
+        }
 
-        return jsonify({"id": result_id, "type": "file-counts"})
+        result_id = add_result(
+            result, int(project_id), "directory-level-visualisations", **meta_data
+        )
 
-        # buffer = io.BytesIO()
-        # result.write_parquet(buffer, compression="zstd")
-        # buffer.seek(0)
-        #
-        # return Response(buffer.getvalue(), mimetype="application/octet-stream")
+        return jsonify({"id": result_id, "type": "directory-level-visualisations"})
 
     except Exception as e:
-        trace = traceback.format_exc()
-        logging.error(trace)
-
+        logging.error(
+            f"Error processing file counts for project {project_id}: {str(e)}",
+            exc_info=True,
+        )
         return jsonify({"error": str(e)}), 500
-    finally:
-        if buffer:
-            buffer.close()
 
 
 @analyze_bp.route("/run-distance", methods=["POST"])

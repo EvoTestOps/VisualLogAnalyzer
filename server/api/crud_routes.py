@@ -1,8 +1,12 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, Response
+from sqlalchemy.inspection import inspect
+import io
+import logging
 from pydantic import ValidationError
 
 from server.extensions import db
 from server.models.project import Project
+from server.models.analysis import Analysis
 
 from .validator_models.crud_params import ProjectParams
 
@@ -30,8 +34,50 @@ def create_project():
     return jsonify({"id": project.id})
 
 
-@crud_bp.route("/analyses/<int:project_id>", methods=["GET"])
+@crud_bp.route("/projects/<int:project_id>/analyses", methods=["GET"])
 def get_analyses(project_id: int):
     project = db.session.get(Project, project_id)
     result = [analysis.to_dict() for analysis in project.analyses]
     return jsonify(result)
+
+
+@crud_bp.route("/analyses/<int:analysis_id>", methods=["GET"])
+def get_analysis(analysis_id: int):
+    analysis = db.session.get(Analysis, analysis_id)
+    if not analysis:
+        return jsonify({"error": f"Analysis not found. Id: {analysis_id}"}), 404
+
+    buffer = None
+    try:
+        with open(analysis.results_path, "rb") as file:
+            buffer = io.BytesIO(file.read())
+
+        buffer.seek(0)
+
+        return Response(buffer.getvalue(), mimetype="application/octet-stream")
+    except Exception as e:
+        logging.error(
+            f"Error fetching results for analysis {analysis_id}: {str(e)}",
+            exc_info=True,
+        )
+        return jsonify({"error": str(e)}), 500
+    finally:
+        if buffer:
+            buffer.close()
+
+
+@crud_bp.route("/analyses/<int:analysis_id>/metadata", methods=["GET"])
+def get_analysis_metadata(analysis_id: int):
+    analysis = db.session.get(Analysis, analysis_id)
+    if not analysis:
+        return jsonify({"error": f"Analysis not found. Id: {analysis_id}"}), 404
+
+    attributes = inspect(analysis).attrs
+
+    metadata = {
+        attr.key: getattr(analysis, attr.key)
+        for attr in attributes
+        if getattr(analysis, attr.key) is not None and attr.key != "project"
+    }
+
+    return jsonify(metadata)

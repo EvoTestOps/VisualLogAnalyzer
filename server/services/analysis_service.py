@@ -4,13 +4,13 @@ from server.extensions import db
 from server.models.analysis import Analysis
 
 
-def add_result(df, project_id: int, analysis_type: str, analysis_level: str):
+def add_result(df, project_id: int, analysis_type: str, **kwargs):
 
     analysis = Analysis(
         results_path="",
         analysis_type=analysis_type,
-        analysis_level=analysis_level,
         project_id=project_id,
+        **kwargs,
     )
 
     db.session.add(analysis)
@@ -24,7 +24,6 @@ def add_result(df, project_id: int, analysis_type: str, analysis_level: str):
 
     df.write_parquet(result_path)
 
+    del df
+
     return analysis.id
-
-
-# TODO: Get result by id

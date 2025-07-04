@@ -4,7 +4,7 @@ from dash import Input, Output, State, callback, dcc, html
 from dash_app.callbacks.callback_functions import make_api_call
 from dash_app.components.layouts import create_project_layout
 
-dash.register_page(__name__, path_template="project/<project_id>")
+dash.register_page(__name__, path_template="/project/<project_id>")
 
 
 def layout(project_id=None, **kwargs):
@@ -27,7 +27,7 @@ def get_projects(project_id):
     if not project_id:
         return ([], "No project id was provided", True, dash.no_update, False)
 
-    response, error = make_api_call({}, f"analyses/{project_id}", "GET")
+    response, error = make_api_call({}, f"projects/{project_id}/analyses", "GET")
     if error:
         return (dash.no_update, error, True, dash.no_update, False)
 

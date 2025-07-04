@@ -39,6 +39,8 @@ def layout(**kwargs):
 
 @callback(
     Output("project-id-ut", "data"),
+    Output("error-toast-ut", "children"),
+    Output("error-toast-ut", "is_open"),
     Input("url", "search"),
 )
 def get_project_id(search):
@@ -46,15 +48,15 @@ def get_project_id(search):
 
     id = query.get("project_id", [None])[0]
     if not id:
-        raise ValueError("No project id provided")
+        return None, "No project id provided. The analysis will fail.", True
 
-    return id
+    return id, dash.no_update, False
 
 
 @callback(
     Output("redirect-ut", "href"),
-    Output("error-toast-ut", "children"),
-    Output("error-toast-ut", "is_open"),
+    Output("error-toast-ut", "children", allow_duplicate=True),
+    Output("error-toast-ut", "is_open", allow_duplicate=True),
     Output("success-toast-ut", "children"),
     Output("success-toast-ut", "is_open"),
     Input("submit-ut", "n_clicks"),
