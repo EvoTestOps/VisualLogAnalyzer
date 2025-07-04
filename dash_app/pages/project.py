@@ -1,4 +1,3 @@
-import re
 import dash
 import dash_bootstrap_components as dbc
 from dash import Input, Output, State, callback, dcc, html
@@ -10,7 +9,7 @@ dash.register_page(__name__, path_template="project/<project_id>")
 
 def layout(project_id=None, **kwargs):
     return [
-        dbc.Container(dcc.Location(id="url", refresh=False))
+        dbc.Container(dcc.Store(id="project-id", data=project_id))
     ] + create_project_layout(
         "group-project", "error-toast-project", "success-toast-project"
     )
@@ -22,14 +21,11 @@ def layout(project_id=None, **kwargs):
     Output("error-toast-project", "is_open"),
     Output("success-toast-project", "children"),
     Output("success-toast-project", "is_open"),
-    Input("url", "pathname"),
+    Input("project-id", "data"),
 )
-def get_projects(pathname):
-    match = re.match(r"/dash/project/(\d+)", pathname)
-    if match:
-        project_id = match.group(1)
-    else:
-        return ([], "Was not able to extract project id", True, dash.no_update, False)
+def get_projects(project_id):
+    if not project_id:
+        return ([], "No project id was provided", True, dash.no_update, False)
 
     response, error = make_api_call({}, f"analyses/{project_id}", "GET")
     if error:
@@ -50,12 +46,12 @@ def get_projects(pathname):
                     ),
                     html.P(f"Level: {analysis['analysis_level']}"),
                 ],
-                href=f"/dash/analysis/{analysis['id']}",
+                href=f"/dash/analysis/{analysis['analysis_type']}/{analysis['id']}",
                 class_name="pb-3 pt-3",
             )
             for analysis in analyses_data
         ]
     else:
-        group_items = [dbc.ListGroupItem("No projects found")]
+        group_items = [dbc.ListGroupItem("No analyses found")]
 
     return (group_items, dash.no_update, dash.no_update, dash.no_update, False)

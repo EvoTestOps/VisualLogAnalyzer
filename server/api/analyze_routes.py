@@ -34,6 +34,7 @@ from server.analysis.utils.run_level_analysis import (
     unique_terms_count_by_run,
 )
 from server.analysis.utils.umap_analysis import create_umap_df, create_umap_embeddings
+from server.services.analysis_service import add_result
 
 analyze_bp = Blueprint("main", __name__)
 
@@ -239,8 +240,8 @@ def create_umap():
             buffer.close()
 
 
-@analyze_bp.route("/run-file-counts", methods=["POST"])
-def run_file_counts():
+@analyze_bp.route("/run-file-counts/<int:project_id>", methods=["POST"])
+def run_file_counts(project_id):
     try:
         validated_data = FileCountsParams(**request.get_json())
     except ValidationError as e:
@@ -257,11 +258,15 @@ def run_file_counts():
 
         result = files_and_lines_count(df)
 
-        buffer = io.BytesIO()
-        result.write_parquet(buffer, compression="zstd")
-        buffer.seek(0)
+        result_id = add_result(result, int(project_id), "file-counts", "directory")
 
-        return Response(buffer.getvalue(), mimetype="application/octet-stream")
+        return jsonify({"id": result_id, "type": "file-counts"})
+
+        # buffer = io.BytesIO()
+        # result.write_parquet(buffer, compression="zstd")
+        # buffer.seek(0)
+        #
+        # return Response(buffer.getvalue(), mimetype="application/octet-stream")
 
     except Exception as e:
         trace = traceback.format_exc()
