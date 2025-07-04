@@ -1,4 +1,3 @@
-import gc
 import io
 import logging
 import os
@@ -39,8 +38,8 @@ from server.services.analysis_service import add_result
 analyze_bp = Blueprint("main", __name__)
 
 
-@analyze_bp.route("/manual-test-train", methods=["POST"])
-def manual_test_train():
+@analyze_bp.route("/manual-test-train/<int:project_id>", methods=["POST"])
+def manual_test_train(project_id):
     try:
         validated_data = AnomalyDetectionParams(**request.get_json())
     except ValidationError as e:
@@ -61,13 +60,12 @@ def manual_test_train():
 
     results = None
     pipeline = None
-    buffer = None
 
     # TODO: Rather than getting boolean values, take str for level
     if file_level:
         level = "file"
     elif run_level:
-        level = "run"
+        level = "directory"
     else:
         level = "line"
 
@@ -102,7 +100,7 @@ def manual_test_train():
         else:
             if level == "file":
                 pipeline.aggregate_to_file_level()
-            elif level == "run":
+            elif level == "directory":
                 pipeline.aggregate_to_run_level()
             pipeline.analyze()
 
@@ -120,34 +118,31 @@ def manual_test_train():
             )
             results = results.drop(item_list_col)
 
-        buffer = io.BytesIO()
-        results.write_parquet(buffer, compression="zstd")
-        buffer.seek(0)
+        analysis_type = f"ano-{level}-level"
 
-        return Response(buffer.getvalue(), mimetype="application/octet-stream")
+        metadata = {
+            "train_data_path": train_data_path,
+            "test_data_path": test_data_path,
+            "vectorizer": str(vectorizer),
+            "mask_type": mask_type,
+            "models": ";".join(models),
+            "analysis_level": level,
+        }
+
+        result_id = add_result(results, int(project_id), analysis_type, **metadata)
+
+        return jsonify({"id": result_id, "type": analysis_type})
 
     except Exception as e:
-        trace = traceback.format_exc()
-        logging.error(trace)
-
+        logging.error(
+            f"Error processing umap for project {project_id}: {str(e)}",
+            exc_info=True,
+        )
         return jsonify({"error": str(e)}), 500
 
-    finally:
-        if buffer:
-            buffer.close()
 
-        # Might help with some memory issues, if python
-        # for whatever reason doesn't drop them automatically
-        if results is not None:
-            del results
-        if pipeline is not None:
-            del pipeline
-
-        gc.collect()
-
-
-@analyze_bp.route("/unique-terms", methods=["POST"])
-def run_unique_terms():
+@analyze_bp.route("/unique-terms/<project_id>", methods=["POST"])
+def run_unique_terms(project_id):
     try:
         validated_data = UniqueTermsParams(**request.get_json())
     except ValidationError as e:
@@ -158,7 +153,6 @@ def run_unique_terms():
     item_list_col = validated_data.item_list_col
     file_level = validated_data.file_level
 
-    buffer = None
     try:
         loader = Loader(dir_path, "raw")
         loader.load()
@@ -169,24 +163,32 @@ def run_unique_terms():
         else:
             unique_terms_count = unique_terms_count_by_file(df, item_list_col)
 
-        buffer = io.BytesIO()
-        unique_terms_count.write_parquet(buffer, compression="zstd")
-        buffer.seek(0)
+        analysis_type = (
+            "directory-level-visualisations"
+            if not file_level
+            else "file-level-visualisations"
+        )
+        metadata = {
+            "analysis_sub_type": "umap",
+            "analysis_level": "directory" if not file_level else "file",
+            "directory_path": dir_path,
+        }
+        result_id = add_result(
+            unique_terms_count, int(project_id), analysis_type, **metadata
+        )
 
-        return Response(buffer.getvalue(), mimetype="application/octet-stream")
+        return jsonify({"id": result_id, "type": analysis_type})
 
     except Exception as e:
-        trace = traceback.format_exc()
-        logging.error(trace)
-
+        logging.error(
+            f"Error processing unique terms for project {project_id}: {str(e)}",
+            exc_info=True,
+        )
         return jsonify({"error": str(e)}), 500
-    finally:
-        if buffer:
-            buffer.close()
 
 
-@analyze_bp.route("/umap", methods=["POST"])
-def create_umap():
+@analyze_bp.route("/umap/<int:project_id>", methods=["POST"])
+def create_umap(project_id):
     try:
         validated_data = UmapParams(**request.get_json())
     except ValidationError as e:
@@ -199,7 +201,6 @@ def create_umap():
     vectorizer = validated_data.vectorizer
     mask_type = validated_data.mask_type
 
-    buffer = None
     try:
         loader = Loader(dir_path, "raw")
         loader.load()
@@ -224,20 +225,28 @@ def create_umap():
             embeddings = create_umap_embeddings(df_file, vectorizer)
             result = create_umap_df(df, embeddings, group_col="seq_id")
 
-        buffer = io.BytesIO()
-        result.write_parquet(buffer, compression="zstd")
-        buffer.seek(0)
+        analysis_type = (
+            "directory-level-visualisations"
+            if not file_level
+            else "file-level-visualisations"
+        )
+        metadata = {
+            "analysis_sub_type": "umap",
+            "analysis_level": "directory" if not file_level else "file",
+            "mask_type": mask_type,
+            "vectorizer": str(vectorizer),
+            "directory_path": dir_path,
+        }
+        result_id = add_result(result, int(project_id), analysis_type, **metadata)
 
-        return Response(buffer.getvalue(), mimetype="application/octet-stream")
+        return jsonify({"id": result_id, "type": analysis_type})
 
     except Exception as e:
-        trace = traceback.format_exc()
-        logging.error(trace)
-
+        logging.error(
+            f"Error processing umap for project {project_id}: {str(e)}",
+            exc_info=True,
+        )
         return jsonify({"error": str(e)}), 500
-    finally:
-        if buffer:
-            buffer.close()
 
 
 @analyze_bp.route("/run-file-counts/<int:project_id>", methods=["POST"])
@@ -256,14 +265,14 @@ def run_file_counts(project_id):
         df = loader.df
         result = files_and_lines_count(df)
 
-        meta_data = {
+        metadata = {
             "analysis_level": "directory",
             "directory_path": dir_path,
             "analysis_sub_type": "file-count",
         }
 
         result_id = add_result(
-            result, int(project_id), "directory-level-visualisations", **meta_data
+            result, int(project_id), "directory-level-visualisations", **metadata
         )
 
         return jsonify({"id": result_id, "type": "directory-level-visualisations"})
@@ -276,8 +285,8 @@ def run_file_counts(project_id):
         return jsonify({"error": str(e)}), 500
 
 
-@analyze_bp.route("/run-distance", methods=["POST"])
-def run_distance():
+@analyze_bp.route("/log-distance/<int:project_id>", methods=["POST"])
+def run_distance(project_id):
     try:
         validated_data = LogDistanceParams(**request.get_json())
     except ValidationError as e:
@@ -292,7 +301,6 @@ def run_distance():
     mask_type = validated_data.mask_type
     vectorizer = validated_data.vectorizer
 
-    buffer = None
     try:
         loader = Loader(dir_path, "raw")
         loader.load()
@@ -316,20 +324,28 @@ def run_distance():
             vectorizer=vectorizer,
         )
 
-        buffer = io.BytesIO()
-        result.write_parquet(buffer, compression="zstd")
-        buffer.seek(0)
+        metadata = {
+            "analysis_level": "directory" if not file_level else "file",
+            "mask_type": mask_type,
+            "vectorizer": str(vectorizer),
+            "directory_path": dir_path,
+            "target": target_run,
+        }
 
-        return Response(buffer.getvalue(), mimetype="application/octet-stream")
+        analysis_type = (
+            "distance-file-level" if file_level else "distance-directory-level"
+        )
+
+        result_id = add_result(result, int(project_id), analysis_type, **metadata)
+
+        return jsonify({"id": result_id, "type": analysis_type})
 
     except Exception as e:
-        trace = traceback.format_exc()
-        logging.error(trace)
-
+        logging.error(
+            f"Error processing log distance for project {project_id}: {str(e)}",
+            exc_info=True,
+        )
         return jsonify({"error": str(e)}), 500
-    finally:
-        if buffer:
-            buffer.close()
 
 
 @analyze_bp.route("/loader-test", methods=["POST"])

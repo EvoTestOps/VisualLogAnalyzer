@@ -16,10 +16,13 @@ class Analysis(db.Model):
     mask_type = db.Column(db.String)
     vectorizer = db.Column(db.String)
     enhancement = db.Column(db.String)
+    models = db.Column(db.String)
 
     directory_path = db.Column(db.String)
     train_data_path = db.Column(db.String)
     test_data_path = db.Column(db.String)
+
+    target = db.Column(db.String)
 
     item_list_col = db.Column(db.String)
 
