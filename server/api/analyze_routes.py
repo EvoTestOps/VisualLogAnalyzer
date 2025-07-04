@@ -1,25 +1,11 @@
-import io
-import logging
-import os
-import traceback
+from flask import Blueprint, request
 
-from flask import Blueprint, Response, jsonify, request
-from pydantic import ValidationError
-
-from server.api.validator_models.anomaly_detection_params import AnomalyDetectionParams
-from server.api.validator_models.high_level_analysis_params import (
-    FileCountsParams,
-    UmapParams,
-    UniqueTermsParams,
-)
-from server.api.validator_models.log_distance_params import LogDistanceParams
 from server.analysis.enhancer import Enhancer
-from server.analysis.loader import Loader
 from server.analysis.log_analysis_pipeline import ManualTrainTestPipeline
 from server.analysis.utils.data_filtering import (
-    get_prediction_cols,
     filter_files,
     get_file_name_by_orig_file_name,
+    get_prediction_cols,
 )
 from server.analysis.utils.file_level_analysis import (
     aggregate_file_level,
@@ -33,30 +19,40 @@ from server.analysis.utils.run_level_analysis import (
     unique_terms_count_by_run,
 )
 from server.analysis.utils.umap_analysis import create_umap_df, create_umap_embeddings
-from server.services.analysis_service import add_result
+from server.api.api_helpers import (
+    handle_errors,
+    load_data,
+    store_and_format_result,
+    validate_request_data,
+)
+from server.api.validator_models.anomaly_detection_params import AnomalyDetectionParams
+from server.api.validator_models.high_level_analysis_params import (
+    FileCountsParams,
+    UmapParams,
+    UniqueTermsParams,
+)
+from server.api.validator_models.log_distance_params import LogDistanceParams
 
 analyze_bp = Blueprint("main", __name__)
 
 
 @analyze_bp.route("/manual-test-train/<int:project_id>", methods=["POST"])
 def manual_test_train(project_id):
-    try:
-        validated_data = AnomalyDetectionParams(**request.get_json())
-    except ValidationError as e:
-        error = e.errors()[0]  # take the first one
-        return jsonify({"error": f"{error['loc'][0]}: {error['msg']}"}), 400
+    validation_result = validate_request_data(AnomalyDetectionParams, request)
+    if isinstance(validation_result, tuple):
+        return validation_result
 
-    train_data_path = validated_data.train_data_path
-    test_data_path = validated_data.test_data_path
-    models = validated_data.models
-    item_list_col = validated_data.item_list_col
-    log_format = validated_data.log_format
-    runs_to_include = validated_data.runs_to_include
-    run_level = validated_data.run_level
-    files_to_include = validated_data.files_to_include
-    file_level = validated_data.file_level
-    mask_type = validated_data.mask_type
-    vectorizer = validated_data.vectorizer
+    train_data_path = validation_result.train_data_path
+    test_data_path = validation_result.test_data_path
+    models = validation_result.models
+    item_list_col = validation_result.item_list_col
+    log_format = validation_result.log_format
+    runs_to_include = validation_result.runs_to_include
+    run_level = validation_result.run_level
+    files_to_include = validation_result.files_to_include
+    file_level = validation_result.file_level
+    mask_type = validation_result.mask_type
+    vectorizer = validation_result.vectorizer
 
     results = None
     pipeline = None
@@ -129,34 +125,24 @@ def manual_test_train(project_id):
             "analysis_level": level,
         }
 
-        result_id = add_result(results, int(project_id), analysis_type, **metadata)
-
-        return jsonify({"id": result_id, "type": analysis_type})
+        return store_and_format_result(results, project_id, analysis_type, metadata)
 
     except Exception as e:
-        logging.error(
-            f"Error processing umap for project {project_id}: {str(e)}",
-            exc_info=True,
-        )
-        return jsonify({"error": str(e)}), 500
+        return handle_errors(project_id, "anomaly detection", e)
 
 
 @analyze_bp.route("/unique-terms/<project_id>", methods=["POST"])
 def run_unique_terms(project_id):
-    try:
-        validated_data = UniqueTermsParams(**request.get_json())
-    except ValidationError as e:
-        error = e.errors()[0]
-        return jsonify({"error": f"{error['loc'][0]}: {error['msg']}"}), 400
+    validation_result = validate_request_data(UniqueTermsParams, request)
+    if isinstance(validation_result, tuple):
+        return validation_result
 
-    dir_path = validated_data.directory_path
-    item_list_col = validated_data.item_list_col
-    file_level = validated_data.file_level
+    dir_path = validation_result.directory_path
+    item_list_col = validation_result.item_list_col
+    file_level = validation_result.file_level
 
     try:
-        loader = Loader(dir_path, "raw")
-        loader.load()
-        df = loader.df
+        df = load_data(dir_path)
 
         if not file_level:
             unique_terms_count = unique_terms_count_by_run(df, item_list_col)
@@ -173,39 +159,28 @@ def run_unique_terms(project_id):
             "analysis_level": "directory" if not file_level else "file",
             "directory_path": dir_path,
         }
-        result_id = add_result(
-            unique_terms_count, int(project_id), analysis_type, **metadata
+        return store_and_format_result(
+            unique_terms_count, project_id, analysis_type, metadata
         )
-
-        return jsonify({"id": result_id, "type": analysis_type})
 
     except Exception as e:
-        logging.error(
-            f"Error processing unique terms for project {project_id}: {str(e)}",
-            exc_info=True,
-        )
-        return jsonify({"error": str(e)}), 500
+        return handle_errors(project_id, "unique terms", e)
 
 
 @analyze_bp.route("/umap/<int:project_id>", methods=["POST"])
 def create_umap(project_id):
-    try:
-        validated_data = UmapParams(**request.get_json())
-    except ValidationError as e:
-        error = e.errors()[0]
-        return jsonify({"error": f"{error['loc'][0]}: {error['msg']}"}), 400
+    validation_result = validate_request_data(UmapParams, request)
+    if isinstance(validation_result, tuple):
+        return validation_result
 
-    dir_path = validated_data.directory_path
-    item_list_col = validated_data.item_list_col
-    file_level = validated_data.file_level
-    vectorizer = validated_data.vectorizer
-    mask_type = validated_data.mask_type
+    dir_path = validation_result.directory_path
+    item_list_col = validation_result.item_list_col
+    file_level = validation_result.file_level
+    vectorizer = validation_result.vectorizer
+    mask_type = validation_result.mask_type
 
     try:
-        loader = Loader(dir_path, "raw")
-        loader.load()
-        df = loader.df
-
+        df = load_data(dir_path)
         if not file_level:
             df_run = (
                 aggregate_run_level(df, item_list_col, mask_type)
@@ -237,32 +212,23 @@ def create_umap(project_id):
             "vectorizer": str(vectorizer),
             "directory_path": dir_path,
         }
-        result_id = add_result(result, int(project_id), analysis_type, **metadata)
 
-        return jsonify({"id": result_id, "type": analysis_type})
+        return store_and_format_result(result, project_id, analysis_type, metadata)
 
     except Exception as e:
-        logging.error(
-            f"Error processing umap for project {project_id}: {str(e)}",
-            exc_info=True,
-        )
-        return jsonify({"error": str(e)}), 500
+        return handle_errors(project_id, "UMAP", e)
 
 
 @analyze_bp.route("/run-file-counts/<int:project_id>", methods=["POST"])
 def run_file_counts(project_id):
-    try:
-        validated_data = FileCountsParams(**request.get_json())
-    except ValidationError as e:
-        error = e.errors()[0]
-        return jsonify({"error": f"{error['loc'][0]}: {error['msg']}"}), 400
+    validation_result = validate_request_data(FileCountsParams, request)
+    if isinstance(validation_result, tuple):
+        return validation_result
 
-    dir_path = validated_data.directory_path
+    dir_path = validation_result.directory_path
 
     try:
-        loader = Loader(dir_path, "raw")
-        loader.load()
-        df = loader.df
+        df = load_data(dir_path)
         result = files_and_lines_count(df)
 
         metadata = {
@@ -271,50 +237,38 @@ def run_file_counts(project_id):
             "analysis_sub_type": "file-count",
         }
 
-        result_id = add_result(
-            result, int(project_id), "directory-level-visualisations", **metadata
+        return store_and_format_result(
+            result, project_id, "directory-level-visualisations", metadata
         )
-
-        return jsonify({"id": result_id, "type": "directory-level-visualisations"})
 
     except Exception as e:
-        logging.error(
-            f"Error processing file counts for project {project_id}: {str(e)}",
-            exc_info=True,
-        )
-        return jsonify({"error": str(e)}), 500
+        return handle_errors(project_id, "file counts", e)
 
 
 @analyze_bp.route("/log-distance/<int:project_id>", methods=["POST"])
 def run_distance(project_id):
-    try:
-        validated_data = LogDistanceParams(**request.get_json())
-    except ValidationError as e:
-        error = e.errors()[0]
-        return jsonify({"error": f"{error['loc'][0]}: {error['msg']}"}), 400
+    validation_result = validate_request_data(LogDistanceParams, request)
+    if isinstance(validation_result, tuple):
+        return validation_result
 
-    dir_path = validated_data.directory_path
-    target_run = validated_data.target_run
-    comparison_runs = validated_data.comparison_runs
-    item_list_col = validated_data.item_list_col
-    file_level = validated_data.file_level
-    mask_type = validated_data.mask_type
-    vectorizer = validated_data.vectorizer
+    dir_path = validation_result.directory_path
+    target_run = validation_result.target_run
+    comparison_runs = validation_result.comparison_runs
+    item_list_col = validation_result.item_list_col
+    file_level = validation_result.file_level
+    mask_type = validation_result.mask_type
+    vectorizer = validation_result.vectorizer
 
     try:
-        loader = Loader(dir_path, "raw")
-        loader.load()
-
-        enhancer = Enhancer(loader.df)
+        enhancer = Enhancer(load_data(dir_path))
         df = enhancer.enhance_event(item_list_col, mask_type)
-
-        run_column = "run" if not file_level else "orig_file_name"
 
         # TODO: Add a setting to change if comparisons are done against matching file names
         if file_level and comparison_runs in (None, []):
             target_file_name = get_file_name_by_orig_file_name(df, target_run)
             df = filter_files(df, [target_file_name], "file_name")
 
+        run_column = "run" if not file_level else "orig_file_name"
         result = measure_distances(
             df,
             item_list_col,
@@ -336,49 +290,7 @@ def run_distance(project_id):
             "distance-file-level" if file_level else "distance-directory-level"
         )
 
-        result_id = add_result(result, int(project_id), analysis_type, **metadata)
-
-        return jsonify({"id": result_id, "type": analysis_type})
+        return store_and_format_result(result, project_id, analysis_type, metadata)
 
     except Exception as e:
-        logging.error(
-            f"Error processing log distance for project {project_id}: {str(e)}",
-            exc_info=True,
-        )
-        return jsonify({"error": str(e)}), 500
-
-
-@analyze_bp.route("/loader-test", methods=["POST"])
-def loader_test():
-    params = request.get_json()
-
-    dir_path = params.get("dir_path")
-
-    if not dir_path or not os.path.exists(dir_path):
-        return (
-            jsonify({"error": "No directory specified or directory does not exist"}),
-            400,
-        )
-
-    buffer = None
-    try:
-        loader = Loader(dir_path, "raw")
-        loader.load()
-        df = loader.df
-        if df is None:
-            raise ValueError("No results found")
-
-        buffer = io.BytesIO()
-        df.write_parquet(buffer, compression="zstd")
-        buffer.seek(0)
-
-        return Response(buffer.getvalue(), mimetype="application/octet-stream")
-
-    except Exception as e:
-        trace = traceback.format_exc()
-        logging.error(trace)
-
-        return jsonify({"error": str(e)}), 500
-    finally:
-        if buffer:
-            buffer.close()
+        return handle_errors(project_id, "log distance", e)
