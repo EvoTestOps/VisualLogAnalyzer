@@ -164,6 +164,7 @@ def create_datatable_layout(
                         "whiteSpace": "nowrap",
                         "textAlign": "left",
                         "minWidth": "100px",
+                        "fontWeight": "bold",
                     },
                     page_action="native",
                     page_current=0,

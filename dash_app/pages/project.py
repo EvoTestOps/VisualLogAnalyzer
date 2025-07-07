@@ -3,6 +3,7 @@ import dash_bootstrap_components as dbc
 from dash import Input, Output, callback, dcc, html
 from dash_app.callbacks.callback_functions import make_api_call
 from dash_app.components.layouts import create_project_layout
+from dash_app.utils.metadata import format_analysis_overview
 
 dash.register_page(__name__, path_template="/project/<project_id>")
 
@@ -38,23 +39,7 @@ def get_projects(project_id):
     analyses_data = response.json()
 
     if analyses_data:
-        group_items = [
-            dbc.ListGroupItem(
-                [
-                    html.Div(
-                        [
-                            html.H4(analysis["analysis_type"], className="mb-0"),
-                            html.Small(analysis["time_created"]),
-                        ],
-                        className="d-flex justify-content-between align-items-center",
-                    ),
-                    html.P(f"Level: {analysis['analysis_level']}"),
-                ],
-                href=f"/dash/analysis/{analysis['analysis_type']}/{analysis['id']}",
-                class_name="pb-3 pt-3",
-            )
-            for analysis in analyses_data
-        ]
+        group_items = format_analysis_overview(analyses_data)
     else:
         group_items = [dbc.ListGroupItem("No analyses found")]
 
