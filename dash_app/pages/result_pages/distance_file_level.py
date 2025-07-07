@@ -1,8 +1,8 @@
 import dash
-import dash_bootstrap_components as dbc
-from dash import Input, Output, callback, dcc, html
+from dash import Input, Output, callback, html
 from dash_app.components.layouts import (
     create_datatable_layout,
+    create_result_base_layout,
 )
 from dash_app.callbacks.callback_functions import (
     populate_datatable,
@@ -15,32 +15,21 @@ dash.register_page(
 
 
 def layout(analysis_id=None, **kwargs):
-    layout = [
-        dbc.Container(
-            [
-                dbc.Row(
-                    [
-                        dbc.Col(html.H3("Distance File Level")),
-                        dbc.Col(
-                            dcc.Link(
-                                "Back to project",
-                                id="project-link-dis-res-file",
-                                href="/dash/project",
-                            ),
-                            className="d-flex justify-content-end",
-                        ),
-                    ]
-                ),
-                dcc.Store(id="analysis-id-dis-res-file", data=analysis_id),
-            ],
-        )
-    ] + create_datatable_layout(
+    base = create_result_base_layout(
+        "Distance File Level",
+        analysis_id,
+        "project-link-dis-res-file",
+        "analysis-id-dis-res-file",
+    )
+
+    content = create_datatable_layout(
         "datatable-dis-res-file",
         "metadata-dis-res-file",
         "error-toast-dis-res-file",
         "success-toast-dis-res-file",
     )
-    return layout
+
+    return base + content
 
 
 @callback(

@@ -1,8 +1,8 @@
 import dash
-import dash_bootstrap_components as dbc
-from dash import Input, Output, State, callback, dcc, html
+from dash import Input, Output, State, callback, html
 from dash_app.components.layouts import (
     create_high_level_viz_result_layout,
+    create_result_base_layout,
 )
 from dash_app.callbacks.callback_functions import (
     create_high_level_plot,
@@ -15,34 +15,20 @@ dash.register_page(
 
 
 def layout(analysis_id=None, **kwargs):
-    layout = [
-        dbc.Container(
-            [
-                dbc.Row(
-                    [
-                        dbc.Col(html.H3("File Level Visualisation")),
-                        dbc.Col(
-                            dcc.Link(
-                                "Back to project",
-                                id="project-link-file-res",
-                                # Not an ideal solution since if link is clicked before
-                                #  analysis is run it will not redirect corretly
-                                href="/dash/project",
-                            ),
-                            className="d-flex justify-content-end",
-                        ),
-                    ]
-                ),
-                dcc.Store(id="analysis-id-file-res", data=analysis_id),
-            ]
-        )
-    ] + create_high_level_viz_result_layout(
+    base = create_result_base_layout(
+        "File Level Visualisation",
+        analysis_id,
+        "project-link-file-res",
+        "analysis-id-file-res",
+    )
+    content = create_high_level_viz_result_layout(
         "plot-content-file-res",
         "metadata-file-res",
         "error-toast-file-res",
         "success-toast-file-res",
     )
-    return layout
+
+    return base + content
 
 
 @callback(

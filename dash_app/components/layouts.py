@@ -330,3 +330,26 @@ def create_high_level_viz_result_layout(
     ]
 
     return layout
+
+
+def create_result_base_layout(title, analysis_id, project_link_id, analysis_store_id):
+    return [
+        dbc.Container(
+            [
+                dbc.Row(
+                    [
+                        dbc.Col(html.H3(title)),
+                        dbc.Col(
+                            dcc.Link(
+                                "Back to project",
+                                id=project_link_id,
+                                href="/dash/project",
+                            ),
+                            className="d-flex justify-content-end",
+                        ),
+                    ]
+                ),
+                dcc.Store(id=analysis_store_id, data=analysis_id),
+            ],
+        )
+    ]

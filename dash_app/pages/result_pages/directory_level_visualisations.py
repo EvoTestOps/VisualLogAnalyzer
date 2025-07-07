@@ -1,8 +1,8 @@
 import dash
-import dash_bootstrap_components as dbc
-from dash import Input, Output, State, callback, dcc, html
+from dash import Input, Output, State, callback, html
 from dash_app.components.layouts import (
     create_high_level_viz_result_layout,
+    create_result_base_layout,
 )
 from dash_app.callbacks.callback_functions import (
     create_high_level_plot,
@@ -15,32 +15,20 @@ dash.register_page(
 
 
 def layout(analysis_id=None, **kwargs):
-    layout = [
-        dbc.Container(
-            [
-                dbc.Row(
-                    [
-                        dbc.Col(html.H3("Directory Level Visualisation")),
-                        dbc.Col(
-                            dcc.Link(
-                                "Back to project",
-                                id="project-link-ut-res",
-                                href="/dash/project",
-                            ),
-                            className="d-flex justify-content-end",
-                        ),
-                    ]
-                ),
-                dcc.Store(id="analysis-id-ut-res", data=analysis_id),
-            ],
-        )
-    ] + create_high_level_viz_result_layout(
+    base = create_result_base_layout(
+        "Directory Level Visualisation",
+        analysis_id,
+        "project-link-ut-res",
+        "analysis-id-ut-res",
+    )
+    content = create_high_level_viz_result_layout(
         "plot-content-ut-res",
         "metadata-ut-res",
         "error-toast-ut-res",
         "success-toast-ut-res",
     )
-    return layout
+
+    return base + content
 
 
 @callback(
