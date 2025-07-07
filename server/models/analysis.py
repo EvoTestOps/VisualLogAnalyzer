@@ -37,6 +37,7 @@ class Analysis(db.Model):
             "id": self.id,
             "results_path": self.results_path,
             "analysis_type": self.analysis_type,
+            "analysis_sub_type": self.analysis_sub_type,
             "analysis_level": self.analysis_level,
             "project_id": self.project_id,
             "time_created": (

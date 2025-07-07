@@ -4,6 +4,7 @@ from dash_app.components.color_mode_switch import color_mode_switch
 from dash_app.components.nav import nav
 from dash_app.components.toasts import error_toast, success_toast
 from dash_app.components.form_inputs import submit_button
+from dash_app.components.nav import crate_analysis_nav
 
 
 # TODO: naming is all over the place at the moment
@@ -261,12 +262,15 @@ def create_home_layout(
     return layout
 
 
-def create_project_layout(group_id, error_toast_id, success_toast_id):
+def create_project_layout(
+    group_id, project_id, nav_id, error_toast_id, success_toast_id
+):
 
     error_toast_row = dbc.Row(error_toast(error_toast_id))
     success_toast_row = dbc.Row(success_toast(success_toast_id))
 
-    group_row = dbc.Row(dbc.ListGroup(id=group_id), class_name="mb-3 mt-3")
+    group_col = dbc.Col(dbc.ListGroup(id=group_id), class_name="mb-3 mt-3", width=8)
+    nav_col = dbc.Col(crate_analysis_nav(project_id, nav_id))
 
     layout = [
         dbc.Container(
@@ -276,7 +280,52 @@ def create_project_layout(group_id, error_toast_id, success_toast_id):
                 ]
             )
         ),
-        dbc.Container([group_row, error_toast_row, success_toast_row]),
+        dbc.Container(
+            [dbc.Row([group_col, nav_col]), error_toast_row, success_toast_row]
+        ),
+    ]
+
+    return layout
+
+
+def create_high_level_viz_result_layout(
+    plot_content_id, metadata_table_id, error_toast_id, success_toast_id
+):
+    error_toast_row = dbc.Row(error_toast(error_toast_id))
+    success_toast_row = dbc.Row(success_toast(success_toast_id))
+
+    table_row = dbc.Row(dbc.Table(id=metadata_table_id, hover=True, responsive=True))
+
+    plot_row = dbc.Row(
+        dcc.Loading(
+            type="default",
+            children=[
+                html.Div(
+                    dcc.Graph(
+                        id=plot_content_id,
+                        config={"responsive": True},
+                        style={
+                            "resize": "both",
+                            "overflow": "auto",
+                            "minHeight": "500px",
+                            "minWidth": "600px",
+                            "width": "90%",
+                        },
+                        className="dbc mt-3 ps-4 pe-4",
+                    ),
+                    style={
+                        "display": "flex",
+                        "justifyContent": "center",
+                        "overflow": "visible",
+                    },
+                ),
+            ],
+        ),
+    )
+
+    layout = [
+        dbc.Container([table_row, error_toast_row, success_toast_row]),
+        dbc.Container(plot_row, fluid=True),
     ]
 
     return layout

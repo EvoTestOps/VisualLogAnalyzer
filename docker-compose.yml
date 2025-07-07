@@ -18,6 +18,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: postgres
+      TZ: Europe/Helsinki
+      PGTZ: Europe/Helsinki
     volumes:
       - db_data:/var/lib/postgresql/data
   adminer:

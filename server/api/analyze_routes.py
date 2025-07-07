@@ -155,7 +155,7 @@ def run_unique_terms(project_id):
             else "file-level-visualisations"
         )
         metadata = {
-            "analysis_sub_type": "umap",
+            "analysis_sub_type": "unique-terms",
             "analysis_level": "directory" if not file_level else "file",
             "directory_path": dir_path,
         }

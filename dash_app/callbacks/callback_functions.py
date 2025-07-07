@@ -9,6 +9,7 @@ from dash_app.utils.plots import (
     create_umap_plot,
     create_unique_term_count_plot_by_file,
 )
+from dash_app.utils.metadata import format_metadata_rows
 
 
 def get_filter_options(data_path, runs_or_files="runs"):
@@ -192,6 +193,52 @@ def _parse_response_as_table(response):
     df = pl.read_parquet(io.BytesIO(response.content))
     columns = [{"name": col, "id": col} for col in df.columns]
     return df.to_dicts(), columns
+
+
+def new_create_high_level_plot(switch_on, analysis_id):
+    response_metadata, error = make_api_call(
+        {}, f"analyses/{analysis_id}/metadata", "GET"
+    )
+    if error or response_metadata is None:
+        raise ValueError(
+            f"Was not able to retrieve metadata for analysis id {analysis_id}: {error}"
+        )
+
+    metadata = response_metadata.json()
+    analysis_type = metadata.get("analysis_sub_type")
+    analysis_level = metadata.get("analysis_level")
+
+    response, error = make_api_call({}, f"analyses/{analysis_id}", "GET")
+    if error or response is None:
+        raise ValueError(
+            f"Was not able to retrieve results for analysis id {analysis_id}: {error}"
+        )
+
+    df = pl.read_parquet(io.BytesIO(response.content))
+
+    theme = "plotly_white" if switch_on else "plotly_dark"
+    style = {
+        "resize": "both",
+        "overflow": "auto",
+        "minHeight": "500px",
+        "minWidth": "600px",
+        "width": "90%",
+    }
+
+    if analysis_type == "file-count":
+        fig = create_files_count_plot(df, theme)
+    elif analysis_type == "umap":
+        group_col = "run" if analysis_level == "directory" else "seq_id"
+        fig = create_umap_plot(df, group_col, theme)
+    else:
+        if analysis_level == "file":
+            fig = create_unique_term_count_plot_by_file(df, theme)
+        else:
+            fig = create_unique_term_count_plot(df, theme)
+
+    metadata_rows = format_metadata_rows(metadata)
+
+    return fig, style, metadata_rows
 
 
 def create_high_level_plot(

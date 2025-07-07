@@ -84,7 +84,7 @@ def run_analysis(
     }
 
     response, error = make_api_call(payload, f"{endpoint}/{project_id}")
-    if error:
+    if error or response is None:
         return (
             dash.no_update,
             error,

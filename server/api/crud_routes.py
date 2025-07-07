@@ -37,6 +37,9 @@ def create_project():
 @crud_bp.route("/projects/<int:project_id>/analyses", methods=["GET"])
 def get_analyses(project_id: int):
     project = db.session.get(Project, project_id)
+    if not project:
+        return jsonify({"error": f"No project found with id: {project_id}"}), 404
+
     result = [analysis.to_dict() for analysis in project.analyses]
     return jsonify(result)
 

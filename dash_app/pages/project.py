@@ -1,6 +1,6 @@
 import dash
 import dash_bootstrap_components as dbc
-from dash import Input, Output, State, callback, dcc, html
+from dash import Input, Output, callback, dcc, html
 from dash_app.callbacks.callback_functions import make_api_call
 from dash_app.components.layouts import create_project_layout
 
@@ -11,7 +11,11 @@ def layout(project_id=None, **kwargs):
     return [
         dbc.Container(dcc.Store(id="project-id", data=project_id))
     ] + create_project_layout(
-        "group-project", "error-toast-project", "success-toast-project"
+        "group-project",
+        project_id,
+        "nav-home",
+        "error-toast-project",
+        "success-toast-project",
     )
 
 
@@ -28,7 +32,7 @@ def get_projects(project_id):
         return ([], "No project id was provided", True, dash.no_update, False)
 
     response, error = make_api_call({}, f"projects/{project_id}/analyses", "GET")
-    if error:
+    if error or not response:
         return (dash.no_update, error, True, dash.no_update, False)
 
     analyses_data = response.json()
