@@ -130,13 +130,13 @@ def create_ano_line_level_layout(
 
 
 def create_datatable_layout(
-    form,
+    datatable_id,
+    metadata_table_id,
     error_toast_id,
     success_toast_id,
-    datatable_id,
 ):
 
-    form_row = dbc.Row(form)
+    metadata_row = dbc.Row(dbc.Table(id=metadata_table_id, hover=True, responsive=True))
 
     error_toast_row = dbc.Row(error_toast(error_toast_id))
     success_toast_row = dbc.Row(success_toast(success_toast_id))
@@ -175,7 +175,7 @@ def create_datatable_layout(
     )
 
     layout = [
-        dbc.Container([form_row, error_toast_row, success_toast_row]),
+        dbc.Container([metadata_row, error_toast_row, success_toast_row]),
         dbc.Container(data_table_row, fluid=True),
     ]
 

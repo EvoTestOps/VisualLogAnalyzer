@@ -118,6 +118,7 @@ def manual_test_train(project_id):
 
         metadata = {
             "train_data_path": train_data_path,
+            "analysis_sub_type": "anomaly-detection",
             "test_data_path": test_data_path,
             "vectorizer": str(vectorizer),
             "mask_type": mask_type,
@@ -280,6 +281,7 @@ def log_distance(project_id):
 
         metadata = {
             "analysis_level": "directory" if not file_level else "file",
+            "analysis_sub_type": "log-distance",
             "mask_type": mask_type,
             "vectorizer": str(vectorizer),
             "directory_path": dir_path,

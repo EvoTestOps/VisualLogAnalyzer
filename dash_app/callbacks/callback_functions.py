@@ -111,6 +111,7 @@ def populate_datatable(analysis_id):
             f"Was not able to retrieve metadata for analysis id {analysis_id}: {error}"
         )
     metadata = response_metadata.json()
+    project_id = metadata.get("project_id")
     metadata_rows = format_metadata_rows(metadata)
 
     response, error = make_api_call({}, f"analyses/{analysis_id}", "GET")
@@ -120,7 +121,7 @@ def populate_datatable(analysis_id):
         )
     df_dict, columns = _parse_response_as_table(response)
 
-    return df_dict, columns, metadata_rows
+    return df_dict, columns, metadata_rows, project_id
 
 
 def create_high_level_plot(switch_on, analysis_id):
