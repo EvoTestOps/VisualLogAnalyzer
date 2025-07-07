@@ -219,7 +219,7 @@ def create_umap(project_id):
         return handle_errors(project_id, "UMAP", e)
 
 
-@analyze_bp.route("/run-file-counts/<int:project_id>", methods=["POST"])
+@analyze_bp.route("/file-counts/<int:project_id>", methods=["POST"])
 def run_file_counts(project_id):
     validation_result = validate_request_data(FileCountsParams, request)
     if isinstance(validation_result, tuple):
@@ -246,7 +246,7 @@ def run_file_counts(project_id):
 
 
 @analyze_bp.route("/log-distance/<int:project_id>", methods=["POST"])
-def run_distance(project_id):
+def log_distance(project_id):
     validation_result = validate_request_data(LogDistanceParams, request)
     if isinstance(validation_result, tuple):
         return validation_result

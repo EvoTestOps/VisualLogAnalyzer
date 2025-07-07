@@ -10,7 +10,7 @@ from dash_app.callbacks.callback_functions import (
 
 dash.register_page(
     __name__,
-    path_template="/analysis/directory-level-visualisations/<analysis_id>",
+    path_template="/analysis/file-level-visualisations/<analysis_id>",
 )
 
 
@@ -18,29 +18,29 @@ def layout(analysis_id=None, **kwargs):
     layout = [
         dbc.Container(
             [
-                html.H3("Directory Level Visualisation"),
-                dcc.Store(id="analysis-id-ut-res", data=analysis_id),
+                html.H3("File Level Visualisation"),
+                dcc.Store(id="analysis-id-file-res", data=analysis_id),
             ]
         )
     ] + create_high_level_viz_result_layout(
-        "plot-content-ut-res",
-        "metadata-ut-res",
-        "error-toast-ut-res",
-        "success-toast-ut-res",
+        "plot-content-file-res",
+        "metadata-file-res",
+        "error-toast-file-res",
+        "success-toast-file-res",
     )
     return layout
 
 
 @callback(
-    Output("plot-content-ut-res", "figure"),
-    Output("plot-content-ut-res", "style"),
-    Output("metadata-ut-res", "children"),
-    Output("error-toast-ut-res", "children"),
-    Output("error-toast-ut-res", "is_open"),
-    Output("success-toast-ut-res", "children"),
-    Output("success-toast-ut-res", "is_open"),
+    Output("plot-content-file-res", "figure"),
+    Output("plot-content-file-res", "style"),
+    Output("metadata-file-res", "children"),
+    Output("error-toast-file-res", "children"),
+    Output("error-toast-file-res", "is_open"),
+    Output("success-toast-file-res", "children"),
+    Output("success-toast-file-res", "is_open"),
     Input("switch", "value"),
-    State("analysis-id-ut-res", "data"),
+    State("analysis-id-file-res", "data"),
 )
 def create_plot(switch_on, analysis_id):
     try:

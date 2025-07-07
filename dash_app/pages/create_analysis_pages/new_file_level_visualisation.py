@@ -5,44 +5,48 @@ import dash_bootstrap_components as dbc
 from dash import Input, Output, State, callback, dcc, html
 
 from dash_app.callbacks.callback_functions import run_high_level_analysis
-from dash_app.components.forms import directory_level_viz_form
+from dash_app.components.forms import file_level_viz_form
 from dash_app.components.toasts import error_toast, success_toast
 
 dash.register_page(
     __name__,
-    path="/analysis/directory-level-visualisations/create",
-    title="New Directory Level Visualisation",
+    path="/analysis/file-level-visualisations/create",
+    title="New File Level Visualisation",
 )
 
 
 def layout(**kwargs):
-    form = directory_level_viz_form(
-        "submit-ut", "directory-ut", "analysis-type-ut", "mask-ut", "vectorizer-ut"
+    form = file_level_viz_form(
+        "submit-file",
+        "directory-file",
+        "analysis-type-file",
+        "mask-file",
+        "vectorizer-file",
     )
 
     return [
         dbc.Container(
             [
-                html.H3("New Directory Level Visualisation"),
-                error_toast("error-toast-ut"),
-                success_toast("success-toast-ut"),
+                html.H3("New File Level Visualisation"),
+                error_toast("error-toast-file"),
+                success_toast("success-toast-file"),
                 dcc.Location(id="url", refresh=False),
-                dcc.Store(id="project-id-ut"),
+                dcc.Store(id="project-id-file"),
             ]
         ),
         dbc.Container(
             [
                 form,
-                dcc.Loading(dcc.Location(id="redirect-ut", refresh=True)),
+                dcc.Loading(dcc.Location(id="redirect-file", refresh=True)),
             ]
         ),
     ]
 
 
 @callback(
-    Output("project-id-ut", "data"),
-    Output("error-toast-ut", "children"),
-    Output("error-toast-ut", "is_open"),
+    Output("project-id-file", "data"),
+    Output("error-toast-file", "children"),
+    Output("error-toast-file", "is_open"),
     Input("url", "search"),
 )
 def get_project_id(search):
@@ -56,23 +60,22 @@ def get_project_id(search):
 
 
 @callback(
-    Output("redirect-ut", "href"),
-    Output("error-toast-ut", "children", allow_duplicate=True),
-    Output("error-toast-ut", "is_open", allow_duplicate=True),
-    Output("success-toast-ut", "children"),
-    Output("success-toast-ut", "is_open"),
-    Input("submit-ut", "n_clicks"),
-    State("project-id-ut", "data"),
-    State("directory-ut", "value"),
-    State("analysis-type-ut", "value"),
-    State("mask-ut", "value"),
-    State("vectorizer-ut", "value"),
+    Output("redirect-file", "href"),
+    Output("error-toast-file", "children", allow_duplicate=True),
+    Output("error-toast-file", "is_open", allow_duplicate=True),
+    Output("success-toast-file", "children"),
+    Output("success-toast-file", "is_open"),
+    Input("submit-file", "n_clicks"),
+    State("project-id-file", "data"),
+    State("directory-file", "value"),
+    State("analysis-type-file", "value"),
+    State("mask-file", "value"),
+    State("vectorizer-file", "value"),
     prevent_initial_call=True,
 )
 def run_analysis(
     n_clicks, project_id, directory_path, analysis_type, mask_type, vectorizer_type
 ):
-
     try:
         result = run_high_level_analysis(
             project_id,
@@ -80,7 +83,7 @@ def run_analysis(
             analysis_type,
             mask_type,
             vectorizer_type,
-            level="directory",
+            level="file",
         )
         return (
             f"/dash/analysis/{result['type']}/{result['id']}",
