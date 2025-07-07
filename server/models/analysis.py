@@ -9,9 +9,8 @@ class Analysis(db.Model):
 
     results_path = db.Column(db.String, nullable=False)
     analysis_type = db.Column(db.String, nullable=False)
-
-    analysis_level = db.Column(db.String)
-    analysis_sub_type = db.Column(db.String)
+    analysis_sub_type = db.Column(db.String, nullable=False)
+    analysis_level = db.Column(db.String, nullable=False)
 
     mask_type = db.Column(db.String)
     vectorizer = db.Column(db.String)

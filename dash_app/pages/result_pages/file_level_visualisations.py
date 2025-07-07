@@ -18,7 +18,21 @@ def layout(analysis_id=None, **kwargs):
     layout = [
         dbc.Container(
             [
-                html.H3("File Level Visualisation"),
+                dbc.Row(
+                    [
+                        dbc.Col(html.H3("File Level Visualisation")),
+                        dbc.Col(
+                            dcc.Link(
+                                "Back to project",
+                                id="project-link-file-res",
+                                # Not an ideal solution since if link is clicked before
+                                #  analysis is run it will not redirect corretly
+                                href="/dash/project",
+                            ),
+                            className="d-flex justify-content-end",
+                        ),
+                    ]
+                ),
                 dcc.Store(id="analysis-id-file-res", data=analysis_id),
             ]
         )
@@ -35,6 +49,7 @@ def layout(analysis_id=None, **kwargs):
     Output("plot-content-file-res", "figure"),
     Output("plot-content-file-res", "style"),
     Output("metadata-file-res", "children"),
+    Output("project-link-file-res", "href"),
     Output("error-toast-file-res", "children"),
     Output("error-toast-file-res", "is_open"),
     Output("success-toast-file-res", "children"),
@@ -44,11 +59,14 @@ def layout(analysis_id=None, **kwargs):
 )
 def create_plot(switch_on, analysis_id):
     try:
-        fig, style, metadata_rows = create_high_level_plot(switch_on, analysis_id)
+        fig, style, metadata_rows, project_id = create_high_level_plot(
+            switch_on, analysis_id
+        )
         return (
             fig,
             style,
             [html.Tbody(metadata_rows)],
+            f"/dash/project/{project_id}",
             dash.no_update,
             False,
             dash.no_update,
@@ -56,6 +74,7 @@ def create_plot(switch_on, analysis_id):
         )
     except ValueError as e:
         return (
+            dash.no_update,
             dash.no_update,
             dash.no_update,
             dash.no_update,

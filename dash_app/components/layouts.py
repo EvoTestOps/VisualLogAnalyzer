@@ -16,17 +16,18 @@ def create_root_layout():
                     [
                         html.H2(
                             "Visual Log Analyzer",
-                            style={"textAlign": "center"},
                         ),
+                        nav(),
                     ],
-                    class_name="p-3",
+                    class_name="d-flex align-items-center",
+                    width="auto",
                 ),
-                dbc.Col(nav(), width=6, class_name="d-flex align-items-center"),
                 dbc.Col(
                     color_mode_switch(),
                     class_name="d-flex justify-content-end align-items-center",
                 ),
             ],
+            class_name="border-bottom border-secondary-subtle mb-3 mt-3",
         ),
     )
 
