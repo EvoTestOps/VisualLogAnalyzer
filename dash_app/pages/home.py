@@ -33,7 +33,7 @@ layout = [dbc.Container(dcc.Store(id="refresh-proj", data=False))] + create_home
 )
 def get_projects(id, refresh):
     response, error = make_api_call({}, "projects", "GET")
-    if error:
+    if error or not response:
         return (dash.no_update, error, True, dash.no_update, False)
 
     project_data = response.json()
