@@ -10,7 +10,7 @@ from dash_app.callbacks.callback_functions import (
 
 dash.register_page(
     __name__,
-    path_template="/analysis/distance-directory-level/<analysis_id>",
+    path_template="/analysis/distance-file-level/<analysis_id>",
 )
 
 
@@ -20,39 +20,39 @@ def layout(analysis_id=None, **kwargs):
             [
                 dbc.Row(
                     [
-                        dbc.Col(html.H3("Distance Directory Level")),
+                        dbc.Col(html.H3("Distance File Level")),
                         dbc.Col(
                             dcc.Link(
                                 "Back to project",
-                                id="project-link-dis-res",
+                                id="project-link-dis-res-file",
                                 href="/dash/project",
                             ),
                             className="d-flex justify-content-end",
                         ),
                     ]
                 ),
-                dcc.Store(id="analysis-id-dis-res", data=analysis_id),
+                dcc.Store(id="analysis-id-dis-res-file", data=analysis_id),
             ],
         )
     ] + create_datatable_layout(
-        "datatable-dis-res",
-        "metadata-dis-res",
-        "error-toast-dis-res",
-        "success-toast-dis-res",
+        "datatable-dis-res-file",
+        "metadata-dis-res-file",
+        "error-toast-dis-res-file",
+        "success-toast-dis-res-file",
     )
     return layout
 
 
 @callback(
-    Output("datatable-dis-res", "data"),
-    Output("datatable-dis-res", "columns"),
-    Output("metadata-dis-res", "children"),
-    Output("project-link-dis-res", "href"),
-    Output("error-toast-dis-res", "children"),
-    Output("error-toast-dis-res", "is_open"),
-    Output("success-toast-dis-res", "children"),
-    Output("success-toast-dis-res", "is_open"),
-    Input("analysis-id-dis-res", "data"),
+    Output("datatable-dis-res-file", "data"),
+    Output("datatable-dis-res-file", "columns"),
+    Output("metadata-dis-res-file", "children"),
+    Output("project-link-dis-res-file", "href"),
+    Output("error-toast-dis-res-file", "children"),
+    Output("error-toast-dis-res-file", "is_open"),
+    Output("success-toast-dis-res-file", "children"),
+    Output("success-toast-dis-res-file", "is_open"),
+    Input("analysis-id-dis-res-file", "data"),
 )
 def populate_table(analysis_id):
     try:
