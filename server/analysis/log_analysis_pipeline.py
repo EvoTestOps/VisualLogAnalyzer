@@ -75,6 +75,9 @@ class ManualTrainTestPipeline:
     def _analyze_grouped_by_file(
         self, df_train, df_test, common_file_names: list[str]
     ) -> pl.DataFrame:
+        if not common_file_names or len(common_file_names) == 0:
+            raise ValueError("No common file names found. Try changing settings.")
+
         analyzer = LogAnalyzer(item_list_col=self._item_list_col)
 
         results = []
