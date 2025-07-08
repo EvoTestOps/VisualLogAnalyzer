@@ -1,38 +1,28 @@
-import dash
-import dash_bootstrap_components as dbc
-from dash import Dash, html
 from flask import Flask
 
-from api.routes import analyze_bp
-from api.dash_redirects import dash_redirects_bp
-from dash_app.callbacks.color_switch_callback import color_switch_callback
-from dash_app.components.layouts import create_root_layout
+from dash_app import create_dash_app
+from server.config import Config
+from server.extensions import db
+
+from server.models import settings, analysis, project
+from server.api.dash_redirects import dash_redirects_bp
+from server.api.analyze_routes import analyze_bp
+from server.api.crud_routes import crud_bp
 
 
-dbc_css = "https://cdn.jsdelivr.net/gh/AnnMarieW/dash-bootstrap-templates/dbc.min.css"
+def create_app():
+    server = Flask(__name__)
+    server.config.from_object(Config)
 
-server = Flask(__name__)
-server.register_blueprint(analyze_bp, url_prefix="/api")
-server.register_blueprint(dash_redirects_bp)
+    db.init_app(server)
 
-dash_app = Dash(
-    __name__,
-    server=server,
-    url_base_pathname="/dash/",
-    use_pages=True,
-    pages_folder="dash_app/pages",
-    external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.icons.FONT_AWESOME, dbc_css],
-)
+    server.register_blueprint(analyze_bp, url_prefix="/api")
+    server.register_blueprint(crud_bp, url_prefix="/api")
+    server.register_blueprint(dash_redirects_bp)
 
-dash_app.layout = html.Div(
-    [
-        create_root_layout(),
-        dash.page_container,
-    ]
-)
+    create_dash_app(server)
 
-color_switch_callback()
+    with server.app_context():
+        db.create_all()
 
-
-if __name__ == "__main__":
-    server.run(debug=True)
+    return server

@@ -1,10 +1,10 @@
 import polars as pl
-from services.loader import Loader
-from services.enhancer import Enhancer
-from services.log_analyzer import LogAnalyzer
-from utils.data_filtering import filter_runs, filter_files
-from utils.run_level_analysis import aggregate_run_level
-from utils.file_level_analysis import (
+from server.analysis.loader import Loader
+from server.analysis.enhancer import Enhancer
+from server.analysis.log_analyzer import LogAnalyzer
+from .utils.data_filtering import filter_runs, filter_files
+from .utils.run_level_analysis import aggregate_run_level
+from .utils.file_level_analysis import (
     aggregate_file_level,
     aggregate_file_level_with_file_names,
 )
@@ -75,6 +75,9 @@ class ManualTrainTestPipeline:
     def _analyze_grouped_by_file(
         self, df_train, df_test, common_file_names: list[str]
     ) -> pl.DataFrame:
+        if not common_file_names or len(common_file_names) == 0:
+            raise ValueError("No common file names found. Try changing settings.")
+
         analyzer = LogAnalyzer(item_list_col=self._item_list_col)
 
         results = []

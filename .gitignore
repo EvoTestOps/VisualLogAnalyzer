@@ -7,3 +7,4 @@ __pycache__/
 venv
 pyrightconfig.json
 result/
+analysis_results

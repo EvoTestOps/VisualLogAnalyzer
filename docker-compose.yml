@@ -1,0 +1,32 @@
+services:
+  app:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./log_data/:/app/log_data/
+      - ./analysis_results/:/app/analysis_results
+      - .:/app
+    environment:
+      DB_URL: "postgresql://postgres:postgres@db:5432/postgres"
+      LOG_DATA_DIRECTORY: "./log_data/"
+      RESULTS_DIRECTORY: "./analysis_results/"
+      FLASK_DEBUG: 1
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+      TZ: Europe/Helsinki
+      PGTZ: Europe/Helsinki
+    volumes:
+      - db_data:/var/lib/postgresql/data
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8081:8080
+
+volumes:
+  db_data:

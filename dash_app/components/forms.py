@@ -1,18 +1,20 @@
 import dash_bootstrap_components as dbc
+
 from dash_app.components.form_inputs import (
-    log_format_input,
-    directory_input,
     detectors_unsupervised_input,
+    directory_input,
     enhancement_input,
-    submit_button,
-    train_data_input,
-    test_data_input,
+    files_filter_input,
+    log_format_input,
+    mask_input,
+    name_input,
     runs_filter_input,
+    submit_button,
+    target_run_input,
     terms_files_input,
     terms_umap_input,
-    files_filter_input,
-    target_run_input,
-    mask_input,
+    test_data_input,
+    train_data_input,
     vectorizer_input,
 )
 
@@ -259,6 +261,25 @@ def distance_file_level_form(
             dbc.Row(dbc.Col(submit_btn, class_name="text-end")),
         ],
         class_name="border border-primary-subtle border-2 p-3",
+    )
+
+    return form
+
+
+def project_form(submit_id, name_id):
+    submit_btn = submit_button(submit_id, "Create")
+    form = dbc.Form(
+        [
+            dbc.Row(
+                [
+                    name_input((name_id)),
+                    dbc.Col(
+                        submit_btn,
+                        class_name="d-flex justify-content-end align-middle align-items-end",
+                    ),
+                ]
+            )
+        ]
     )
 
     return form
