@@ -1,20 +1,21 @@
 import dash_bootstrap_components as dbc
+
 from dash_app.components.form_inputs import (
-    log_format_input,
-    directory_input,
     detectors_unsupervised_input,
+    directory_input,
     enhancement_input,
-    submit_button,
-    train_data_input,
-    test_data_input,
+    files_filter_input,
+    log_format_input,
+    mask_input,
+    name_input,
     runs_filter_input,
+    submit_button,
+    target_run_input,
     terms_files_input,
     terms_umap_input,
-    files_filter_input,
-    target_run_input,
-    mask_input,
+    test_data_input,
+    train_data_input,
     vectorizer_input,
-    name_input,
 )
 
 

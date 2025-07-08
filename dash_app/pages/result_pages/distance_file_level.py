@@ -45,7 +45,8 @@ def layout(analysis_id=None, **kwargs):
 )
 def populate_table(analysis_id):
     try:
-        df_dict, columns, metadata_rows, project_id = populate_datatable(analysis_id)
+        df_dict, columns, metadata_rows, project_id = populate_datatable(
+            analysis_id)
 
         return (
             df_dict,

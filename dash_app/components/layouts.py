@@ -1,13 +1,12 @@
 import dash_bootstrap_components as dbc
-from dash import dcc, html, dash_table
+from dash import dash_table, dcc, html
+
 from dash_app.components.color_mode_switch import color_mode_switch
-from dash_app.components.nav import nav
-from dash_app.components.toasts import error_toast, success_toast
 from dash_app.components.form_inputs import submit_button
-from dash_app.components.nav import crate_analysis_nav
+from dash_app.components.nav import crate_analysis_nav, nav
+from dash_app.components.toasts import error_toast, success_toast
 
 
-# TODO: naming is all over the place at the moment
 def create_root_layout():
     return dbc.Container(
         dbc.Row(
@@ -45,7 +44,8 @@ def create_ano_line_level_result_layout(
     error_toast_row = dbc.Row(error_toast(error_toast_id))
     success_toast_row = dbc.Row(success_toast(success_toast_id))
 
-    metadata_row = dbc.Row(dbc.Table(id=metadata_table_id, hover=True, responsive=True))
+    metadata_row = dbc.Row(
+        dbc.Table(id=metadata_table_id, hover=True, responsive=True))
 
     plot_selector_row = dbc.Row(
         dcc.Loading(
@@ -135,7 +135,8 @@ def create_datatable_layout(
     success_toast_id,
 ):
 
-    metadata_row = dbc.Row(dbc.Table(id=metadata_table_id, hover=True, responsive=True))
+    metadata_row = dbc.Row(
+        dbc.Table(id=metadata_table_id, hover=True, responsive=True))
 
     error_toast_row = dbc.Row(error_toast(error_toast_id))
     success_toast_row = dbc.Row(success_toast(success_toast_id))
@@ -270,7 +271,8 @@ def create_project_layout(
     error_toast_row = dbc.Row(error_toast(error_toast_id))
     success_toast_row = dbc.Row(success_toast(success_toast_id))
 
-    group_col = dbc.Col(dbc.ListGroup(id=group_id), class_name="mb-3 mt-3", width=8)
+    group_col = dbc.Col(dbc.ListGroup(id=group_id),
+                        class_name="mb-3 mt-3", width=8)
     nav_col = dbc.Col(crate_analysis_nav(project_id, nav_id))
 
     layout = [
@@ -295,7 +297,8 @@ def create_high_level_viz_result_layout(
     error_toast_row = dbc.Row(error_toast(error_toast_id))
     success_toast_row = dbc.Row(success_toast(success_toast_id))
 
-    table_row = dbc.Row(dbc.Table(id=metadata_table_id, hover=True, responsive=True))
+    table_row = dbc.Row(dbc.Table(id=metadata_table_id,
+                        hover=True, responsive=True))
 
     plot_row = dbc.Row(
         dcc.Loading(

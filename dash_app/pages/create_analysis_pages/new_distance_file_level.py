@@ -39,7 +39,8 @@ def layout(**kwargs):
         dbc.Container(
             [
                 form,
-                dcc.Loading(dcc.Location(id="redirect-dis-file", refresh=True)),
+                dcc.Loading(dcc.Location(
+                    id="redirect-dis-file", refresh=True)),
             ]
         ),
     ]

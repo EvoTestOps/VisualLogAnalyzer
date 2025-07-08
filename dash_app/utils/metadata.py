@@ -31,14 +31,16 @@ def format_metadata_rows(metadata):
 
 
 def format_analysis_overview(analyses_data):
-    analyses_data = sorted(analyses_data, key=lambda d: d["time_created"], reverse=True)
+    analyses_data = sorted(
+        analyses_data, key=lambda d: d["time_created"], reverse=True)
     group_items = [
         dbc.ListGroupItem(
             [
                 html.Div(
                     [
                         html.H4(
-                            _format_key(analysis["analysis_sub_type"], divider="-"),
+                            _format_key(
+                                analysis["analysis_sub_type"], divider="-"),
                             className="mb-0",
                         ),
                         html.P(_format_iso_time(analysis["time_created"])),
@@ -57,7 +59,8 @@ def format_analysis_overview(analyses_data):
 
 
 def format_project_overview(project_data):
-    project_data = sorted(project_data, key=lambda d: d["time_created"], reverse=True)
+    project_data = sorted(
+        project_data, key=lambda d: d["time_created"], reverse=True)
     group_items = [
         dbc.ListGroupItem(
             [

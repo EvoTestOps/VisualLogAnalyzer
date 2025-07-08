@@ -32,7 +32,8 @@ def get_projects(project_id):
     if not project_id:
         return ([], "No project id was provided", True, dash.no_update, False)
 
-    response, error = make_api_call({}, f"projects/{project_id}/analyses", "GET")
+    response, error = make_api_call(
+        {}, f"projects/{project_id}/analyses", "GET")
     if error or not response:
         return (dash.no_update, error, True, dash.no_update, False)
 

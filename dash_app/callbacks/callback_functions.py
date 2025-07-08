@@ -93,7 +93,8 @@ def run_anomaly_detection(
         level,
     )
 
-    response, error = make_api_call(json_payload, f"manual-test-train/{project_id}")
+    response, error = make_api_call(
+        json_payload, f"manual-test-train/{project_id}")
     if error or response is None:
         raise ValueError(
             f"Was not able to run analysis for project {project_id}: {error}"
