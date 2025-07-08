@@ -1,6 +1,9 @@
+from urllib.parse import parse_qs
+
 import dash
 import dash_bootstrap_components as dbc
 from dash import Input, Output, callback, dcc
+
 from dash_app.callbacks.callback_functions import make_api_call
 from dash_app.components.layouts import create_project_layout
 from dash_app.utils.metadata import format_analysis_overview
@@ -10,14 +13,32 @@ dash.register_page(__name__, path_template="/project/<project_id>")
 
 def layout(project_id=None, **kwargs):
     return [
-        dbc.Container(dcc.Store(id="project-id", data=project_id))
+        dbc.Container(
+            [
+                dcc.Store(id="project-id", data=project_id),
+                dcc.Location(id="url", refresh=False),
+            ]
+        ),
     ] + create_project_layout(
         "group-project",
+        "project-name",
         project_id,
         "nav-home",
         "error-toast-project",
         "success-toast-project",
     )
+
+
+@callback(
+    Output("project-name", "children"),
+    Input("url", "search"),
+)
+def get_project_id(search):
+    query = parse_qs(search.lstrip("?"))
+
+    name = query.get("project_name", [None])[0]
+
+    return name if name else ""
 
 
 @callback(
@@ -32,8 +53,7 @@ def get_projects(project_id):
     if not project_id:
         return ([], "No project id was provided", True, dash.no_update, False)
 
-    response, error = make_api_call(
-        {}, f"projects/{project_id}/analyses", "GET")
+    response, error = make_api_call({}, f"projects/{project_id}/analyses", "GET")
     if error or not response:
         return (dash.no_update, error, True, dash.no_update, False)
 

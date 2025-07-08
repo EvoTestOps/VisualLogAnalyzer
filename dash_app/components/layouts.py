@@ -44,8 +44,7 @@ def create_ano_line_level_result_layout(
     error_toast_row = dbc.Row(error_toast(error_toast_id))
     success_toast_row = dbc.Row(success_toast(success_toast_id))
 
-    metadata_row = dbc.Row(
-        dbc.Table(id=metadata_table_id, hover=True, responsive=True))
+    metadata_row = dbc.Row(dbc.Table(id=metadata_table_id, hover=True, responsive=True))
 
     plot_selector_row = dbc.Row(
         dcc.Loading(
@@ -135,8 +134,7 @@ def create_datatable_layout(
     success_toast_id,
 ):
 
-    metadata_row = dbc.Row(
-        dbc.Table(id=metadata_table_id, hover=True, responsive=True))
+    metadata_row = dbc.Row(dbc.Table(id=metadata_table_id, hover=True, responsive=True))
 
     error_toast_row = dbc.Row(error_toast(error_toast_id))
     success_toast_row = dbc.Row(success_toast(success_toast_id))
@@ -265,26 +263,32 @@ def create_home_layout(
 
 
 def create_project_layout(
-    group_id, project_id, nav_id, error_toast_id, success_toast_id
+    group_id, project_name_id, project_id, nav_id, error_toast_id, success_toast_id
 ):
 
     error_toast_row = dbc.Row(error_toast(error_toast_id))
     success_toast_row = dbc.Row(success_toast(success_toast_id))
 
-    group_col = dbc.Col(dbc.ListGroup(id=group_id),
-                        class_name="mb-3 mt-3", width=8)
+    header_row = dbc.Row(
+        [
+            dbc.Col(html.H3(id=project_name_id), width=4),
+            dbc.Col(html.H3("Analyses", className="text-end"), width=4),
+        ]
+    )
+
+    group_col = dbc.Col(
+        dbc.ListGroup(id=group_id), class_name="mb-3 mt-3 ps-0 ms-0", width=8
+    )
     nav_col = dbc.Col(crate_analysis_nav(project_id, nav_id))
 
     layout = [
         dbc.Container(
-            dbc.Row(
-                [
-                    dbc.Col(html.H3("Analyses")),
-                ]
-            )
-        ),
-        dbc.Container(
-            [dbc.Row([group_col, nav_col]), error_toast_row, success_toast_row]
+            [
+                error_toast_row,
+                success_toast_row,
+                header_row,
+                dbc.Row([group_col, nav_col]),
+            ]
         ),
     ]
 
@@ -297,8 +301,7 @@ def create_high_level_viz_result_layout(
     error_toast_row = dbc.Row(error_toast(error_toast_id))
     success_toast_row = dbc.Row(success_toast(success_toast_id))
 
-    table_row = dbc.Row(dbc.Table(id=metadata_table_id,
-                        hover=True, responsive=True))
+    table_row = dbc.Row(dbc.Table(id=metadata_table_id, hover=True, responsive=True))
 
     plot_row = dbc.Row(
         dcc.Loading(

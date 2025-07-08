@@ -21,7 +21,7 @@ dash.register_page(
 
 def layout(analysis_id=None, **kwargs):
     base = create_result_base_layout(
-        "Anomaly Detection Line Leve",
+        "Anomaly Detection Line Level",
         analysis_id,
         "project-link-ano-line-res",
         "analysis-id-ano-line-res",
@@ -84,8 +84,7 @@ def generate_dropdown_and_metadata(encoded_df, analysis_id):
     df = pl.read_parquet(io.BytesIO(decoded_df))
     options = get_options(df)
 
-    response, error = make_api_call(
-        {}, f"analyses/{analysis_id}/metadata", "GET")
+    response, error = make_api_call({}, f"analyses/{analysis_id}/metadata", "GET")
 
     if error or response is None:
         return dash.no_update, str(error), True

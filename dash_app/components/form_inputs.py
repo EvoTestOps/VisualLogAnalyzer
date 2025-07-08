@@ -10,7 +10,7 @@ def log_format_input(id):
                 id=id,
                 options=[
                     {"label": "Raw", "value": "raw"},
-                    {"label": "LO2", "value": "lo2"},
+                    # {"label": "LO2", "value": "lo2"},
                 ],
                 value="raw",
             ),
@@ -35,8 +35,7 @@ def directory_input(id):
 def train_data_input(id):
     return dbc.Col(
         [
-            dbc.Label("Directory path to train data",
-                      html_for=id, width="auto"),
+            dbc.Label("Directory path to train data", html_for=id, width="auto"),
             dbc.Input(
                 type="text",
                 id=id,
@@ -49,8 +48,7 @@ def train_data_input(id):
 def test_data_input(id):
     return dbc.Col(
         [
-            dbc.Label("Directory path to test data",
-                      html_for=id, width="auto"),
+            dbc.Label("Directory path to test data", html_for=id, width="auto"),
             dbc.Input(
                 type="text",
                 id=id,
@@ -118,8 +116,7 @@ def submit_button(id, label):
 def runs_filter_input(id):
     return dbc.Col(
         [
-            dbc.Label("Runs to include in test data",
-                      html_for=id, width="auto"),
+            dbc.Label("Runs to include in test data", html_for=id, width="auto"),
             dcc.Dropdown(
                 multi=True,
                 id=id,
@@ -135,8 +132,7 @@ def runs_filter_input(id):
 def files_filter_input(id):
     return dbc.Col(
         [
-            dbc.Label("Files to include in test data",
-                      html_for=id, width="auto"),
+            dbc.Label("Files to include in test data", html_for=id, width="auto"),
             dcc.Dropdown(
                 multi=True,
                 id=id,
