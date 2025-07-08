@@ -1,4 +1,5 @@
 from datetime import datetime
+from urllib.parse import parse_qs
 
 import dash_bootstrap_components as dbc
 from dash import html
@@ -76,3 +77,10 @@ def format_project_overview(project_data):
         for project in project_data
     ]
     return group_items
+
+
+def parse_query_parameter(search, param_name):
+    query = parse_qs(search.lstrip("?"))
+    result = query.get(param_name, [None])[0]
+
+    return result

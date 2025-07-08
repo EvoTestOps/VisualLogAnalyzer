@@ -1,5 +1,3 @@
-from urllib.parse import parse_qs
-
 import dash
 import dash_bootstrap_components as dbc
 from dash import Input, Output, State, callback, dcc, html
@@ -7,6 +5,7 @@ from dash import Input, Output, State, callback, dcc, html
 from dash_app.callbacks.callback_functions import run_high_level_analysis
 from dash_app.components.forms import file_level_viz_form
 from dash_app.components.toasts import error_toast, success_toast
+from dash_app.utils.metadata import parse_query_parameter
 
 dash.register_page(
     __name__,
@@ -50,9 +49,7 @@ def layout(**kwargs):
     Input("url", "search"),
 )
 def get_project_id(search):
-    query = parse_qs(search.lstrip("?"))
-
-    id = query.get("project_id", [None])[0]
+    id = parse_query_parameter(search, "project_id")
     if not id:
         return None, "No project id provided. The analysis will fail.", True
 

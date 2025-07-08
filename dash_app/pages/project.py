@@ -1,12 +1,10 @@
-from urllib.parse import parse_qs
-
 import dash
 import dash_bootstrap_components as dbc
 from dash import Input, Output, callback, dcc
 
 from dash_app.callbacks.callback_functions import make_api_call
 from dash_app.components.layouts import create_project_layout
-from dash_app.utils.metadata import format_analysis_overview
+from dash_app.utils.metadata import format_analysis_overview, parse_query_parameter
 
 dash.register_page(__name__, path_template="/project/<project_id>")
 
@@ -34,9 +32,7 @@ def layout(project_id=None, **kwargs):
     Input("url", "search"),
 )
 def get_project_id(search):
-    query = parse_qs(search.lstrip("?"))
-
-    name = query.get("project_name", [None])[0]
+    name = parse_query_parameter(search, "project_name")
 
     return name if name else ""
 
