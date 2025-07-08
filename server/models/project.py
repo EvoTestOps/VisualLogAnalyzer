@@ -1,5 +1,6 @@
-from server.extensions import db
 from sqlalchemy.sql import func
+
+from server.extensions import db
 
 
 class Project(db.Model):
@@ -25,6 +26,7 @@ class Project(db.Model):
             "time_updated": (
                 self.time_updated.isoformat() if self.time_updated else None
             ),
+            "analyses_count": len(self.analyses),
         }
 
         if include_analyses:

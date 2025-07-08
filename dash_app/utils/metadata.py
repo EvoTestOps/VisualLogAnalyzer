@@ -1,6 +1,7 @@
 from datetime import datetime
-from dash import html
+
 import dash_bootstrap_components as dbc
+from dash import html
 
 
 def _format_key(key, divider="_"):
@@ -10,7 +11,7 @@ def _format_key(key, divider="_"):
 def _format_iso_time(timestamp: str):
     try:
         datetime_obj = datetime.fromisoformat(timestamp)
-        return datetime_obj.strftime("%d.%m.%Y %H:%M:%S")
+        return datetime_obj.strftime("%d.%m.%Y %H:%M")
     except ValueError:
         return timestamp
 
@@ -18,6 +19,9 @@ def _format_iso_time(timestamp: str):
 def format_metadata_rows(metadata):
     metadata_rows = []
     for key, value in metadata.items():
+        if key in ("time_created", "time_updated"):
+            value = _format_iso_time(value)
+
         display_value = (
             value if value is not None else "-"
         )  # there shouldn't be any none values
@@ -49,4 +53,26 @@ def format_analysis_overview(analyses_data):
         for analysis in analyses_data
     ]
 
+    return group_items
+
+
+def format_project_overview(project_data):
+    project_data = sorted(project_data, key=lambda d: d["time_created"], reverse=True)
+    group_items = [
+        dbc.ListGroupItem(
+            [
+                html.Div(
+                    [
+                        html.H4(project["name"], className="mb-0"),
+                        html.P(_format_iso_time(project["time_created"])),
+                    ],
+                    className="d-flex justify-content-between align-items-center",
+                ),
+                html.P(f"Amount of analyses: {(project['analyses_count'])}"),
+            ],
+            href=f"/dash/project/{project['id']}",
+            class_name="pb-3 pt-3",
+        )
+        for project in project_data
+    ]
     return group_items

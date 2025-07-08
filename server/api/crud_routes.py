@@ -1,12 +1,13 @@
-from flask import Blueprint, jsonify, request, Response
-from sqlalchemy.inspection import inspect
 import io
 import logging
+
+from flask import Blueprint, Response, jsonify, request
 from pydantic import ValidationError
+from sqlalchemy.inspection import inspect
 
 from server.extensions import db
-from server.models.project import Project
 from server.models.analysis import Analysis
+from server.models.project import Project
 
 from .validator_models.crud_params import ProjectParams
 
@@ -82,5 +83,11 @@ def get_analysis_metadata(analysis_id: int):
         for attr in attributes
         if getattr(analysis, attr.key) is not None and attr.key != "project"
     }
+
+    if "time_created" in metadata:
+        metadata["time_created"] = analysis.time_created.isoformat()
+
+    if "time_updated" in metadata:
+        metadata["time_updated"] = analysis.time_updated.isoformat()
 
     return jsonify(metadata)

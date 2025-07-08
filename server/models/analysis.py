@@ -1,5 +1,6 @@
-from server.extensions import db
 from sqlalchemy.sql import func
+
+from server.extensions import db
 
 
 class Analysis(db.Model):

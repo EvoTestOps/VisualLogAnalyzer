@@ -1,6 +1,8 @@
-from pydantic import ValidationError
 import logging
+
 from flask import jsonify
+from pydantic import ValidationError
+
 from server.analysis.loader import Loader
 from server.services.analysis_service import add_result
 

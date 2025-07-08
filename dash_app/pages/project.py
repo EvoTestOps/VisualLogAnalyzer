@@ -1,6 +1,6 @@
 import dash
 import dash_bootstrap_components as dbc
-from dash import Input, Output, callback, dcc, html
+from dash import Input, Output, callback, dcc
 from dash_app.callbacks.callback_functions import make_api_call
 from dash_app.components.layouts import create_project_layout
 from dash_app.utils.metadata import format_analysis_overview

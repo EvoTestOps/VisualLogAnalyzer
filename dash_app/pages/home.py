@@ -1,9 +1,11 @@
 import dash
 import dash_bootstrap_components as dbc
-from dash import Input, Output, State, callback, dcc, html
+from dash import Input, Output, State, callback, dcc
+
 from dash_app.callbacks.callback_functions import make_api_call
-from dash_app.components.layouts import create_home_layout
 from dash_app.components.forms import project_form
+from dash_app.components.layouts import create_home_layout
+from dash_app.utils.metadata import format_project_overview
 
 dash.register_page(__name__, path="/", title="Home")
 
@@ -39,21 +41,7 @@ def get_projects(id, refresh):
     project_data = response.json()
 
     if project_data:
-        # TODO: Change timestamp format
-        group_items = [
-            dbc.ListGroupItem(
-                html.Div(
-                    [
-                        html.H4(project["name"], className="mb-0"),
-                        html.Small(project["time_created"]),
-                    ],
-                    className="d-flex justify-content-between align-items-center",
-                ),
-                href=f"/dash/project/{project['id']}",
-                class_name="pb-3 pt-3",
-            )
-            for project in project_data
-        ]
+        group_items = format_project_overview(project_data)
     else:
         group_items = [dbc.ListGroupItem("No projects found")]
 
