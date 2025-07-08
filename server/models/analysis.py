@@ -35,11 +35,19 @@ class Analysis(db.Model):
     def to_dict(self):
         return {
             "id": self.id,
-            "results_path": self.results_path,
+            "project_id": self.project_id,
             "analysis_type": self.analysis_type,
             "analysis_sub_type": self.analysis_sub_type,
             "analysis_level": self.analysis_level,
-            "project_id": self.project_id,
+            "directory_path": self.directory_path,
+            "train_data_path": self.train_data_path,
+            "test_data_path": self.test_data_path,
+            "models": self.models,
+            "enhancement": self.enhancement,
+            "target": self.target,
+            "field": self.item_list_col,
+            "mask_type": self.mask_type,
+            "results_path": self.results_path,
             "time_created": (
                 self.time_created.isoformat() if self.time_created else None
             ),

@@ -121,6 +121,7 @@ def manual_test_train(project_id):
             "analysis_sub_type": "anomaly-detection",
             "test_data_path": test_data_path,
             "vectorizer": str(vectorizer),
+            "item_list_col": item_list_col,
             "mask_type": mask_type,
             "models": ";".join(models),
             "analysis_level": level,

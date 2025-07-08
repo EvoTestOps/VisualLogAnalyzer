@@ -76,18 +76,6 @@ def get_analysis_metadata(analysis_id: int):
     if not analysis:
         return jsonify({"error": f"Analysis not found. Id: {analysis_id}"}), 404
 
-    attributes = inspect(analysis).attrs
-
-    metadata = {
-        attr.key: getattr(analysis, attr.key)
-        for attr in attributes
-        if getattr(analysis, attr.key) is not None and attr.key != "project"
-    }
-
-    if "time_created" in metadata:
-        metadata["time_created"] = analysis.time_created.isoformat()
-
-    if "time_updated" in metadata:
-        metadata["time_updated"] = analysis.time_updated.isoformat()
+    metadata = {key: val for (key, val) in analysis.to_dict().items() if val}
 
     return jsonify(metadata)

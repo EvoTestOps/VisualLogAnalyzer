@@ -18,6 +18,7 @@ def _format_iso_time(timestamp: str):
 
 
 def format_metadata_rows(metadata):
+    metadata = _sort_metadata(metadata)
     metadata_rows = []
     for key, value in metadata.items():
         if key in ("time_created", "time_updated"):
@@ -29,6 +30,27 @@ def format_metadata_rows(metadata):
         label = _format_key(key)
         metadata_rows.append(html.Tr([html.Th(label), html.Td(display_value)]))
     return metadata_rows
+
+
+def _sort_metadata(metadata):
+    order = [
+        "analysis_type",
+        "analysis_sub_type",
+        "analysis_level",
+        "directory_path",
+        "train_data_path",
+        "test_data_path",
+        "models",
+        "enhancement",
+        "target",
+        "field",
+        "mask_type",
+        "results_path",
+        "time_created",
+        "time_updated",
+    ]
+
+    return {key: metadata[key] for key in order if key in metadata}
 
 
 def format_analysis_overview(analyses_data):
