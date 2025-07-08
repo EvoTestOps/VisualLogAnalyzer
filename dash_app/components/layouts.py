@@ -32,20 +32,20 @@ def create_root_layout():
     )
 
 
-def create_ano_line_level_layout(
-    form,
+def create_ano_line_level_result_layout(
     stored_data_id,
     plot_selector_id,
     plot_content_id,
+    datatable_id,
+    metadata_table_id,
     error_toast_id,
     success_toast_id,
-    datatable_id,
 ):
-
-    form_row = dbc.Row(form)
 
     error_toast_row = dbc.Row(error_toast(error_toast_id))
     success_toast_row = dbc.Row(success_toast(success_toast_id))
+
+    metadata_row = dbc.Row(dbc.Table(id=metadata_table_id, hover=True, responsive=True))
 
     plot_selector_row = dbc.Row(
         dcc.Loading(
@@ -119,9 +119,8 @@ def create_ano_line_level_layout(
     )
 
     layout = [
-        dbc.Container(
-            [form_row, plot_selector_row, error_toast_row, success_toast_row]
-        ),
+        dbc.Container([metadata_row, error_toast_row, success_toast_row]),
+        dbc.Container(plot_selector_row),
         dbc.Container(plot_row, fluid=True),
         dbc.Container(data_table_row, fluid=True),
     ]

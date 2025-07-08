@@ -29,7 +29,7 @@ def crate_analysis_nav(project_id, nav_id):
                             ),
                             dbc.DropdownMenuItem(
                                 "Line Level",
-                                href="/dash/analysis/ano-line-level/create?project_id={project_id}",
+                                href=f"/dash/analysis/ano-line-level/create?project_id={project_id}",
                             ),
                         ],
                         label="Anomaly Detection",

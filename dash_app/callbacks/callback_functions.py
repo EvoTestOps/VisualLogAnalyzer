@@ -1,4 +1,3 @@
-import dash
 import requests
 import io
 import polars as pl
@@ -234,6 +233,10 @@ def _build_test_train_payload(
     elif level == "file":
         payload["files_to_include"] = include_items
         payload["file_level"] = True
+    elif level == "line":
+        payload["runs_to_include"] = include_items
+        payload["file_level"] = False
+        payload["run_level"] = False
     else:
         raise ValueError("Level must be either 'file' or 'directory'")
 
