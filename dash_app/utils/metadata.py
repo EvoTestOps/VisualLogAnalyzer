@@ -5,7 +5,6 @@ import dash_bootstrap_components as dbc
 from dash import html
 
 from dash_app.components.form_inputs import delete_button
-from server.models import analysis
 
 
 def _format_key(key, divider="_"):

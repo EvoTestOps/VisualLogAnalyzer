@@ -1,7 +1,10 @@
 import os
+from flask import current_app
 
 
-# Maybe this should be done in the backend
+# In general these functions are kind of bad since they brake the server and frontend roles.
+
+
 def get_runs(log_directory):
     if not log_directory or not os.path.exists(log_directory):
         return []
@@ -26,3 +29,8 @@ def get_all_filenames(log_directory):
             full_path = os.path.join(dirpath, filename)
             all_files.append(full_path)
     return sorted(all_files)
+
+
+def get_all_root_log_directories():
+    base_path = current_app.config["LOG_DATA_PATH"]
+    return [os.path.join(base_path, dir) for dir in next(os.walk(base_path))[1]]
