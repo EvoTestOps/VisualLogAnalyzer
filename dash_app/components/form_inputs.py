@@ -18,24 +18,10 @@ def log_format_input(id):
     )
 
 
-def directory_input(id):
+def directory_dropdown_input(id, label="Directory"):
     return dbc.Col(
         [
-            dbc.Label("Directory Path", html_for=id, width="auto"),
-            dbc.Input(
-                type="text",
-                id=id,
-                placeholder="path/to/your/root/log/folder",
-                debounce=True,
-            ),
-        ]
-    )
-
-
-def directory_dropdown_input(id):
-    return dbc.Col(
-        [
-            dbc.Label("Directory path", html_for=id, width="auto"),
+            dbc.Label(label, html_for=id, width="auto"),
             dcc.Dropdown(
                 id=id,
                 className="dbc border border-light-subtle rounded",
@@ -43,33 +29,6 @@ def directory_dropdown_input(id):
                 maxHeight=350,
             ),
         ],
-    )
-
-
-def train_data_input(id):
-    return dbc.Col(
-        [
-            dbc.Label("Directory path to train data", html_for=id, width="auto"),
-            dbc.Input(
-                type="text",
-                id=id,
-                placeholder="path/to/your/train/data/directory",
-            ),
-        ]
-    )
-
-
-def test_data_input(id):
-    return dbc.Col(
-        [
-            dbc.Label("Directory path to test data", html_for=id, width="auto"),
-            dbc.Input(
-                type="text",
-                id=id,
-                placeholder="path/to/your/test/data/directory",
-                debounce=True,
-            ),
-        ]
     )
 
 

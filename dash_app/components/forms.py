@@ -13,8 +13,6 @@ from dash_app.components.form_inputs import (
     target_run_input,
     terms_files_input,
     terms_umap_input,
-    test_data_input,
-    train_data_input,
     vectorizer_input,
 )
 
@@ -37,8 +35,8 @@ def test_train_form(
             dbc.Row(
                 [
                     log_format_input(log_format_id),
-                    train_data_input(train_data_id),
-                    test_data_input(test_data_id),
+                    directory_dropdown_input(train_data_id, "Train data directory"),
+                    directory_dropdown_input(test_data_id, "Test data directory"),
                 ],
                 class_name="mb-3",
             ),
@@ -83,8 +81,8 @@ def test_train_file_level_form(
             dbc.Row(
                 [
                     log_format_input(log_format_id),
-                    train_data_input(train_data_id),
-                    test_data_input(test_data_id),
+                    directory_dropdown_input(train_data_id, "Train data directory"),
+                    directory_dropdown_input(test_data_id, "Test data directory"),
                 ],
                 class_name="mb-3",
             ),

@@ -5,6 +5,7 @@ from dash import Input, Output, State, callback, dcc, html
 from dash_app.callbacks.callback_functions import (
     run_anomaly_detection,
     get_filter_options,
+    get_log_data_directory_options,
 )
 from dash_app.components.forms import test_train_file_level_form
 from dash_app.components.toasts import error_toast, success_toast
@@ -61,6 +62,16 @@ def get_project_id(search):
         return None, "No project id provided. The analysis will fail.", True
 
     return id, dash.no_update, False
+
+
+@callback(
+    Output("train-data-ano-file", "options"),
+    Output("test-data-ano-file", "options"),
+    Input("url", "search"),
+)
+def get_log_data_directories(_):
+    options = get_log_data_directory_options()
+    return options, options
 
 
 @callback(
