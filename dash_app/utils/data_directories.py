@@ -33,4 +33,5 @@ def get_all_filenames(log_directory):
 
 def get_all_root_log_directories():
     base_path = current_app.config["LOG_DATA_PATH"]
-    return [os.path.join(base_path, dir) for dir in next(os.walk(base_path))[1]]
+    directories = next(os.walk(base_path))[1]
+    return directories, [os.path.join(base_path, dir) + "/" for dir in directories]

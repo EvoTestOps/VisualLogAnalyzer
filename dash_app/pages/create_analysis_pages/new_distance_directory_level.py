@@ -2,10 +2,15 @@ import dash
 import dash_bootstrap_components as dbc
 from dash import Input, Output, State, callback, dcc, html
 
-from dash_app.callbacks.callback_functions import run_log_distance, get_filter_options
+from dash_app.callbacks.callback_functions import (
+    run_log_distance,
+    get_filter_options,
+    get_log_data_directory_options,
+)
 from dash_app.components.forms import distance_run_level_form
 from dash_app.components.toasts import error_toast, success_toast
 from dash_app.utils.metadata import parse_query_parameter
+
 
 dash.register_page(
     __name__,
@@ -56,6 +61,15 @@ def get_project_id(search):
         return None, "No project id provided. The analysis will fail.", True
 
     return id, dash.no_update, False
+
+
+# Input does not matter we just want it to calll once on startup
+@callback(
+    Output("directory-dis", "options"),
+    Input("url", "search"),
+)
+def get_log_data_directories(_):
+    return get_log_data_directory_options()
 
 
 @callback(

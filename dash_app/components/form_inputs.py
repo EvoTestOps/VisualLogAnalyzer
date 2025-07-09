@@ -32,6 +32,20 @@ def directory_input(id):
     )
 
 
+def directory_dropdown_input(id):
+    return dbc.Col(
+        [
+            dbc.Label("Directory path", html_for=id, width="auto"),
+            dcc.Dropdown(
+                id=id,
+                className="dbc border border-light-subtle rounded",
+                optionHeight=40,
+                maxHeight=350,
+            ),
+        ],
+    )
+
+
 def train_data_input(id):
     return dbc.Col(
         [

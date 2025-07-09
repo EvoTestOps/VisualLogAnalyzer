@@ -2,7 +2,7 @@ import dash_bootstrap_components as dbc
 
 from dash_app.components.form_inputs import (
     detectors_unsupervised_input,
-    directory_input,
+    directory_dropdown_input,
     enhancement_input,
     files_filter_input,
     log_format_input,
@@ -125,7 +125,7 @@ def directory_level_viz_form(
         [
             dbc.Row(
                 [
-                    directory_input(directory_id),
+                    directory_dropdown_input(directory_id),
                     terms_files_input(analysis_type_id),
                 ],
                 class_name="mb-3",
@@ -157,7 +157,7 @@ def file_level_viz_form(
         [
             dbc.Row(
                 [
-                    directory_input(directory_id),
+                    directory_dropdown_input(directory_id),
                     terms_umap_input(analysis_type_id),
                 ],
                 class_name="mb-3",
@@ -195,7 +195,7 @@ def distance_run_level_form(
         [
             dbc.Row(
                 [
-                    directory_input(directory_id),
+                    directory_dropdown_input(directory_id),
                     enhancement_input(enhancement_id),
                 ],
                 class_name="mb-3",
@@ -234,7 +234,7 @@ def distance_file_level_form(
         [
             dbc.Row(
                 [
-                    directory_input(directory_id),
+                    directory_dropdown_input(directory_id),
                     enhancement_input(enhancement_id),
                 ],
                 class_name="mb-3",

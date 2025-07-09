@@ -2,7 +2,11 @@ import dash
 import dash_bootstrap_components as dbc
 from dash import Input, Output, State, callback, dcc, html
 
-from dash_app.callbacks.callback_functions import run_log_distance, get_filter_options
+from dash_app.callbacks.callback_functions import (
+    run_log_distance,
+    get_filter_options,
+    get_log_data_directory_options,
+)
 from dash_app.components.forms import distance_file_level_form
 from dash_app.components.toasts import error_toast, success_toast
 from dash_app.utils.metadata import parse_query_parameter
@@ -28,7 +32,7 @@ def layout(**kwargs):
     return [
         dbc.Container(
             [
-                html.H3("New File Level Log dis-filetance"),
+                html.H3("New File Level Log Distance"),
                 error_toast("error-toast-dis-file"),
                 success_toast("success-toast-dis-file"),
                 dcc.Location(id="url", refresh=False),
@@ -56,6 +60,14 @@ def get_project_id(search):
         return None, "No project id provided. The analysis will fail.", True
 
     return id, dash.no_update, False
+
+
+@callback(
+    Output("directory-dis-file", "options"),
+    Input("url", "search"),
+)
+def get_log_data_directories(_):
+    return get_log_data_directory_options()
 
 
 @callback(

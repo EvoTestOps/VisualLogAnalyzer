@@ -1,14 +1,20 @@
-import requests
 import io
+
 import polars as pl
-from dash_app.utils.data_directories import get_runs, get_all_filenames
-from dash_app.utils.plots import (
-    create_unique_term_count_plot,
-    create_files_count_plot,
-    create_umap_plot,
-    create_unique_term_count_plot_by_file,
+import requests
+
+from dash_app.utils.data_directories import (
+    get_all_filenames,
+    get_all_root_log_directories,
+    get_runs,
 )
 from dash_app.utils.metadata import format_metadata_rows
+from dash_app.utils.plots import (
+    create_files_count_plot,
+    create_umap_plot,
+    create_unique_term_count_plot,
+    create_unique_term_count_plot_by_file,
+)
 
 
 def run_high_level_analysis(
@@ -208,6 +214,11 @@ def get_filter_options(data_path, runs_or_files="runs"):
 
     options = [{"label": item, "value": item} for item in items]
     return options
+
+
+def get_log_data_directory_options():
+    labels, values = get_all_root_log_directories()
+    return [{"label": lab, "value": val} for (lab, val) in zip(labels, values)]
 
 
 def _build_test_train_payload(
