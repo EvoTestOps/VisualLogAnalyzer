@@ -99,15 +99,15 @@ class ManualTrainTestPipeline:
         )
 
         self._results = self._analyze_grouped_by_file(
-            self._df_test,
             self._df_train,
+            self._df_test,
             common_file_names=self._get_common_file_names(),
         )
 
     def analyze_line_group_by_filenames(self):
         self._results = self._analyze_grouped_by_file(
-            self._df_test,
             self._df_train,
+            self._df_test,
             common_file_names=self._get_common_file_names(),
         )
 
