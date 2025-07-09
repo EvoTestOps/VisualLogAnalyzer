@@ -1,6 +1,6 @@
 import dash
 import dash_bootstrap_components as dbc
-from dash import Input, Output, State, callback, dcc
+from dash import ALL, Input, Output, State, callback, dcc
 
 from dash_app.callbacks.callback_functions import make_api_call
 from dash_app.components.forms import project_form
@@ -14,7 +14,18 @@ form = project_form("submit-proj", "name-proj")
 # dcc.store is needed so that we can easily trigger the get_projects callback
 # after a new project has been created
 
-layout = [dbc.Container(dcc.Store(id="refresh-proj", data=False))] + create_home_layout(
+layout = [
+    dbc.Container(
+        [
+            dcc.Store(id="refresh-proj", data=False),
+            dcc.ConfirmDialog(
+                id="confirm-delete-proj",
+                message="Are you sure you want to delete this analysis. All data related to this analysis will be lost.",
+            ),
+            dcc.Store(id="delete-analysis-id-proj"),
+        ]
+    )
+] + create_home_layout(
     form,
     "project-group",
     "error-toast-proj",
@@ -75,3 +86,37 @@ def create_project(n_clicks, name):
         return (error, True, dash.no_update, False, False)
 
     return (dash.no_update, False, "Project created", True, True)
+
+
+@callback(
+    Output("confirm-delete-proj", "displayed"),
+    Output("delete-analysis-id-proj", "data"),
+    Input({"type": "delete-button", "index": ALL}, "n_clicks"),
+    prevent_initial_call=True,
+)
+def display_alert(n_clicks):
+    ctx = dash.callback_context
+    if all([(btn["value"] == 0) for btn in ctx.triggered]):
+        return dash.no_update
+
+    return True, ctx.triggered_id["index"]
+
+
+@callback(
+    Output("error-toast-proj", "children", allow_duplicate=True),
+    Output("error-toast-proj", "is_open", allow_duplicate=True),
+    Output("success-toast-proj", "children", allow_duplicate=True),
+    Output("success-toast-proj", "is_open", allow_duplicate=True),
+    Input("confirm-delete-proj", "submit_n_clicks"),
+    State("delete-analysis-id-proj", "data"),
+    prevent_initial_call=True,
+)
+def delete_analysis(submit_n_clicks, analysis_id):
+    if not submit_n_clicks or not analysis_id:
+        return dash.no_update, False, dash.no_update, False
+
+    response, error = make_api_call({}, f"projects/{analysis_id}", "DELETE")
+    if error or not response:
+        return (error, True, dash.no_update, False)
+
+    return (dash.no_update, False, "Analysis deleted", True)

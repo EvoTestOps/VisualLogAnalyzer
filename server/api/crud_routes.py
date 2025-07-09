@@ -35,6 +35,27 @@ def create_project():
     return jsonify({"id": project.id})
 
 
+@crud_bp.route("/projects/<int:project_id>", methods=["DELETE"])
+def delete_project(project_id: int):
+    project = Project.query.filter_by(id=project_id).first_or_404()
+    analyses = project.analyses
+
+    try:
+        for analysis in analyses:
+            os.remove(analysis.results_path)
+
+        db.session.delete(project)
+        db.session.commit()
+        return {}, 204
+
+    except FileNotFoundError as e:
+        logging.error(
+            f"Error deleting project {project.name}, some of the results might not have been deleted or don't exist: {str(e)}",
+            exc_info=True,
+        )
+        return jsonify({"error": str(e)}), 500
+
+
 @crud_bp.route("/projects/<int:project_id>/analyses", methods=["GET"])
 def get_analyses(project_id: int):
     project = db.session.get(Project, project_id)

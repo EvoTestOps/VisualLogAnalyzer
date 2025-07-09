@@ -5,6 +5,7 @@ import dash_bootstrap_components as dbc
 from dash import html
 
 from dash_app.components.form_inputs import delete_button
+from server.models import analysis
 
 
 def _format_key(key, divider="_"):
@@ -96,14 +97,22 @@ def format_project_overview(project_data):
             [
                 html.Div(
                     [
-                        html.H4(project["name"], className="mb-0"),
+                        html.A(
+                            html.H4(project["name"], className="mb-0"),
+                            href=f"/dash/project/{project['id']}?project_name={project['name']}",
+                        ),
                         html.P(_format_iso_time(project["time_created"])),
                     ],
                     className="d-flex justify-content-between align-items-center",
                 ),
-                html.P(f"Amount of analyses: {(project['analyses_count'])}"),
+                html.Div(
+                    [
+                        html.P(f"Amount of analyses: {(project['analyses_count'])}"),
+                        delete_button(id=str(project["id"]), label="Delete"),
+                    ],
+                    className="d-flex justify-content-between align-items-center",
+                ),
             ],
-            href=f"/dash/project/{project['id']}?project_name={project['name']}",
             class_name="pb-3 pt-3",
         )
         for project in project_data
