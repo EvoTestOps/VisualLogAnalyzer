@@ -1,9 +1,9 @@
+import os
 import io
 import logging
 
 from flask import Blueprint, Response, jsonify, request
 from pydantic import ValidationError
-from sqlalchemy.inspection import inspect
 
 from server.extensions import db
 from server.models.analysis import Analysis
@@ -68,6 +68,23 @@ def get_analysis(analysis_id: int):
     finally:
         if buffer:
             buffer.close()
+
+
+@crud_bp.route("/analyses/<int:analysis_id>", methods=["DELETE"])
+def delete_analysis(analysis_id: int):
+    analysis = Analysis.query.filter_by(id=analysis_id).first_or_404()
+    try:
+        os.remove(analysis.results_path)
+        db.session.delete(analysis)
+        db.session.commit()
+        return {}, 204
+
+    except FileNotFoundError as e:
+        logging.error(
+            f"Error deleting analysis {analysis_id}, the results file might not exist: {str(e)}",
+            exc_info=True,
+        )
+        return jsonify({"error": str(e)}), 500
 
 
 @crud_bp.route("/analyses/<int:analysis_id>/metadata", methods=["GET"])

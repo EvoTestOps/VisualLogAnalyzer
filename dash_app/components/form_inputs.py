@@ -113,6 +113,12 @@ def submit_button(id, label):
     return dbc.Button(label, id=id, n_clicks=0)
 
 
+def delete_button(id, label):
+    return dbc.Button(
+        label, color="danger", id={"type": "delete-button", "index": id}, n_clicks=0
+    )
+
+
 def runs_filter_input(id):
     return dbc.Col(
         [

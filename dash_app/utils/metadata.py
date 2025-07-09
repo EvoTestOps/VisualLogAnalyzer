@@ -4,6 +4,8 @@ from urllib.parse import parse_qs
 import dash_bootstrap_components as dbc
 from dash import html
 
+from dash_app.components.form_inputs import delete_button
+
 
 def _format_key(key, divider="_"):
     return key.replace(divider, " ").title()
@@ -60,17 +62,25 @@ def format_analysis_overview(analyses_data):
             [
                 html.Div(
                     [
-                        html.H4(
-                            _format_key(analysis["analysis_sub_type"], divider="-"),
-                            className="mb-0",
+                        html.A(
+                            html.H4(
+                                _format_key(analysis["analysis_sub_type"], divider="-"),
+                                className="mb-0",
+                            ),
+                            href=f"/dash/analysis/{analysis['analysis_type']}/{analysis['id']}",
                         ),
                         html.P(_format_iso_time(analysis["time_created"])),
                     ],
                     className="d-flex justify-content-between align-items-center",
                 ),
-                html.P(f"Level: {_format_key(analysis['analysis_level'])}"),
+                html.Div(
+                    [
+                        html.P(f"Level: {_format_key(analysis['analysis_level'])}"),
+                        delete_button(id=str(analysis["id"]), label="Delete"),
+                    ],
+                    className="d-flex justify-content-between align-items-center",
+                ),
             ],
-            href=f"/dash/analysis/{analysis['analysis_type']}/{analysis['id']}",
             class_name="pb-3 pt-3",
         )
         for analysis in analyses_data
