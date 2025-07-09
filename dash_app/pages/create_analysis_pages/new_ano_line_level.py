@@ -67,7 +67,7 @@ def get_project_id(search):
     Output("filter-ano-line", "options"),
     Input("test-data-ano-line", "value"),
 )
-def get_comparison_and_target_options(directory_path):
+def get_comparison_options(directory_path):
     options = get_filter_options(directory_path, runs_or_files="runs")
     return options
 
