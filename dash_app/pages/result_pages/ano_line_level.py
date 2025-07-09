@@ -144,6 +144,13 @@ def populate_table(encoded_df, selected_plot):
     df = pl.read_parquet(io.BytesIO(base64.b64decode(encoded_df))).filter(
         pl.col("seq_id") == selected_plot
     )
+
+    # df clean up
+    df = df.drop(["seq_id", "orig_file_name", "run", "file_name"])
+    df = df.select(
+        ["line_number"] + [col for col in df.columns if col != "line_number"]
+    )
+
     columns = [{"name": col, "id": col} for col in df.columns]
     return df.to_dicts(), columns
 
