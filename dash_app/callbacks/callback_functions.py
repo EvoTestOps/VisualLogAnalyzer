@@ -188,6 +188,10 @@ def make_api_call(json_payload, endpoint, requests_type="POST"):
             response = requests.delete(
                 f"http://localhost:5000/api/{endpoint}", json=json_payload
             )
+        elif requests_type == "PATCH":
+            response = requests.patch(
+                f"http://localhost:5000/api/{endpoint}", json=json_payload
+            )
         else:
             response = requests.get(
                 f"http://localhost:5000/api/{endpoint}", json=json_payload

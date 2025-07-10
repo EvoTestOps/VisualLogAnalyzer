@@ -1,6 +1,9 @@
+from sqlalchemy import event
 from sqlalchemy.sql import func
 
 from server.extensions import db
+
+from server.models.settings import Settings
 
 
 class Project(db.Model):
@@ -15,6 +18,8 @@ class Project(db.Model):
     analyses = db.relationship(
         "Analysis", back_populates="project", cascade="all, delete-orphan"
     )
+
+    settings = db.relationship("Settings", uselist=False, back_populates="project")
 
     def to_dict(self, include_analyses=False):
         data = {
@@ -33,3 +38,10 @@ class Project(db.Model):
             data["analyses"] = [analysis.to_dict() for analysis in self.analyses]
 
         return data
+
+
+@event.listens_for(Project, "after_insert")
+def create_settings(mapper, connection, target):
+    connection.execute(
+        Settings.__table__.insert(), {"project_id": target.id, "match_filenames": True}
+    )

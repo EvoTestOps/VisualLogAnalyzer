@@ -29,6 +29,8 @@ def layout(project_id=None, **kwargs):
         "nav-home",
         "error-toast-project",
         "success-toast-project",
+        "settings-submit-project",
+        "match-filenames-project",
     )
 
 
@@ -50,7 +52,7 @@ def get_project_name(search):
     Output("success-toast-project", "is_open"),
     Input("project-id", "data"),
 )
-def get_projects(project_id):
+def get_analyses(project_id):
     if not project_id:
         return ([], "No project id was provided", True, dash.no_update, False)
 
@@ -66,6 +68,20 @@ def get_projects(project_id):
         group_items = [dbc.ListGroupItem("No analyses found")]
 
     return (group_items, dash.no_update, dash.no_update, dash.no_update, False)
+
+
+@callback(
+    Output("match-filenames-project", "value"),
+    Input("project-id", "data"),
+)
+def get_settings(project_id):
+    if not project_id:
+        return True
+    response, error = make_api_call({}, f"projects/{project_id}/settings", "GET")
+    if error or not response:
+        return True
+
+    return response.json().get("match_filenames")
 
 
 @callback(
@@ -105,3 +121,27 @@ def delete_analysis(submit_n_clicks, analysis_id):
         return (error, True, dash.no_update, False)
 
     return (dash.no_update, False, "Analysis deleted", True)
+
+
+@callback(
+    Output("error-toast-project", "children", allow_duplicate=True),
+    Output("error-toast-project", "is_open", allow_duplicate=True),
+    Output("success-toast-project", "children", allow_duplicate=True),
+    Output("success-toast-project", "is_open", allow_duplicate=True),
+    Input("settings-submit-project", "n_clicks"),
+    Input("match-filenames-project", "value"),
+    State("project-id", "data"),
+    prevent_initial_call=True,
+)
+def apply_settings(n_clicks, match_filenames, project_id):
+    if not n_clicks:
+        return dash.no_update, False, dash.no_update, False
+
+    payload = {"match_filenames": match_filenames}
+    response, error = make_api_call(
+        payload, f"projects/{project_id}/settings", requests_type="PATCH"
+    )
+    if error or not response:
+        return (error, True, dash.no_update, False)
+
+    return (dash.no_update, False, "Settings updated", True)

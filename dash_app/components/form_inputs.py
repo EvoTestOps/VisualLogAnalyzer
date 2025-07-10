@@ -1,5 +1,5 @@
 import dash_bootstrap_components as dbc
-from dash import dcc
+from dash import dcc, html
 
 
 def log_format_input(id):
@@ -215,6 +215,26 @@ def name_input(id):
             dbc.Input(
                 type="text",
                 id=id,
+            ),
+        ]
+    )
+
+
+def match_file_names_input(id):
+    return dbc.Col(
+        [
+            dbc.Checkbox(
+                id=id,
+                label=html.Span(
+                    "Match filenames",
+                    id=f"{id}-label",
+                    style={"textDecoration": "underline", "cursor": "pointer"},
+                ),
+            ),
+            dbc.Tooltip(
+                "Enable this setting to automatically match filenames against baseline runs in file and line level analysis.",
+                target=f"{id}-label",
+                placement="bottom",
             ),
         ]
     )

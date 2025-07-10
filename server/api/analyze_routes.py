@@ -32,6 +32,7 @@ from server.api.validator_models.high_level_analysis_params import (
     UniqueTermsParams,
 )
 from server.api.validator_models.log_distance_params import LogDistanceParams
+from server.models.settings import Settings
 
 analyze_bp = Blueprint("main", __name__)
 
@@ -53,6 +54,9 @@ def manual_test_train(project_id):
     file_level = validation_result.file_level
     mask_type = validation_result.mask_type
     vectorizer = validation_result.vectorizer
+
+    settings = Settings.query.filter_by(project_id=project_id).first_or_404()
+    match_filenames = settings.match_filenames
 
     results = None
     pipeline = None
@@ -81,11 +85,7 @@ def manual_test_train(project_id):
         pipeline.load()
         pipeline.enhance()
 
-        # TODO: add setting/input to specify if files are analysed against other files with the same file name,
-        #  or against all files disregarding file name
-        mock_flag = True
-
-        if mock_flag:
+        if match_filenames:
             if level == "file":
                 pipeline.analyze_file_group_by_filenames()
             elif level == "line":
@@ -260,12 +260,15 @@ def log_distance(project_id):
     mask_type = validation_result.mask_type
     vectorizer = validation_result.vectorizer
 
+    settings = Settings.query.filter_by(project_id=project_id).first_or_404()
+    match_filenames = settings.match_filenames
+
     try:
         enhancer = Enhancer(load_data(dir_path))
         df = enhancer.enhance_event(item_list_col, mask_type)
 
-        # TODO: Add a setting to change if comparisons are done against matching file names
-        if file_level and comparison_runs in (None, []):
+        # TODO: Refactor, this seems dubious
+        if file_level and comparison_runs in (None, []) and match_filenames:
             target_file_name = get_file_name_by_orig_file_name(df, target_run)
             df = filter_files(df, [target_file_name], "file_name")
 

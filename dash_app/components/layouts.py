@@ -3,6 +3,7 @@ from dash import dash_table, dcc, html
 
 from dash_app.components.color_mode_switch import color_mode_switch
 from dash_app.components.form_inputs import submit_button
+from dash_app.components.forms import project_settings_form
 from dash_app.components.nav import crate_analysis_nav, nav
 from dash_app.components.toasts import error_toast, success_toast
 
@@ -263,7 +264,14 @@ def create_home_layout(
 
 
 def create_project_layout(
-    group_id, project_name_id, project_id, nav_id, error_toast_id, success_toast_id
+    group_id,
+    project_name_id,
+    project_id,
+    nav_id,
+    error_toast_id,
+    success_toast_id,
+    settings_submit_id,
+    match_filenames_id,
 ):
 
     error_toast_row = dbc.Row(error_toast(error_toast_id))
@@ -279,7 +287,22 @@ def create_project_layout(
     group_col = dbc.Col(
         dbc.ListGroup(id=group_id), class_name="mb-3 mt-3 ps-0 ms-0", width=8
     )
-    nav_col = dbc.Col(crate_analysis_nav(project_id, nav_id))
+
+    nav_col = dbc.Col(
+        [
+            crate_analysis_nav(project_id, nav_id),
+            html.Div(
+                [
+                    html.H4("Settings"),
+                    dbc.Card(
+                        project_settings_form(settings_submit_id, match_filenames_id),
+                        body=True,
+                    ),
+                ],
+                className="mt-3",
+            ),
+        ]
+    )
 
     layout = [
         dbc.Container(

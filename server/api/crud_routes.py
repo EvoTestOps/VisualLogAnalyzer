@@ -8,8 +8,9 @@ from pydantic import ValidationError
 from server.extensions import db
 from server.models.analysis import Analysis
 from server.models.project import Project
+from server.models.settings import Settings
 
-from .validator_models.crud_params import ProjectParams
+from .validator_models.crud_params import ProjectParams, SettingsParams
 
 crud_bp = Blueprint("crud", __name__)
 
@@ -64,6 +65,28 @@ def get_analyses(project_id: int):
 
     result = [analysis.to_dict() for analysis in project.analyses]
     return jsonify(result)
+
+
+@crud_bp.route("/projects/<int:project_id>/settings", methods=["PATCH"])
+def update_settings(project_id: int):
+    settings = Settings.query.filter_by(project_id=project_id).first_or_404()
+    try:
+        validated_data = SettingsParams(**request.get_json())
+    except ValidationError as e:
+        error = e.errors()[0]
+        return jsonify({"error": f"{error['loc'][0]}: {error['msg']}"}), 400
+
+    settings.match_filenames = validated_data.match_filenames
+    db.session.commit()
+
+    return {}, 200
+
+
+@crud_bp.route("/projects/<int:project_id>/settings", methods=["GET"])
+def get_settings(project_id: int):
+    settings = Settings.query.filter_by(project_id=project_id).first_or_404()
+
+    return jsonify(settings.to_dict()), 200
 
 
 @crud_bp.route("/analyses/<int:analysis_id>", methods=["GET"])
