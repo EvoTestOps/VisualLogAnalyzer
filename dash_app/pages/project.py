@@ -36,7 +36,7 @@ def layout(project_id=None, **kwargs):
     Output("project-name", "children"),
     Input("url", "search"),
 )
-def get_project_id(search):
+def get_project_name(search):
     name = parse_query_parameter(search, "project_name")
 
     return name if name else ""

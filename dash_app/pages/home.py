@@ -20,7 +20,7 @@ layout = [
             dcc.Store(id="refresh-proj", data=False),
             dcc.ConfirmDialog(
                 id="confirm-delete-proj",
-                message="Are you sure you want to delete this analysis. All data related to this analysis will be lost.",
+                message="Are you sure you want to delete this project. All analysis results related to this project will be lost.",
             ),
             dcc.Store(id="delete-analysis-id-proj"),
         ]

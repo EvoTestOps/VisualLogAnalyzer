@@ -117,6 +117,7 @@ def populate_datatable(analysis_id):
         )
     metadata = response_metadata.json()
     project_id = metadata.get("project_id")
+    project_name = metadata.get("project_name")
     metadata_rows = format_metadata_rows(metadata)
 
     response, error = make_api_call({}, f"analyses/{analysis_id}", "GET")
@@ -126,7 +127,7 @@ def populate_datatable(analysis_id):
         )
     df_dict, columns = _parse_response_as_table(response)
 
-    return df_dict, columns, metadata_rows, project_id
+    return df_dict, columns, metadata_rows, project_id, project_name
 
 
 def create_high_level_plot(switch_on, analysis_id):
@@ -142,6 +143,7 @@ def create_high_level_plot(switch_on, analysis_id):
     analysis_type = metadata.get("analysis_sub_type")
     analysis_level = metadata.get("analysis_level")
     project_id = metadata.get("project_id")
+    project_name = metadata.get("project_name")
 
     response, error = make_api_call({}, f"analyses/{analysis_id}", "GET")
     if error or response is None:
@@ -173,7 +175,7 @@ def create_high_level_plot(switch_on, analysis_id):
 
     metadata_rows = format_metadata_rows(metadata)
 
-    return fig, style, metadata_rows, project_id
+    return fig, style, metadata_rows, project_id, project_name
 
 
 def make_api_call(json_payload, endpoint, requests_type="POST"):

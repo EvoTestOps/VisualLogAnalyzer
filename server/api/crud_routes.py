@@ -115,5 +115,6 @@ def get_analysis_metadata(analysis_id: int):
         return jsonify({"error": f"Analysis not found. Id: {analysis_id}"}), 404
 
     metadata = {key: val for (key, val) in analysis.to_dict().items() if val}
+    metadata["project_name"] = analysis.project.name
 
     return jsonify(metadata)
