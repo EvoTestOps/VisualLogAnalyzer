@@ -111,7 +111,7 @@ def display_alert(n_clicks):
     State("delete-analysis-id-proj", "data"),
     prevent_initial_call=True,
 )
-def delete_analysis(submit_n_clicks, analysis_id):
+def delete_project(submit_n_clicks, analysis_id):
     if not submit_n_clicks or not analysis_id:
         return dash.no_update, False, dash.no_update, False
 
@@ -119,4 +119,4 @@ def delete_analysis(submit_n_clicks, analysis_id):
     if error or not response:
         return (error, True, dash.no_update, False)
 
-    return (dash.no_update, False, "Analysis deleted", True)
+    return (dash.no_update, False, "Project deleted", True)

@@ -19,7 +19,12 @@ class Project(db.Model):
         "Analysis", back_populates="project", cascade="all, delete-orphan"
     )
 
-    settings = db.relationship("Settings", uselist=False, back_populates="project")
+    settings = db.relationship(
+        "Settings",
+        uselist=False,
+        back_populates="project",
+        cascade="all, delete-orphan",
+    )
 
     def to_dict(self, include_analyses=False):
         data = {

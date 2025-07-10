@@ -8,7 +8,7 @@ class Settings(db.Model):
     match_filenames = db.Column(db.Boolean, default=True)
 
     project_id = db.Column(db.Integer, db.ForeignKey("projects.id"), nullable=False)
-    project = db.relationship("Project", uselist=False, back_populates="settings")
+    project = db.relationship("Project", back_populates="settings")
 
     def to_dict(self):
         return {
