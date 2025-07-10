@@ -51,7 +51,7 @@ class ManualTrainTestPipeline:
             self._df_test = filter_files(self._df_test, self._files_to_include)
 
     def _load_test_train(self, directory_path):
-        loader = Loader(directory_path, self._log_format, self._runs_to_include)
+        loader = Loader(directory_path, self._log_format)
         loader.load()
 
         return loader.df
@@ -120,6 +120,9 @@ class ManualTrainTestPipeline:
         self._df_test = aggregate_file_level(self._df_test, self._item_list_col)
 
     def _get_common_file_names(self) -> list[str]:
+        if self._df_train is None or self._df_test is None:
+            raise ValueError("Train and/or test data was not initialized")
+
         return (
             self._df_train.select("file_name")
             .unique()

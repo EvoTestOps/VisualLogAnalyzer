@@ -3,10 +3,9 @@ from loglead.loaders import LO2Loader, RawLoader
 
 
 class Loader:
-    def __init__(self, directory_path, log_format="lo2", runs_to_include=None):
+    def __init__(self, directory_path, log_format="raw"):
         self._directory_path = directory_path
         self._log_format = log_format
-        self._runs_to_include = runs_to_include
         self._df = None
 
     def load(self):

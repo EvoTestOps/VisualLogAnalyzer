@@ -5,7 +5,7 @@ from flask import current_app
 # In general these functions are kind of bad since they brake the server and frontend roles.
 
 
-def get_runs(log_directory):
+def get_runs(log_directory: str) -> list[str]:
     if not log_directory or not os.path.exists(log_directory):
         return []
 
@@ -19,7 +19,7 @@ def get_runs(log_directory):
 
 
 # TODO: Only *.log files
-def get_all_filenames(log_directory):
+def get_all_filenames(log_directory: str) -> list[str]:
     if not log_directory or not os.path.exists(log_directory):
         return []
 
@@ -31,7 +31,7 @@ def get_all_filenames(log_directory):
     return sorted(all_files)
 
 
-def get_all_root_log_directories():
+def get_all_root_log_directories() -> tuple[list[str], list[str]]:
     base_path = current_app.config["LOG_DATA_PATH"]
     directories = next(os.walk(base_path))[1]
     return directories, [os.path.join(base_path, dir) + "/" for dir in directories]

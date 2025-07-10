@@ -2,7 +2,7 @@ import polars as pl
 import plotly.graph_objects as go
 
 
-def get_options(df):
+def get_options(df) -> list[dict]:
     seq_ids = sorted(df["seq_id"].unique().to_list())
     return [{"label": seq_id, "value": seq_id} for seq_id in seq_ids]
 

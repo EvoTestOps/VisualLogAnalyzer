@@ -81,7 +81,7 @@ def toggle_collapse(n, is_open):
     prevent_initial_call=True,
 )
 def create_project(n_clicks, name):
-    response, error = make_api_call({"name": name}, "projects")
+    _, error = make_api_call({"name": name}, "projects")
     if error:
         return (error, True, dash.no_update, False, False)
 

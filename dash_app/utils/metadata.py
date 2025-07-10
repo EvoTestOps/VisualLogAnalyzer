@@ -7,11 +7,15 @@ from dash import html
 from dash_app.components.form_inputs import delete_button
 
 
-def _format_key(key, divider="_"):
+def _format_key_title(key: str, divider="_") -> str:
     return key.replace(divider, " ").title()
 
 
-def _format_iso_time(timestamp: str):
+def _format_key_capitalize(key: str, divider="_") -> str:
+    return key.replace(divider, " ").capitalize()
+
+
+def _format_iso_time(timestamp: str) -> str:
     try:
         datetime_obj = datetime.fromisoformat(timestamp)
         return datetime_obj.strftime("%d.%m.%Y %H:%M")
@@ -19,22 +23,23 @@ def _format_iso_time(timestamp: str):
         return timestamp
 
 
-def format_metadata_rows(metadata):
+def format_metadata_rows(metadata: dict) -> list[html.Tr]:
     metadata = _sort_metadata(metadata)
+
     metadata_rows = []
     for key, value in metadata.items():
         if key in ("time_created", "time_updated"):
             value = _format_iso_time(value)
 
-        display_value = (
-            value if value is not None else "-"
-        )  # there shouldn't be any none values
-        label = _format_key(key)
+        display_value = value if value is not None else "-"
+
+        label = _format_key_capitalize(key)
         metadata_rows.append(html.Tr([html.Th(label), html.Td(display_value)]))
+
     return metadata_rows
 
 
-def _sort_metadata(metadata):
+def _sort_metadata(metadata: dict) -> dict:
     order = [
         "analysis_type",
         "analysis_sub_type",
@@ -55,7 +60,8 @@ def _sort_metadata(metadata):
     return {key: metadata[key] for key in order if key in metadata}
 
 
-def format_analysis_overview(analyses_data):
+def format_analysis_overview(analyses_data: list[dict]) -> list[dbc.ListGroupItem]:
+
     analyses_data = sorted(analyses_data, key=lambda d: d["time_created"], reverse=True)
     group_items = [
         dbc.ListGroupItem(
@@ -64,7 +70,9 @@ def format_analysis_overview(analyses_data):
                     [
                         html.A(
                             html.H4(
-                                _format_key(analysis["analysis_sub_type"], divider="-"),
+                                _format_key_title(
+                                    analysis["analysis_sub_type"], divider="-"
+                                ),
                                 className="mb-0",
                             ),
                             href=f"/dash/analysis/{analysis['analysis_type']}/{analysis['id']}",
@@ -75,7 +83,9 @@ def format_analysis_overview(analyses_data):
                 ),
                 html.Div(
                     [
-                        html.P(f"Level: {_format_key(analysis['analysis_level'])}"),
+                        html.P(
+                            f"Level: {_format_key_title(analysis['analysis_level'])}"
+                        ),
                         delete_button(id=str(analysis["id"]), label="Delete"),
                     ],
                     className="d-flex justify-content-between align-items-center",
@@ -89,7 +99,7 @@ def format_analysis_overview(analyses_data):
     return group_items
 
 
-def format_project_overview(project_data):
+def format_project_overview(project_data: list[dict]) -> list[dbc.ListGroupItem]:
     project_data = sorted(project_data, key=lambda d: d["time_created"], reverse=True)
     group_items = [
         dbc.ListGroupItem(
@@ -119,7 +129,7 @@ def format_project_overview(project_data):
     return group_items
 
 
-def parse_query_parameter(search, param_name):
+def parse_query_parameter(search: str, param_name: str) -> str | None:
     query = parse_qs(search.lstrip("?"))
     result = query.get(param_name, [None])[0]
 

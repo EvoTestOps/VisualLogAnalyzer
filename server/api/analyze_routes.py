@@ -102,7 +102,7 @@ def manual_test_train(project_id):
 
         results = pipeline.results
         if results is None:
-            raise ValueError("No results found")
+            raise ValueError("Analysis failed to create results")
 
         if log_format != "raw":
             results = results.sort(["run"])

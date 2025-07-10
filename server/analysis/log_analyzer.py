@@ -6,8 +6,6 @@ class LogAnalyzer:
         self._df = df
         self._item_list_col = item_list_col
 
-        # self._sad = None
-
         self._model_to_func = {
             "kmeans": self._train_pred_kmeans,
             "rm": self._train_pred_rm,
@@ -68,7 +66,6 @@ class LogAnalyzer:
 
         return df_result
 
-    # Could possibly use sad.storage.test_results
     def _run_model(self, model_name, df_result):
         train_func = self._model_to_func.get(model_name)
 
