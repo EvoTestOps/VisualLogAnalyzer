@@ -104,7 +104,6 @@ def manual_test_train(project_id):
         if results is None:
             raise ValueError("No results found")
 
-        # TODO: fix sorting for LO2 data
         if log_format != "raw":
             results = results.sort(["run"])
 

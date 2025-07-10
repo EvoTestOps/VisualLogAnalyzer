@@ -21,7 +21,6 @@ dash.register_page(
 def layout(**kwargs):
     form = test_train_form(
         "submit-ano-line",
-        "log-format-ano-line",
         "train-data-ano-line",
         "test-data-ano-line",
         "detectors-ano-line",
@@ -91,7 +90,6 @@ def get_comparison_options(directory_path):
     Output("success-toast-ano-line", "is_open"),
     Input("submit-ano-line", "n_clicks"),
     State("project-id-ano-line", "data"),
-    State("log-format-ano-line", "value"),
     State("train-data-ano-line", "value"),
     State("test-data-ano-line", "value"),
     State("detectors-ano-line", "value"),
@@ -104,7 +102,6 @@ def get_comparison_options(directory_path):
 def run_analysis(
     n_clicks,
     project_id,
-    log_format,
     train_data,
     test_data,
     detectors,
@@ -124,7 +121,7 @@ def run_analysis(
             filter,
             mask_type,
             vectorizer_type,
-            log_format,
+            "raw",
             level="line",
         )
 

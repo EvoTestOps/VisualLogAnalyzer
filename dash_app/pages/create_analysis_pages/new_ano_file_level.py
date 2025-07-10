@@ -21,7 +21,6 @@ dash.register_page(
 def layout(**kwargs):
     form = test_train_file_level_form(
         "submit-ano-file",
-        "log-format-ano-file",
         "train-data-ano-file",
         "test-data-ano-file",
         "detectors-ano-file",
@@ -91,7 +90,6 @@ def get_comparison_options(directory_path):
     Output("success-toast-ano-file", "is_open"),
     Input("submit-ano-file", "n_clicks"),
     State("project-id-ano-file", "data"),
-    State("log-format-ano-file", "value"),
     State("train-data-ano-file", "value"),
     State("test-data-ano-file", "value"),
     State("detectors-ano-file", "value"),
@@ -104,7 +102,6 @@ def get_comparison_options(directory_path):
 def run_analysis(
     n_clicks,
     project_id,
-    log_format,
     train_data,
     test_data,
     detectors,
@@ -124,7 +121,7 @@ def run_analysis(
             filter,
             mask_type,
             vectorizer_type,
-            log_format,
+            "raw",
             level="file",
         )
 

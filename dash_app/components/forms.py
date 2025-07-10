@@ -5,7 +5,6 @@ from dash_app.components.form_inputs import (
     directory_dropdown_input,
     enhancement_input,
     files_filter_input,
-    log_format_input,
     mask_input,
     name_input,
     runs_filter_input,
@@ -19,7 +18,6 @@ from dash_app.components.form_inputs import (
 
 def test_train_form(
     submit_id,
-    log_format_id,
     train_data_id,
     test_data_id,
     detectors_id,
@@ -34,7 +32,6 @@ def test_train_form(
         [
             dbc.Row(
                 [
-                    log_format_input(log_format_id),
                     directory_dropdown_input(train_data_id, "Train data directory"),
                     directory_dropdown_input(test_data_id, "Test data directory"),
                 ],
@@ -65,7 +62,6 @@ def test_train_form(
 
 def test_train_file_level_form(
     submit_id,
-    log_format_id,
     train_data_id,
     test_data_id,
     detectors_id,
@@ -80,7 +76,6 @@ def test_train_file_level_form(
         [
             dbc.Row(
                 [
-                    log_format_input(log_format_id),
                     directory_dropdown_input(train_data_id, "Train data directory"),
                     directory_dropdown_input(test_data_id, "Test data directory"),
                 ],
