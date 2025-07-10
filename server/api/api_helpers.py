@@ -1,10 +1,12 @@
 import logging
+import os
 
-from flask import jsonify
+from flask import current_app, jsonify
 from pydantic import ValidationError
 
 from server.analysis.loader import Loader
-from server.services.analysis_service import add_result
+from server.extensions import db
+from server.models.analysis import Analysis
 
 
 def validate_request_data(params_model, request):
@@ -23,7 +25,7 @@ def load_data(directory_path):
 
 
 def store_and_format_result(result, project_id, analysis_type, metadata):
-    result_id = add_result(result, project_id, analysis_type, **metadata)
+    result_id = _add_result(result, project_id, analysis_type, **metadata)
     return jsonify({"id": result_id, "type": analysis_type})
 
 
@@ -33,3 +35,28 @@ def handle_errors(project_id, context, error):
         exc_info=True,
     )
     return jsonify({"error": str(error)}), 500
+
+
+def _add_result(df, project_id: int, analysis_type: str, **kwargs):
+
+    analysis = Analysis(
+        results_path="",
+        analysis_type=analysis_type,
+        project_id=project_id,
+        **kwargs,
+    )
+
+    db.session.add(analysis)
+    db.session.commit()
+
+    result_path = os.path.join(
+        current_app.config["RESULTS_PATH"], f"{analysis.id}.parquet"
+    )
+    analysis.results_path = result_path
+    db.session.commit()
+
+    df.write_parquet(result_path)
+
+    del df
+
+    return analysis.id
