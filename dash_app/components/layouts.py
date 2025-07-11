@@ -376,7 +376,8 @@ def create_result_base_layout(title, analysis_id, project_link_id, analysis_stor
                             ),
                             className="d-flex justify-content-end",
                         ),
-                    ]
+                    ],
+                    class_name="border-bottom border-secondary-subtle",
                 ),
                 dcc.Store(id=analysis_store_id, data=analysis_id),
             ],

@@ -23,16 +23,33 @@ def _format_iso_time(timestamp: str) -> str:
         return timestamp
 
 
+def _format_model(model: str) -> str:
+    match model:
+        case "kmeans":
+            return "K-Means"
+        case "rm":
+            return "Rarity Model"
+        case "if":
+            return "Isolation Forest"
+        case "oovd":
+            return "Out-of-Vocabulary Detector"
+        case _:
+            return model
+
+
 def format_metadata_rows(metadata: dict) -> list[html.Tr]:
     metadata = _sort_metadata(metadata)
-
     metadata_rows = []
+
     for key, value in metadata.items():
         if key in ("time_created", "time_updated"):
             value = _format_iso_time(value)
+        elif key == "models":
+            models = value.split(";")
+            formatted_models = [_format_model(model) for model in models]
+            value = ", ".join(formatted_models)
 
         display_value = value if value is not None else "-"
-
         label = _format_key_capitalize(key)
         metadata_rows.append(html.Tr([html.Th(label), html.Td(display_value)]))
 
@@ -54,7 +71,7 @@ def _sort_metadata(metadata: dict) -> dict:
         "mask_type",
         "results_path",
         "time_created",
-        "time_updated",
+        # "time_updated",
     ]
 
     return {key: metadata[key] for key in order if key in metadata}
