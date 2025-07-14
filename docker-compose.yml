@@ -19,13 +19,17 @@ services:
       - 6379:6379
   celery:
     build: .
-    command: celery -A server.worker worker --loglevel=info
+    command: celery -A server.make_celery worker --loglevel=info
     volumes:
       - .:/app
     environment:
+      DB_URL: "postgresql://postgres:postgres@db:5432/postgres"
+      LOG_DATA_DIRECTORY: "./log_data/"
+      RESULTS_DIRECTORY: "./analysis_results/"
       CELERY_BROKER_URL: "redis://redis:6379/0"
     depends_on:
       - redis
+      - db
   db:
     image: postgres
     environment:

@@ -1,6 +1,6 @@
 import dash
 import dash_bootstrap_components as dbc
-from dash import Input, Output, State, callback, dcc, html
+from dash import Input, Output, State, callback, dcc, html, no_update
 
 from dash_app.callbacks.callback_functions import (
     run_high_level_analysis,
@@ -91,10 +91,10 @@ def run_analysis(
             level="directory",
         )
         return (
-            f"/dash/analysis/{result['type']}/{result['id']}",
+            dash.no_update,
             dash.no_update,
             False,
-            "Analysis complete",
+            f"Analysis is running: {result}",
             True,
         )
     except ValueError as e:
@@ -105,3 +105,33 @@ def run_analysis(
             dash.no_update,
             False,
         )
+
+
+# def run_analysis(
+#     n_clicks, project_id, directory_path, analysis_type, mask_type, vectorizer_type
+# ):
+#
+#     try:
+#         result = run_high_level_analysis(
+#             project_id,
+#             directory_path,
+#             analysis_type,
+#             mask_type,
+#             vectorizer_type,
+#             level="directory",
+#         )
+#         return (
+#             f"/dash/analysis/{result['type']}/{result['id']}",
+#             dash.no_update,
+#             False,
+#             "Analysis complete",
+#             True,
+#         )
+#     except ValueError as e:
+#         return (
+#             dash.no_update,
+#             str(e),
+#             True,
+#             dash.no_update,
+#             False,
+#         )

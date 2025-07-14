@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 
 from server.analysis.enhancer import Enhancer
 from server.analysis.log_analysis_pipeline import ManualTrainTestPipeline
@@ -33,6 +33,8 @@ from server.api.validator_models.high_level_analysis_params import (
 )
 from server.api.validator_models.log_distance_params import LogDistanceParams
 from server.models.settings import Settings
+
+from server.tasks import async_run_file_counts
 
 analyze_bp = Blueprint("main", __name__)
 
@@ -221,29 +223,15 @@ def create_umap(project_id):
 
 
 @analyze_bp.route("/file-counts/<int:project_id>", methods=["POST"])
-def run_file_counts(project_id):
+def run_file_counts(project_id: int):
     validation_result = validate_request_data(FileCountsParams, request)
     if isinstance(validation_result, tuple):
         return validation_result
 
     dir_path = validation_result.directory_path
 
-    try:
-        df = load_data(dir_path)
-        result = files_and_lines_count(df)
-
-        metadata = {
-            "analysis_level": "directory",
-            "directory_path": dir_path,
-            "analysis_sub_type": "file-count",
-        }
-
-        return store_and_format_result(
-            result, project_id, "directory-level-visualisations", metadata
-        )
-
-    except Exception as e:
-        return handle_errors(project_id, "file counts", e)
+    task = async_run_file_counts.delay(project_id, dir_path)
+    return jsonify({"task_id": task.id}), 202
 
 
 @analyze_bp.route("/log-distance/<int:project_id>", methods=["POST"])
