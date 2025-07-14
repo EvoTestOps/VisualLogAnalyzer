@@ -34,7 +34,11 @@ from server.api.validator_models.high_level_analysis_params import (
 from server.api.validator_models.log_distance_params import LogDistanceParams
 from server.models.settings import Settings
 
-from server.tasks import async_run_file_counts
+from server.tasks import (
+    async_run_file_counts,
+    async_run_unique_terms,
+    async_create_umap,
+)
 
 analyze_bp = Blueprint("main", __name__)
 
@@ -134,8 +138,8 @@ def manual_test_train(project_id):
         return handle_errors(project_id, "anomaly detection", e)
 
 
-@analyze_bp.route("/unique-terms/<project_id>", methods=["POST"])
-def run_unique_terms(project_id):
+@analyze_bp.route("/unique-terms/<int:project_id>", methods=["POST"])
+def run_unique_terms(project_id: int):
     validation_result = validate_request_data(UniqueTermsParams, request)
     if isinstance(validation_result, tuple):
         return validation_result
@@ -144,30 +148,9 @@ def run_unique_terms(project_id):
     item_list_col = validation_result.item_list_col
     file_level = validation_result.file_level
 
-    try:
-        df = load_data(dir_path)
+    task = async_run_unique_terms.delay(project_id, dir_path, item_list_col, file_level)
 
-        if not file_level:
-            unique_terms_count = unique_terms_count_by_run(df, item_list_col)
-        else:
-            unique_terms_count = unique_terms_count_by_file(df, item_list_col)
-
-        analysis_type = (
-            "directory-level-visualisations"
-            if not file_level
-            else "file-level-visualisations"
-        )
-        metadata = {
-            "analysis_sub_type": "unique-terms",
-            "analysis_level": "directory" if not file_level else "file",
-            "directory_path": dir_path,
-        }
-        return store_and_format_result(
-            unique_terms_count, project_id, analysis_type, metadata
-        )
-
-    except Exception as e:
-        return handle_errors(project_id, "unique terms", e)
+    return jsonify({"task_id": task.id}), 202
 
 
 @analyze_bp.route("/umap/<int:project_id>", methods=["POST"])
@@ -182,44 +165,54 @@ def create_umap(project_id):
     vectorizer = validation_result.vectorizer
     mask_type = validation_result.mask_type
 
-    try:
-        df = load_data(dir_path)
-        if not file_level:
-            df_run = (
-                aggregate_run_level(df, item_list_col, mask_type)
-                .select(item_list_col)
-                .to_series()
-                .to_list()
-            )
-            embeddings = create_umap_embeddings(df_run, vectorizer)
-            result = create_umap_df(df, embeddings)
-        else:
-            df_file = (
-                aggregate_file_level(df, item_list_col, mask_type)
-                .select(item_list_col)
-                .to_series()
-                .to_list()
-            )
-            embeddings = create_umap_embeddings(df_file, vectorizer)
-            result = create_umap_df(df, embeddings, group_col="seq_id")
+    # TODO: Cannot pass a object to celery task. Change validation to return string.
+    from sklearn.feature_extraction.text import CountVectorizer
 
-        analysis_type = (
-            "directory-level-visualisations"
-            if not file_level
-            else "file-level-visualisations"
-        )
-        metadata = {
-            "analysis_sub_type": "umap",
-            "analysis_level": "directory" if not file_level else "file",
-            "mask_type": mask_type,
-            "vectorizer": str(vectorizer),
-            "directory_path": dir_path,
-        }
+    vectorizer = "count" if isinstance(vectorizer, CountVectorizer) else "tfidf"
 
-        return store_and_format_result(result, project_id, analysis_type, metadata)
+    task = async_create_umap.delay(
+        project_id, dir_path, item_list_col, file_level, vectorizer, mask_type
+    )
 
-    except Exception as e:
-        return handle_errors(project_id, "UMAP", e)
+    return jsonify({"task_id": task.id}), 202
+    # try:
+    #     df = load_data(dir_path)
+    #     if not file_level:
+    #         df_run = (
+    #             aggregate_run_level(df, item_list_col, mask_type)
+    #             .select(item_list_col)
+    #             .to_series()
+    #             .to_list()
+    #         )
+    #         embeddings = create_umap_embeddings(df_run, vectorizer)
+    #         result = create_umap_df(df, embeddings)
+    #     else:
+    #         df_file = (
+    #             aggregate_file_level(df, item_list_col, mask_type)
+    #             .select(item_list_col)
+    #             .to_series()
+    #             .to_list()
+    #         )
+    #         embeddings = create_umap_embeddings(df_file, vectorizer)
+    #         result = create_umap_df(df, embeddings, group_col="seq_id")
+    #
+    #     analysis_type = (
+    #         "directory-level-visualisations"
+    #         if not file_level
+    #         else "file-level-visualisations"
+    #     )
+    #     metadata = {
+    #         "analysis_sub_type": "umap",
+    #         "analysis_level": "directory" if not file_level else "file",
+    #         "mask_type": mask_type,
+    #         "vectorizer": str(vectorizer),
+    #         "directory_path": dir_path,
+    #     }
+    #
+    #     return store_and_format_result(result, project_id, analysis_type, metadata)
+    #
+    # except Exception as e:
+    #     return handle_errors(project_id, "UMAP", e)
 
 
 @analyze_bp.route("/file-counts/<int:project_id>", methods=["POST"])

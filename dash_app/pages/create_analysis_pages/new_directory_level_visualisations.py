@@ -3,6 +3,7 @@ import dash_bootstrap_components as dbc
 from dash import Input, Output, State, callback, dcc, html, no_update
 
 from dash_app.callbacks.callback_functions import (
+    make_api_call,
     run_high_level_analysis,
     get_log_data_directory_options,
 )
@@ -30,12 +31,14 @@ def layout(**kwargs):
                 success_toast("success-toast-ut"),
                 dcc.Location(id="url", refresh=False),
                 dcc.Store(id="project-id-ut"),
+                dcc.Store(id="job-store-ut"),
+                dcc.Interval(id="interval-ut", disabled=True),
             ]
         ),
         dbc.Container(
             [
                 form,
-                dcc.Loading(dcc.Location(id="redirect-ut", refresh=True)),
+                # dcc.Loading(dcc.Location(id="redirect-ut", refresh=True)),
             ]
         ),
     ]
@@ -63,12 +66,19 @@ def get_log_data_directories(_):
     return get_log_data_directory_options()
 
 
+# We call the backend to run the analysis which returns task_id.
+# In general it should not return an error, except on bad user inputs
+#  but even those should be rare, since the data inputs are dropdowns.
+# After the task_id has been returned we set the dcc.interval disabled to
+#  false, which will start polling the task-status endpoint. When task status
+#  is ready it will either return a result or an error.
 @callback(
-    Output("redirect-ut", "href"),
     Output("error-toast-ut", "children", allow_duplicate=True),
     Output("error-toast-ut", "is_open", allow_duplicate=True),
-    Output("success-toast-ut", "children"),
-    Output("success-toast-ut", "is_open"),
+    Output("success-toast-ut", "children", allow_duplicate=True),
+    Output("success-toast-ut", "is_open", allow_duplicate=True),
+    Output("job-store-ut", "data"),
+    Output("interval-ut", "disabled", allow_duplicate=True),
     Input("submit-ut", "n_clicks"),
     State("project-id-ut", "data"),
     State("directory-ut", "value"),
@@ -92,46 +102,79 @@ def run_analysis(
         )
         return (
             dash.no_update,
-            dash.no_update,
             False,
             f"Analysis is running: {result}",
             True,
+            result.get("task_id"),
+            False,
         )
     except ValueError as e:
         return (
-            dash.no_update,
             str(e),
             True,
             dash.no_update,
             False,
+            dash.no_update,
+            True,
         )
 
 
-# def run_analysis(
-#     n_clicks, project_id, directory_path, analysis_type, mask_type, vectorizer_type
-# ):
-#
-#     try:
-#         result = run_high_level_analysis(
-#             project_id,
-#             directory_path,
-#             analysis_type,
-#             mask_type,
-#             vectorizer_type,
-#             level="directory",
-#         )
-#         return (
-#             f"/dash/analysis/{result['type']}/{result['id']}",
-#             dash.no_update,
-#             False,
-#             "Analysis complete",
-#             True,
-#         )
-#     except ValueError as e:
-#         return (
-#             dash.no_update,
-#             str(e),
-#             True,
-#             dash.no_update,
-#             False,
-#         )
+@callback(
+    Output("error-toast-ut", "children", allow_duplicate=True),
+    Output("error-toast-ut", "is_open", allow_duplicate=True),
+    Output("success-toast-ut", "children", allow_duplicate=True),
+    Output("success-toast-ut", "is_open", allow_duplicate=True),
+    Output("interval-ut", "disabled", allow_duplicate=True),
+    Input("interval-ut", "n_intervals"),
+    State("job-store-ut", "data"),
+    prevent_initial_call=True,
+)
+def poll_result(_, task_id):
+    if not task_id:
+        return (
+            dash.no_update,
+            False,
+            dash.no_update,
+            False,
+            dash.no_update,
+        )
+
+    # There shouldn't be any error here unless the task_id is wrong.
+    response, error = make_api_call({}, f"task-status/{task_id}", requests_type="GET")
+    if error or response is None:
+        return (
+            str(error),
+            True,
+            dash.no_update,
+            False,
+            True,
+        )
+
+    # f"/dash/analysis/{result['type']}/{result['id']}",
+    result = response.json()
+    if result.get("ready") is True:
+        if result.get("successful") is True:
+            return (
+                dash.no_update,
+                dash.no_update,
+                str(result),
+                True,
+                True,
+            )
+        else:
+            return (
+                str(result),
+                True,
+                dash.no_update,
+                False,
+                True,
+            )
+    else:
+        # The task is not ready yet.
+        return (
+            dash.no_update,
+            False,
+            dash.no_update,
+            False,
+            dash.no_update,
+        )
