@@ -1,10 +1,12 @@
 import dash
 import dash_bootstrap_components as dbc
-from dash import ALL, Input, Output, State, callback, dcc
+from dash import ALL, MATCH, Input, Output, State, callback, dcc
 
-from dash_app.callbacks.callback_functions import make_api_call
+from dash_app.callbacks.callback_functions import make_api_call, poll_task_status
 from dash_app.components.layouts import create_project_layout
+from dash_app.components.toasts import error_toast, success_toast
 from dash_app.utils.metadata import format_analysis_overview, parse_query_parameter
+from dash_app.dash_config import DashConfig
 
 dash.register_page(__name__, path_template="/project/<project_id>")
 
@@ -20,6 +22,16 @@ def layout(project_id=None, **kwargs):
                     message="Are you sure you want to delete this analysis. All data related to this analysis will be lost.",
                 ),
                 dcc.Store(id="delete-analysis-id"),
+                dcc.Store(
+                    id="project-task-store",
+                    storage_type="session",
+                ),
+                dcc.Interval(
+                    id="project-task-poll",
+                    interval=DashConfig.POLL_RATE * 1000,
+                ),
+                error_toast(id="task-error-toast"),
+                success_toast(id="task-success-toast"),
             ]
         ),
     ] + create_project_layout(
@@ -42,6 +54,16 @@ def get_project_name(search):
     name = parse_query_parameter(search, "project_name")
 
     return name if name else ""
+
+
+@callback(
+    Output("project-task-store", "data"),
+    Input("url", "search"),
+    State("project-task-store", "data"),
+)
+def get_task_id(search, current_tasks):
+    task_id = parse_query_parameter(search, "task_id")
+    return (current_tasks or []) + [task_id] if task_id else dash.no_update
 
 
 @callback(
@@ -145,3 +167,53 @@ def apply_settings(n_clicks, match_filenames, project_id):
         return (error, True, dash.no_update, False)
 
     return (dash.no_update, False, "Settings updated", True)
+
+
+@callback(
+    Output("task-error-toast", "children"),
+    Output("task-error-toast", "is_open"),
+    Output("task-success-toast", "children"),
+    Output("task-success-toast", "is_open"),
+    Output("project-task-store", "data", allow_duplicate=True),
+    Input("project-task-poll", "n_intervals"),
+    State("project-task-store", "data"),
+    prevent_initial_call=True,
+)
+def poll_project_tasks(_, task_ids):
+    updated_task_store = []
+    success_messages = []
+    error_messages = []
+
+    import logging
+
+    logging.warning(task_ids)
+
+    for task_id in task_ids or []:
+        try:
+            result = poll_task_status(task_id)
+        except ValueError as e:
+            error_messages.append(
+                f"Unexpected error occured with task id {task_id}: {e}"
+            )
+            continue
+
+        if result is None or result.get("ready") is False:
+            updated_task_store.append(task_id)
+        elif result.get("successful"):
+            success_messages.append(f"Done: {task_id}")
+        else:
+            error_messages.append(f"FAILED: {task_id}")
+
+    # TODO: what if there is both error messages and success messages
+    error_output = "\n".join(error_messages) if error_messages else dash.no_update
+    error_open = bool(error_messages)
+    success_output = "\n".join(success_messages) if success_messages else dash.no_update
+    success_open = bool(success_messages)
+
+    return (
+        error_output,
+        error_open,
+        success_output,
+        success_open,
+        updated_task_store,
+    )

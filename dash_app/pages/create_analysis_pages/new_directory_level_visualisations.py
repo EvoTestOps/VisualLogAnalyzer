@@ -1,11 +1,11 @@
+from logging import warning
 import dash
 import dash_bootstrap_components as dbc
-from dash import Input, Output, State, callback, dcc, html
+from dash import ALL, MATCH, Input, Output, State, callback, dcc, html, ctx, no_update
 
 from dash_app.callbacks.callback_functions import (
     run_high_level_analysis,
     get_log_data_directory_options,
-    poll_task_status,
 )
 from dash_app.components.forms import directory_level_viz_form
 from dash_app.components.toasts import error_toast, success_toast
@@ -31,14 +31,12 @@ def layout(**kwargs):
                 success_toast("success-toast-ut"),
                 dcc.Location(id="url", refresh=False),
                 dcc.Store(id="project-id-ut"),
-                dcc.Store(id="job-store-ut"),
-                dcc.Interval(id="interval-ut", disabled=True),
             ]
         ),
         dbc.Container(
             [
                 form,
-                # dcc.Loading(dcc.Location(id="redirect-ut", refresh=True)),
+                dcc.Loading(dcc.Location(id="redirect-ut", refresh=True)),
             ]
         ),
     ]
@@ -71,8 +69,7 @@ def get_log_data_directories(_):
     Output("error-toast-ut", "is_open", allow_duplicate=True),
     Output("success-toast-ut", "children", allow_duplicate=True),
     Output("success-toast-ut", "is_open", allow_duplicate=True),
-    Output("job-store-ut", "data"),
-    Output("interval-ut", "disabled", allow_duplicate=True),
+    Output("redirect-ut", "href"),
     Input("submit-ut", "n_clicks"),
     State("project-id-ut", "data"),
     State("directory-ut", "value"),
@@ -82,7 +79,7 @@ def get_log_data_directories(_):
     prevent_initial_call=True,
 )
 def run_analysis(
-    n_clicks, project_id, directory_path, analysis_type, mask_type, vectorizer_type
+    _, project_id, directory_path, analysis_type, mask_type, vectorizer_type
 ):
     try:
         result = run_high_level_analysis(
@@ -98,8 +95,7 @@ def run_analysis(
             False,
             f"Analysis is running: {result}",
             True,
-            result.get("task_id"),
-            False,
+            f"/dash/project/{project_id}?task_id={result.get('task_id')}",
         )
     except ValueError as e:
         return (
@@ -108,53 +104,4 @@ def run_analysis(
             dash.no_update,
             False,
             dash.no_update,
-            True,
-        )
-
-
-@callback(
-    Output("error-toast-ut", "children", allow_duplicate=True),
-    Output("error-toast-ut", "is_open", allow_duplicate=True),
-    Output("success-toast-ut", "children", allow_duplicate=True),
-    Output("success-toast-ut", "is_open", allow_duplicate=True),
-    Output("interval-ut", "disabled", allow_duplicate=True),
-    Input("interval-ut", "n_intervals"),
-    State("job-store-ut", "data"),
-    prevent_initial_call=True,
-)
-def poll_result(_, task_id):
-    try:
-        result = poll_task_status(task_id)
-        if result.get("ready"):
-            if result.get("successful") is True:
-                return (
-                    dash.no_update,
-                    False,
-                    str(result.get("result")),
-                    True,
-                    True,
-                )
-            else:
-                return (
-                    str(result.get("result")),
-                    True,
-                    dash.no_update,
-                    False,
-                    True,
-                )
-        else:
-            return (
-                dash.no_update,
-                False,
-                dash.no_update,
-                False,
-                False,
-            )
-    except ValueError as e:
-        return (
-            str(e),
-            True,
-            dash.no_update,
-            False,
-            True,
         )
