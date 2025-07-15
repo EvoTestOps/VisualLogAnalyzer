@@ -17,8 +17,8 @@ from server.task_helpers import (
 from server.analysis.utils.umap_analysis import create_umap_df, create_umap_embeddings
 
 
-@shared_task(ignore_results=False)
-def async_run_file_counts(project_id: int, directory_path: str) -> dict:
+@shared_task(bind=True, ignore_results=False)
+def async_run_file_counts(self, project_id: int, directory_path: str) -> dict:
     try:
         df = load_data(directory_path)
         result = files_and_lines_count(df)
@@ -33,12 +33,13 @@ def async_run_file_counts(project_id: int, directory_path: str) -> dict:
             result, project_id, "directory-level-visualisations", metadata
         )
     except Exception as e:
+        self.update_state(state="FAILURE", meta={"exc": e})
         return handle_errors(project_id, "file counts", e)
 
 
-@shared_task(ignore_results=False)
+@shared_task(bind=True, ignore_results=False)
 def async_run_unique_terms(
-    project_id: int, directory_path: str, item_list_col: str, file_level: bool
+    self, project_id: int, directory_path: str, item_list_col: str, file_level: bool
 ) -> dict:
     try:
         df = load_data(directory_path)
@@ -62,21 +63,20 @@ def async_run_unique_terms(
             unique_terms_count, project_id, analysis_type, metadata
         )
     except Exception as e:
+        self.update_state(state="FAILURE", meta={"exc": e})
         return handle_errors(project_id, "unique terms", e)
 
 
-@shared_task(ignore_results=False)
+@shared_task(bind=True, ignore_results=False)
 def async_create_umap(
+    self,
     project_id: int,
     directory_path: str,
     item_list_col: str,
     file_level: bool,
     vectorizer: str,
     mask_type: str,
-):
-    import logging
-
-    logging.warning(file_level)
+) -> dict:
     try:
         df = load_data(directory_path)
 
@@ -112,4 +112,5 @@ def async_create_umap(
 
         return store_and_format_result(result, project_id, analysis_type, metadata)
     except Exception as e:
+        self.update_state(state="FAILURE", meta={"exc": e})
         return handle_errors(project_id, "UMAP", e)

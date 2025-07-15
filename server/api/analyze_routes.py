@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, jsonify, request
 
 from server.analysis.enhancer import Enhancer
 from server.analysis.log_analysis_pipeline import ManualTrainTestPipeline
@@ -7,18 +7,10 @@ from server.analysis.utils.data_filtering import (
     get_file_name_by_orig_file_name,
     get_prediction_cols,
 )
-from server.analysis.utils.file_level_analysis import (
-    aggregate_file_level,
-    unique_terms_count_by_file,
-)
 from server.analysis.utils.log_distance import measure_distances
 from server.analysis.utils.run_level_analysis import (
-    aggregate_run_level,
     calculate_zscore_sum_anos,
-    files_and_lines_count,
-    unique_terms_count_by_run,
 )
-from server.analysis.utils.umap_analysis import create_umap_df, create_umap_embeddings
 from server.api.api_helpers import (
     handle_errors,
     load_data,
@@ -33,11 +25,10 @@ from server.api.validator_models.high_level_analysis_params import (
 )
 from server.api.validator_models.log_distance_params import LogDistanceParams
 from server.models.settings import Settings
-
 from server.tasks import (
+    async_create_umap,
     async_run_file_counts,
     async_run_unique_terms,
-    async_create_umap,
 )
 
 analyze_bp = Blueprint("main", __name__)
@@ -175,44 +166,6 @@ def create_umap(project_id):
     )
 
     return jsonify({"task_id": task.id}), 202
-    # try:
-    #     df = load_data(dir_path)
-    #     if not file_level:
-    #         df_run = (
-    #             aggregate_run_level(df, item_list_col, mask_type)
-    #             .select(item_list_col)
-    #             .to_series()
-    #             .to_list()
-    #         )
-    #         embeddings = create_umap_embeddings(df_run, vectorizer)
-    #         result = create_umap_df(df, embeddings)
-    #     else:
-    #         df_file = (
-    #             aggregate_file_level(df, item_list_col, mask_type)
-    #             .select(item_list_col)
-    #             .to_series()
-    #             .to_list()
-    #         )
-    #         embeddings = create_umap_embeddings(df_file, vectorizer)
-    #         result = create_umap_df(df, embeddings, group_col="seq_id")
-    #
-    #     analysis_type = (
-    #         "directory-level-visualisations"
-    #         if not file_level
-    #         else "file-level-visualisations"
-    #     )
-    #     metadata = {
-    #         "analysis_sub_type": "umap",
-    #         "analysis_level": "directory" if not file_level else "file",
-    #         "mask_type": mask_type,
-    #         "vectorizer": str(vectorizer),
-    #         "directory_path": dir_path,
-    #     }
-    #
-    #     return store_and_format_result(result, project_id, analysis_type, metadata)
-    #
-    # except Exception as e:
-    #     return handle_errors(project_id, "UMAP", e)
 
 
 @analyze_bp.route("/file-counts/<int:project_id>", methods=["POST"])

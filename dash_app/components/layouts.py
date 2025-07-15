@@ -8,7 +8,7 @@ from dash_app.components.nav import crate_analysis_nav, nav
 from dash_app.components.toasts import error_toast, success_toast
 
 
-def create_root_layout():
+def create_root_layout(task_status_store_id):
     return dbc.Container(
         dbc.Row(
             [
@@ -16,6 +16,9 @@ def create_root_layout():
                     [
                         html.H2(
                             "Visual Log Analyzer",
+                        ),
+                        dcc.Store(
+                            id=task_status_store_id, storage_type="session", data=[]
                         ),
                         nav(),
                     ],

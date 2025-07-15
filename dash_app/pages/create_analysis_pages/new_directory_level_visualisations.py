@@ -1,11 +1,11 @@
 import dash
 import dash_bootstrap_components as dbc
-from dash import Input, Output, State, callback, dcc, html, no_update
+from dash import Input, Output, State, callback, dcc, html
 
 from dash_app.callbacks.callback_functions import (
-    make_api_call,
     run_high_level_analysis,
     get_log_data_directory_options,
+    poll_task_status,
 )
 from dash_app.components.forms import directory_level_viz_form
 from dash_app.components.toasts import error_toast, success_toast
@@ -66,12 +66,6 @@ def get_log_data_directories(_):
     return get_log_data_directory_options()
 
 
-# We call the backend to run the analysis which returns task_id.
-# In general it should not return an error, except on bad user inputs
-#  but even those should be rare, since the data inputs are dropdowns.
-# After the task_id has been returned we set the dcc.interval disabled to
-#  false, which will start polling the task-status endpoint. When task status
-#  is ready it will either return a result or an error.
 @callback(
     Output("error-toast-ut", "children", allow_duplicate=True),
     Output("error-toast-ut", "is_open", allow_duplicate=True),
@@ -90,7 +84,6 @@ def get_log_data_directories(_):
 def run_analysis(
     n_clicks, project_id, directory_path, analysis_type, mask_type, vectorizer_type
 ):
-
     try:
         result = run_high_level_analysis(
             project_id,
@@ -130,51 +123,38 @@ def run_analysis(
     prevent_initial_call=True,
 )
 def poll_result(_, task_id):
-    if not task_id:
-        return (
-            dash.no_update,
-            False,
-            dash.no_update,
-            False,
-            dash.no_update,
-        )
-
-    # There shouldn't be any error here unless the task_id is wrong.
-    response, error = make_api_call({}, f"task-status/{task_id}", requests_type="GET")
-    if error or response is None:
-        return (
-            str(error),
-            True,
-            dash.no_update,
-            False,
-            True,
-        )
-
-    # f"/dash/analysis/{result['type']}/{result['id']}",
-    result = response.json()
-    if result.get("ready") is True:
-        if result.get("successful") is True:
-            return (
-                dash.no_update,
-                dash.no_update,
-                str(result),
-                True,
-                True,
-            )
+    try:
+        result = poll_task_status(task_id)
+        if result.get("ready"):
+            if result.get("successful") is True:
+                return (
+                    dash.no_update,
+                    False,
+                    str(result.get("result")),
+                    True,
+                    True,
+                )
+            else:
+                return (
+                    str(result.get("result")),
+                    True,
+                    dash.no_update,
+                    False,
+                    True,
+                )
         else:
             return (
-                str(result),
-                True,
                 dash.no_update,
                 False,
-                True,
+                dash.no_update,
+                False,
+                False,
             )
-    else:
-        # The task is not ready yet.
+    except ValueError as e:
         return (
+            str(e),
+            True,
             dash.no_update,
             False,
-            dash.no_update,
-            False,
-            dash.no_update,
+            True,
         )

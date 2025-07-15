@@ -227,6 +227,16 @@ def get_log_data_directory_options():
     return [{"label": lab, "value": val} for (lab, val) in zip(labels, values)]
 
 
+def poll_task_status(task_id: int) -> dict:
+    # There shouldn't be any error here unless the task_id is wrong.
+    response, error = make_api_call({}, f"task-status/{task_id}", requests_type="GET")
+    if error or response is None:
+        raise ValueError(f"Was not able to fetch staus for task_id: {task_id}")
+
+    # f"/dash/analysis/{result['type']}/{result['id']}",
+    return response.json()
+
+
 def _build_test_train_payload(
     train_data,
     test_data,
