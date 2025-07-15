@@ -1,7 +1,6 @@
-from logging import warning
 import dash
 import dash_bootstrap_components as dbc
-from dash import ALL, MATCH, Input, Output, State, callback, dcc, html, ctx, no_update
+from dash import Input, Output, State, callback, dcc, html
 
 from dash_app.callbacks.callback_functions import (
     run_high_level_analysis,

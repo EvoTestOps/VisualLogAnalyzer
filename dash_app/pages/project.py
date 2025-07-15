@@ -1,6 +1,7 @@
 import dash
 import dash_bootstrap_components as dbc
-from dash import ALL, MATCH, Input, Output, State, callback, dcc
+from dash import ALL, Input, Output, State, callback, dcc
+from urllib.parse import urlencode, parse_qs
 
 from dash_app.callbacks.callback_functions import make_api_call, poll_task_status
 from dash_app.components.layouts import create_project_layout
@@ -17,6 +18,7 @@ def layout(project_id=None, **kwargs):
             [
                 dcc.Store(id="project-id", data=project_id),
                 dcc.Location(id="url", refresh=False),
+                dcc.Location(id="task-refresh", refresh=False),
                 dcc.ConfirmDialog(
                     id="confirm-delete",
                     message="Are you sure you want to delete this analysis. All data related to this analysis will be lost.",
@@ -29,6 +31,7 @@ def layout(project_id=None, **kwargs):
                 dcc.Interval(
                     id="project-task-poll",
                     interval=DashConfig.POLL_RATE * 1000,
+                    disabled=True,
                 ),
                 error_toast(id="task-error-toast"),
                 success_toast(id="task-success-toast"),
@@ -46,6 +49,7 @@ def layout(project_id=None, **kwargs):
     )
 
 
+# TODO: Fetch from the database. This is a pain to maintain.
 @callback(
     Output("project-name", "children"),
     Input("url", "search"),
@@ -53,28 +57,49 @@ def layout(project_id=None, **kwargs):
 def get_project_name(search):
     name = parse_query_parameter(search, "project_name")
 
-    return name if name else ""
+    return name if name else "Name not found"
 
 
+# 'task_id' is passed as a query parameter, since there doesn't
+# seem to be any good way to access project-task-store directly.
 @callback(
     Output("project-task-store", "data"),
+    Output("project-task-poll", "disabled"),
+    Output("url", "search"),
     Input("url", "search"),
     State("project-task-store", "data"),
 )
 def get_task_id(search, current_tasks):
-    task_id = parse_query_parameter(search, "task_id")
-    return (current_tasks or []) + [task_id] if task_id else dash.no_update
+    query = parse_qs(search.lstrip("?"))
+    task_id = query.get("task_id", [None])[0]
+
+    if not task_id:
+        return (
+            dash.no_update,
+            True if not current_tasks else dash.no_update,
+            dash.no_update,
+        )
+
+    query.pop("task_id", None)
+    new_search = "?" + urlencode(query, doseq=True) if query else ""
+
+    updated_tasks = (current_tasks or []) + [task_id]
+
+    return updated_tasks, False, new_search
 
 
+# Callback is triggered by 'url' so that we can easily
+#  refresh the component without refreshing the whole page.
 @callback(
     Output("group-project", "children"),
     Output("error-toast-project", "children"),
     Output("error-toast-project", "is_open"),
     Output("success-toast-project", "children"),
     Output("success-toast-project", "is_open"),
-    Input("project-id", "data"),
+    Input("url", "href"),
+    State("project-id", "data"),
 )
-def get_analyses(project_id):
+def get_analyses(_, project_id):
     if not project_id:
         return ([], "No project id was provided", True, dash.no_update, False)
 
@@ -130,19 +155,21 @@ def display_alert(n_clicks):
     Output("error-toast-project", "is_open", allow_duplicate=True),
     Output("success-toast-project", "children", allow_duplicate=True),
     Output("success-toast-project", "is_open", allow_duplicate=True),
+    Output("url", "href"),
     Input("confirm-delete", "submit_n_clicks"),
     State("delete-analysis-id", "data"),
+    State("url", "href"),
     prevent_initial_call=True,
 )
-def delete_analysis(submit_n_clicks, analysis_id):
+def delete_analysis(submit_n_clicks, analysis_id, url_path):
     if not submit_n_clicks or not analysis_id:
         return dash.no_update, False, dash.no_update, False
 
     response, error = make_api_call({}, f"analyses/{analysis_id}", "DELETE")
     if error or not response:
-        return (error, True, dash.no_update, False)
+        return (error, True, dash.no_update, False, dash.no_update)
 
-    return (dash.no_update, False, "Analysis deleted", True)
+    return (dash.no_update, False, "Analysis deleted", True, url_path)
 
 
 @callback(
@@ -175,18 +202,17 @@ def apply_settings(n_clicks, match_filenames, project_id):
     Output("task-success-toast", "children"),
     Output("task-success-toast", "is_open"),
     Output("project-task-store", "data", allow_duplicate=True),
+    Output("url", "href", allow_duplicate=True),
+    Output("project-task-poll", "disabled", allow_duplicate=True),
     Input("project-task-poll", "n_intervals"),
     State("project-task-store", "data"),
+    State("url", "href"),
     prevent_initial_call=True,
 )
-def poll_project_tasks(_, task_ids):
+def poll_project_tasks(_, task_ids, url_path):
     updated_task_store = []
     success_messages = []
     error_messages = []
-
-    import logging
-
-    logging.warning(task_ids)
 
     for task_id in task_ids or []:
         try:
@@ -200,9 +226,9 @@ def poll_project_tasks(_, task_ids):
         if result is None or result.get("ready") is False:
             updated_task_store.append(task_id)
         elif result.get("successful"):
-            success_messages.append(f"Done: {task_id}")
+            success_messages.append("Analysis complete")
         else:
-            error_messages.append(f"FAILED: {task_id}")
+            error_messages.append(f"Analysis failed: {result.get("result")}")
 
     # TODO: what if there is both error messages and success messages
     error_output = "\n".join(error_messages) if error_messages else dash.no_update
@@ -210,10 +236,17 @@ def poll_project_tasks(_, task_ids):
     success_output = "\n".join(success_messages) if success_messages else dash.no_update
     success_open = bool(success_messages)
 
+    should_refresh = bool(success_messages)
+    refresh_path = url_path if should_refresh else dash.no_update
+
+    polling_disabled = False if len(updated_task_store) > 0 else True
+
     return (
         error_output,
         error_open,
         success_output,
         success_open,
         updated_task_store,
+        refresh_path,
+        polling_disabled,
     )
