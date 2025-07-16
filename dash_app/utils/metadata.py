@@ -69,6 +69,7 @@ def _sort_metadata(metadata: dict) -> dict:
         "target",
         "field",
         "mask_type",
+        "vectorizer",
         "results_path",
         "time_created",
         # "time_updated",

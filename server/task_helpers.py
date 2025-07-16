@@ -2,6 +2,7 @@ import logging
 import os
 
 from flask import current_app
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 
 from server.analysis.loader import Loader
 from server.extensions import db
@@ -12,6 +13,15 @@ def load_data(directory_path):
     loader = Loader(directory_path, "raw")
     loader.load()
     return loader.df
+
+
+def create_vectorizer(vectorizer_type: str) -> object:
+    if vectorizer_type == "count":
+        return CountVectorizer
+    elif vectorizer_type == "tfidf":
+        return TfidfVectorizer
+    else:
+        raise ValueError(f"Unsupported vectorizer type: {vectorizer_type}")
 
 
 def store_and_format_result(result, project_id, analysis_type, metadata):

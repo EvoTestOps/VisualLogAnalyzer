@@ -29,6 +29,7 @@ from server.tasks import (
     async_create_umap,
     async_run_file_counts,
     async_run_unique_terms,
+    async_log_distance,
 )
 
 analyze_bp = Blueprint("main", __name__)
@@ -156,11 +157,6 @@ def create_umap(project_id):
     vectorizer = validation_result.vectorizer
     mask_type = validation_result.mask_type
 
-    # TODO: Cannot pass a object to celery task. Change validation to return string.
-    from sklearn.feature_extraction.text import CountVectorizer
-
-    vectorizer = "count" if isinstance(vectorizer, CountVectorizer) else "tfidf"
-
     task = async_create_umap.delay(
         project_id, dir_path, item_list_col, file_level, vectorizer, mask_type
     )
@@ -194,42 +190,14 @@ def log_distance(project_id):
     mask_type = validation_result.mask_type
     vectorizer = validation_result.vectorizer
 
-    settings = Settings.query.filter_by(project_id=project_id).first_or_404()
-    match_filenames = settings.match_filenames
-
-    try:
-        enhancer = Enhancer(load_data(dir_path))
-        df = enhancer.enhance_event(item_list_col, mask_type)
-
-        # TODO: Refactor, this seems dubious
-        if file_level and comparison_runs in (None, []) and match_filenames:
-            target_file_name = get_file_name_by_orig_file_name(df, target_run)
-            df = filter_files(df, [target_file_name], "file_name")
-
-        run_column = "run" if not file_level else "orig_file_name"
-        result = measure_distances(
-            df,
-            item_list_col,
-            target_run,
-            run_column=run_column,
-            comparison_runs=comparison_runs,
-            vectorizer=vectorizer,
-        )
-
-        metadata = {
-            "analysis_level": "directory" if not file_level else "file",
-            "analysis_sub_type": "log-distance",
-            "mask_type": mask_type,
-            "vectorizer": str(vectorizer),
-            "directory_path": dir_path,
-            "target": target_run,
-        }
-
-        analysis_type = (
-            "distance-file-level" if file_level else "distance-directory-level"
-        )
-
-        return store_and_format_result(result, project_id, analysis_type, metadata)
-
-    except Exception as e:
-        return handle_errors(project_id, "log distance", e)
+    task = async_log_distance.delay(
+        project_id,
+        dir_path,
+        target_run,
+        comparison_runs,
+        item_list_col,
+        file_level,
+        mask_type,
+        vectorizer,
+    )
+    return jsonify({"task_id": task.id}), 202

@@ -92,7 +92,7 @@ def run_analysis(
         return (
             dash.no_update,
             False,
-            f"Analysis is running: {result}",
+            "Analysis is running",
             True,
             f"/dash/project/{project_id}?task_id={result.get('task_id')}",
         )

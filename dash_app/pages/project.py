@@ -18,7 +18,6 @@ def layout(project_id=None, **kwargs):
             [
                 dcc.Store(id="project-id", data=project_id),
                 dcc.Location(id="url", refresh=False),
-                dcc.Location(id="task-refresh", refresh=False),
                 dcc.ConfirmDialog(
                     id="confirm-delete",
                     message="Are you sure you want to delete this analysis. All data related to this analysis will be lost.",
