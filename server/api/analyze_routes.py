@@ -1,22 +1,6 @@
 from flask import Blueprint, jsonify, request
+from pydantic import ValidationError
 
-from server.analysis.enhancer import Enhancer
-from server.analysis.log_analysis_pipeline import ManualTrainTestPipeline
-from server.analysis.utils.data_filtering import (
-    filter_files,
-    get_file_name_by_orig_file_name,
-    get_prediction_cols,
-)
-from server.analysis.utils.log_distance import measure_distances
-from server.analysis.utils.run_level_analysis import (
-    calculate_zscore_sum_anos,
-)
-from server.api.api_helpers import (
-    handle_errors,
-    load_data,
-    store_and_format_result,
-    validate_request_data,
-)
 from server.api.validator_models.anomaly_detection_params import AnomalyDetectionParams
 from server.api.validator_models.high_level_analysis_params import (
     FileCountsParams,
@@ -24,15 +8,24 @@ from server.api.validator_models.high_level_analysis_params import (
     UniqueTermsParams,
 )
 from server.api.validator_models.log_distance_params import LogDistanceParams
-from server.models.settings import Settings
 from server.tasks import (
     async_create_umap,
+    async_log_distance,
+    async_run_anomaly_detection,
     async_run_file_counts,
     async_run_unique_terms,
-    async_log_distance,
 )
 
 analyze_bp = Blueprint("main", __name__)
+
+
+def validate_request_data(params_model, request):
+    try:
+        validated_data = params_model(**request.get_json())
+        return validated_data
+    except ValidationError as e:
+        error = e.errors()[0]
+        return jsonify({"error": f"{error['loc'][0]}: {error['msg']}"}), 400
 
 
 @analyze_bp.route("/manual-test-train/<int:project_id>", methods=["POST"])
@@ -45,89 +38,28 @@ def manual_test_train(project_id):
     test_data_path = validation_result.test_data_path
     models = validation_result.models
     item_list_col = validation_result.item_list_col
-    log_format = validation_result.log_format
     runs_to_include = validation_result.runs_to_include
-    run_level = validation_result.run_level
     files_to_include = validation_result.files_to_include
     file_level = validation_result.file_level
+    run_level = validation_result.run_level
     mask_type = validation_result.mask_type
     vectorizer = validation_result.vectorizer
 
-    settings = Settings.query.filter_by(project_id=project_id).first_or_404()
-    match_filenames = settings.match_filenames
+    task = async_run_anomaly_detection.delay(
+        project_id,
+        train_data_path,
+        test_data_path,
+        models,
+        item_list_col,
+        runs_to_include,
+        files_to_include,
+        file_level,
+        run_level,
+        mask_type,
+        vectorizer,
+    )
 
-    results = None
-    pipeline = None
-
-    # TODO: Rather than getting boolean values, take str for level
-    if file_level:
-        level = "file"
-    elif run_level:
-        level = "directory"
-    else:
-        level = "line"
-
-    try:
-        pipeline = ManualTrainTestPipeline(
-            model_names=models,
-            item_list_col=item_list_col,
-            log_format=log_format,
-            vectorizer=vectorizer,
-            train_data_path=train_data_path,
-            test_data_path=test_data_path,
-            runs_to_include=runs_to_include,
-            files_to_include=files_to_include,
-            mask_type=mask_type,
-        )
-
-        pipeline.load()
-        pipeline.enhance()
-
-        if match_filenames:
-            if level == "file":
-                pipeline.analyze_file_group_by_filenames()
-            elif level == "line":
-                pipeline.analyze_line_group_by_filenames()
-            else:
-                pipeline.aggregate_to_run_level()
-                pipeline.analyze()
-        else:
-            if level == "file":
-                pipeline.aggregate_to_file_level()
-            elif level == "directory":
-                pipeline.aggregate_to_run_level()
-            pipeline.analyze()
-
-        results = pipeline.results
-        if results is None:
-            raise ValueError("Analysis failed to create results")
-
-        if log_format != "raw":
-            results = results.sort(["run"])
-
-        if run_level or file_level:
-            results = calculate_zscore_sum_anos(
-                results, distance_columns=get_prediction_cols(results)
-            )
-            results = results.drop(item_list_col)
-
-        analysis_type = f"ano-{level}-level"
-
-        metadata = {
-            "train_data_path": train_data_path,
-            "analysis_sub_type": "anomaly-detection",
-            "test_data_path": test_data_path,
-            "vectorizer": str(vectorizer),
-            "item_list_col": item_list_col,
-            "mask_type": mask_type,
-            "models": ";".join(models),
-            "analysis_level": level,
-        }
-
-        return store_and_format_result(results, project_id, analysis_type, metadata)
-
-    except Exception as e:
-        return handle_errors(project_id, "anomaly detection", e)
+    return jsonify({"task_id": task.id}), 202
 
 
 @analyze_bp.route("/unique-terms/<int:project_id>", methods=["POST"])

@@ -1,9 +1,11 @@
 from celery import shared_task
 
 from server.analysis.enhancer import Enhancer
+from server.analysis.log_analysis_pipeline import ManualTrainTestPipeline
 from server.analysis.utils.data_filtering import (
     filter_files,
     get_file_name_by_orig_file_name,
+    get_prediction_cols,
 )
 from server.analysis.utils.file_level_analysis import (
     aggregate_file_level,
@@ -12,6 +14,7 @@ from server.analysis.utils.file_level_analysis import (
 from server.analysis.utils.log_distance import measure_distances
 from server.analysis.utils.run_level_analysis import (
     aggregate_run_level,
+    calculate_zscore_sum_anos,
     files_and_lines_count,
     unique_terms_count_by_run,
 )
@@ -23,6 +26,91 @@ from server.task_helpers import (
     load_data,
     store_and_format_result,
 )
+
+
+@shared_task(bind=True, ignore_results=False)
+def async_run_anomaly_detection(
+    self,
+    project_id: int,
+    train_data_path: str,
+    test_data_path: str,
+    models: list[str],
+    item_list_col: str,
+    runs_to_include: list[str] | None,
+    files_to_include: list[str] | None,
+    file_level: bool,
+    directory_level: bool,
+    mask_type: str,
+    vectorizer: str,
+) -> dict:
+
+    # TODO: Rather than getting boolean values, take str for level
+    if file_level:
+        level = "file"
+    elif directory_level:
+        level = "directory"
+    else:
+        level = "line"
+
+    try:
+        settings = Settings.query.filter_by(project_id=project_id).first_or_404()
+        match_filenames = settings.match_filenames
+
+        vectorizer_object = create_vectorizer(vectorizer)
+        pipeline = ManualTrainTestPipeline(
+            model_names=models,
+            item_list_col=item_list_col,
+            vectorizer=vectorizer_object,
+            train_data_path=train_data_path,
+            test_data_path=test_data_path,
+            runs_to_include=runs_to_include,
+            files_to_include=files_to_include,
+            mask_type=mask_type,
+        )
+
+        pipeline.load()
+        pipeline.enhance()
+
+        if match_filenames:
+            if level == "file":
+                pipeline.analyze_file_group_by_filenames()
+            elif level == "line":
+                pipeline.analyze_line_group_by_filenames()
+            else:
+                pipeline.aggregate_to_run_level()
+                pipeline.analyze()
+        else:
+            if level == "file":
+                pipeline.aggregate_to_file_level()
+            elif level == "directory":
+                pipeline.aggregate_to_run_level()
+            pipeline.analyze()
+
+        results = pipeline.results
+        if results is None:
+            raise ValueError("Analysis failed to create results")
+
+        if directory_level or file_level:
+            results = calculate_zscore_sum_anos(
+                results, distance_columns=get_prediction_cols(results)
+            )
+            results = results.drop(item_list_col)
+
+        analysis_type = f"ano-{level}-level"
+        metadata = {
+            "train_data_path": train_data_path,
+            "test_data_path": test_data_path,
+            "analysis_sub_type": "anomaly-detection",
+            "vectorizer": vectorizer,
+            "item_list_col": item_list_col,
+            "mask_type": mask_type,
+            "models": ";".join(models),
+            "analysis_level": level,
+        }
+        return store_and_format_result(results, project_id, analysis_type, metadata)
+    except Exception as e:
+        self.update_state(state="FAILURE", meta={"exc": e})
+        return handle_errors(project_id, "anomaly detection", e)
 
 
 @shared_task(bind=True, ignore_results=False)
@@ -132,7 +220,7 @@ def async_log_distance(
     file_level: bool,
     mask_type: str | None,
     vectorizer: str,
-):
+) -> dict:
     try:
         settings = Settings.query.filter_by(project_id=project_id).first_or_404()
         match_filenames = settings.match_filenames
