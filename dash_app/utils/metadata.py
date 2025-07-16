@@ -18,7 +18,7 @@ def _format_key_capitalize(key: str, divider="_") -> str:
 def _format_iso_time(timestamp: str) -> str:
     try:
         datetime_obj = datetime.fromisoformat(timestamp)
-        return datetime_obj.strftime("%d.%m.%Y %H:%M")
+        return datetime_obj.strftime("%H:%M %d.%m.%Y")
     except ValueError:
         return timestamp
 
@@ -69,6 +69,7 @@ def _sort_metadata(metadata: dict) -> dict:
         "target",
         "field",
         "mask_type",
+        "vectorizer",
         "results_path",
         "time_created",
         # "time_updated",

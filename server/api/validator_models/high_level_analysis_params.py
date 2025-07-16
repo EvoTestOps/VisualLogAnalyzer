@@ -1,7 +1,6 @@
-from typing import Any, Optional
+from typing import Optional, Literal
 
 from pydantic import BaseModel, Field, field_validator
-from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 
 from server.api.validator_models.validator_utils import validate_directory_path
 
@@ -21,21 +20,8 @@ class UmapParams(BaseModel):
     directory_path: str = Field(alias="dir_path")
     item_list_col: str = "e_words"
     file_level: bool = False
-    vectorizer: object = CountVectorizer
+    vectorizer: Literal["count", "tfidf"] = "count"
     mask_type: Optional[str] = None
-
-    @field_validator("vectorizer", mode="before")
-    @classmethod
-    def create_vectorizer(cls, value: Any) -> Any:
-        if isinstance(value, str):
-            if value == "count":
-                return CountVectorizer
-            elif value == "tfidf":
-                return TfidfVectorizer
-            else:
-                raise ValueError(f"Unsupported vectorizer type: {value}")
-        else:
-            return CountVectorizer
 
     @field_validator("directory_path", mode="after")
     @classmethod

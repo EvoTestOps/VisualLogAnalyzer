@@ -47,6 +47,7 @@ class Analysis(db.Model):
             "target": self.target,
             "field": self.item_list_col,
             "mask_type": self.mask_type,
+            "vectorizer": self.vectorizer,
             "results_path": self.results_path,
             "time_created": (
                 self.time_created.isoformat() if self.time_created else None

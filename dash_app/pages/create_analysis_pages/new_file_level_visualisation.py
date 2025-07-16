@@ -68,11 +68,11 @@ def get_log_data_directories(_):
 
 
 @callback(
-    Output("redirect-file", "href"),
     Output("error-toast-file", "children", allow_duplicate=True),
     Output("error-toast-file", "is_open", allow_duplicate=True),
     Output("success-toast-file", "children"),
     Output("success-toast-file", "is_open"),
+    Output("redirect-file", "href"),
     Input("submit-file", "n_clicks"),
     State("project-id-file", "data"),
     State("directory-file", "value"),
@@ -94,17 +94,17 @@ def run_analysis(
             level="file",
         )
         return (
-            f"/dash/analysis/{result['type']}/{result['id']}",
             dash.no_update,
             False,
-            "Analysis complete",
+            "Analysis is running",
             True,
+            f"/dash/project/{project_id}?task_id={result.get("task_id")}",
         )
     except ValueError as e:
         return (
-            dash.no_update,
             str(e),
             True,
             dash.no_update,
             False,
+            dash.no_update,
         )

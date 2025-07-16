@@ -15,8 +15,9 @@ def create_dash_app(server):
         url_base_pathname="/dash/",
         use_pages=True,
         # pages_folder="dash_app/pages",
-        external_stylesheets=[dbc.themes.BOOTSTRAP,
-                              dbc.icons.FONT_AWESOME, dbc_css],
+        external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.icons.FONT_AWESOME, dbc_css],
+        # TODO: check if this can be removed later. Harder to detect undefined behaviour.
+        suppress_callback_exceptions=True,
     )
 
     dash_app.layout = html.Div(

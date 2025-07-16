@@ -64,11 +64,11 @@ def get_log_data_directories(_):
 
 
 @callback(
-    Output("redirect-ut", "href"),
     Output("error-toast-ut", "children", allow_duplicate=True),
     Output("error-toast-ut", "is_open", allow_duplicate=True),
-    Output("success-toast-ut", "children"),
-    Output("success-toast-ut", "is_open"),
+    Output("success-toast-ut", "children", allow_duplicate=True),
+    Output("success-toast-ut", "is_open", allow_duplicate=True),
+    Output("redirect-ut", "href"),
     Input("submit-ut", "n_clicks"),
     State("project-id-ut", "data"),
     State("directory-ut", "value"),
@@ -78,9 +78,8 @@ def get_log_data_directories(_):
     prevent_initial_call=True,
 )
 def run_analysis(
-    n_clicks, project_id, directory_path, analysis_type, mask_type, vectorizer_type
+    _, project_id, directory_path, analysis_type, mask_type, vectorizer_type
 ):
-
     try:
         result = run_high_level_analysis(
             project_id,
@@ -91,17 +90,17 @@ def run_analysis(
             level="directory",
         )
         return (
-            f"/dash/analysis/{result['type']}/{result['id']}",
             dash.no_update,
             False,
-            "Analysis complete",
+            "Analysis is running",
             True,
+            f"/dash/project/{project_id}?task_id={result.get('task_id')}",
         )
     except ValueError as e:
         return (
-            dash.no_update,
             str(e),
             True,
             dash.no_update,
             False,
+            dash.no_update,
         )

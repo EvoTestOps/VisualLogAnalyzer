@@ -83,11 +83,11 @@ def get_comparison_options(directory_path):
 
 
 @callback(
-    Output("redirect-ano-dir", "href"),
     Output("error-toast-ano-dir", "children", allow_duplicate=True),
     Output("error-toast-ano-dir", "is_open", allow_duplicate=True),
     Output("success-toast-ano-dir", "children"),
     Output("success-toast-ano-dir", "is_open"),
+    Output("redirect-ano-dir", "href"),
     Input("submit-ano-dir", "n_clicks"),
     State("project-id-ano-dir", "data"),
     State("train-data-ano-dir", "value"),
@@ -126,17 +126,17 @@ def run_analysis(
         )
 
         return (
-            f"/dash/analysis/{result['type']}/{result['id']}",
             dash.no_update,
             False,
-            "Analysis complete",
+            "Analysis is running",
             True,
+            f"/dash/project/{project_id}?task_id={result.get('task_id')}",
         )
     except ValueError as e:
         return (
-            dash.no_update,
             str(e),
             True,
             dash.no_update,
             False,
+            dash.no_update,
         )
