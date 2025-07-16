@@ -14,6 +14,7 @@ from dash_app.components.form_inputs import (
     terms_umap_input,
     vectorizer_input,
     match_file_names_input,
+    color_by_directory_input,
 )
 
 
@@ -279,13 +280,18 @@ def project_form(submit_id, name_id):
     return form
 
 
-def project_settings_form(submit_id, match_filenames_id):
+def project_settings_form(submit_id, match_filenames_id, color_by_directory_id):
     submit_btn = submit_button(submit_id, "Apply")
     form = dbc.Form(
         [
             dbc.Row(
                 [
-                    match_file_names_input(match_filenames_id),
+                    dbc.Col(
+                        [
+                            match_file_names_input(match_filenames_id),
+                            color_by_directory_input(color_by_directory_id),
+                        ]
+                    ),
                     dbc.Col(
                         submit_btn,
                         class_name="d-flex justify-content-end align-middle align-items-end",

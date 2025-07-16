@@ -6,6 +6,7 @@ class Settings(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     match_filenames = db.Column(db.Boolean, default=True)
+    color_by_directory = db.Column(db.Boolean, default=False)
 
     project_id = db.Column(db.Integer, db.ForeignKey("projects.id"), nullable=False)
     project = db.relationship("Project", back_populates="settings")
@@ -15,4 +16,5 @@ class Settings(db.Model):
             "id": self.id,
             "project_id": self.project_id,
             "match_filenames": self.match_filenames,
+            "color_by_directory": self.color_by_directory,
         }

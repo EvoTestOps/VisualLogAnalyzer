@@ -238,3 +238,23 @@ def match_file_names_input(id):
             ),
         ]
     )
+
+
+def color_by_directory_input(id):
+    return dbc.Col(
+        [
+            dbc.Checkbox(
+                id=id,
+                label=html.Span(
+                    "Color datapoints by directory",
+                    id=f"{id}-label",
+                    style={"textDecoration": "underline", "cursor": "pointer"},
+                ),
+            ),
+            dbc.Tooltip(
+                "Color datapoints in file level analysis by directory.",
+                target=f"{id}-label",
+                placement="bottom",
+            ),
+        ]
+    )

@@ -77,6 +77,7 @@ def update_settings(project_id: int):
         return jsonify({"error": f"{error['loc'][0]}: {error['msg']}"}), 400
 
     settings.match_filenames = validated_data.match_filenames
+    settings.color_by_directory = validated_data.color_by_directory
     db.session.commit()
 
     return {}, 200

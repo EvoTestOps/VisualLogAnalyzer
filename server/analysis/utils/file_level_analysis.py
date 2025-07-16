@@ -7,7 +7,7 @@ def unique_terms_count_by_file(df, item_list_col):
     df = enhancer.enhance_event(item_list_col)
 
     file_unique_terms = (
-        df.select("seq_id", item_list_col)
+        df.select("seq_id", "run", item_list_col)
         .group_by("seq_id")
         .agg(
             [
@@ -16,6 +16,7 @@ def unique_terms_count_by_file(df, item_list_col):
                 .list.explode()
                 .n_unique()
                 .alias("unique_term_count"),
+                pl.col("run").first(),
             ]
         )
     )

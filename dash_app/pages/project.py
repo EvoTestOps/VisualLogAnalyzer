@@ -45,6 +45,7 @@ def layout(project_id=None, **kwargs):
         "success-toast-project",
         "settings-submit-project",
         "match-filenames-project",
+        "color-by-directory-project",
         "task-count-project",
     )
 
@@ -138,16 +139,19 @@ def get_analyses(_, project_id):
 
 @callback(
     Output("match-filenames-project", "value"),
+    Output("color-by-directory-project", "value"),
     Input("project-id", "data"),
 )
 def get_settings(project_id):
     if not project_id:
         return True
+
     response, error = make_api_call({}, f"projects/{project_id}/settings", "GET")
     if error or not response:
         return True
 
-    return response.json().get("match_filenames")
+    settings = response.json()
+    return settings.get("match_filenames"), settings.get("color_by_directory")
 
 
 @callback(
@@ -197,15 +201,19 @@ def delete_analysis(submit_n_clicks, analysis_id, url_path):
     Output("success-toast-project", "children", allow_duplicate=True),
     Output("success-toast-project", "is_open", allow_duplicate=True),
     Input("settings-submit-project", "n_clicks"),
-    Input("match-filenames-project", "value"),
+    State("match-filenames-project", "value"),
+    State("color-by-directory-project", "value"),
     State("project-id", "data"),
     prevent_initial_call=True,
 )
-def apply_settings(n_clicks, match_filenames, project_id):
+def apply_settings(n_clicks, match_filenames, color_by_directory, project_id):
     if not n_clicks:
         return dash.no_update, False, dash.no_update, False
 
-    payload = {"match_filenames": match_filenames}
+    payload = {
+        "match_filenames": match_filenames,
+        "color_by_directory": color_by_directory,
+    }
     response, error = make_api_call(
         payload, f"projects/{project_id}/settings", requests_type="PATCH"
     )

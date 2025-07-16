@@ -272,6 +272,7 @@ def create_project_layout(
     success_toast_id,
     settings_submit_id,
     match_filenames_id,
+    color_by_directory_id,
     tasks_count_id,
 ):
 
@@ -298,7 +299,11 @@ def create_project_layout(
                 [
                     html.H4("Settings"),
                     dbc.Card(
-                        project_settings_form(settings_submit_id, match_filenames_id),
+                        project_settings_form(
+                            settings_submit_id,
+                            match_filenames_id,
+                            color_by_directory_id,
+                        ),
                         body=True,
                     ),
                 ],

@@ -7,3 +7,4 @@ class ProjectParams(BaseModel):
 
 class SettingsParams(BaseModel):
     match_filenames: bool
+    color_by_directory: bool

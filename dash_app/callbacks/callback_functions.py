@@ -169,7 +169,7 @@ def create_high_level_plot(switch_on, analysis_id):
         fig = create_umap_plot(df, group_col, theme)
     else:
         if analysis_level == "file":
-            fig = create_unique_term_count_plot_by_file(df, theme)
+            fig = create_unique_term_count_plot_by_file(df, False, theme)
         else:
             fig = create_unique_term_count_plot(df, theme)
 

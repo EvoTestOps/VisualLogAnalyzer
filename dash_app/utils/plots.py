@@ -83,19 +83,37 @@ def create_unique_term_count_plot(df, theme="plotly_white"):
     return fig
 
 
-def create_unique_term_count_plot_by_file(df, theme="plotly_white"):
+def create_unique_term_count_plot_by_file(
+    df, color_by_directory=False, theme="plotly_white"
+):
     fig = go.Figure()
 
-    fig.add_trace(
-        go.Scatter(
-            x=df["unique_term_count"],
-            y=df["line_count"],
-            mode="markers",
-            text=df["seq_id"],
-            hovertemplate="File: %{text}<br>Unique terms: %{x}<br>Lines:%{y}<extra></extra>",
-            name="Files",
+    if color_by_directory:
+        runs = df["run"].unique()
+        for run in runs:
+            df_run = df.filter(pl.col("run") == run)
+
+            fig.add_trace(
+                go.Scatter(
+                    x=df_run["unique_term_count"],
+                    y=df_run["line_count"],
+                    mode="markers",
+                    text=df_run["seq_id"],
+                    hovertemplate="File: %{text}<br>Unique terms: %{x}<br>Lines:%{y}<extra></extra>",
+                    name=f"Directory: {run}",
+                )
+            )
+    else:
+        fig.add_trace(
+            go.Scatter(
+                x=df["unique_term_count"],
+                y=df["line_count"],
+                mode="markers",
+                text=df["seq_id"],
+                hovertemplate="File: %{text}<br>Unique terms: %{x}<br>Lines:%{y}<extra></extra>",
+                name="Files",
+            )
         )
-    )
 
     fig.update_layout(
         title="Unique term count by file",
