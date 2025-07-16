@@ -27,7 +27,7 @@ def create_root_layout():
                     class_name="d-flex justify-content-end align-items-center",
                 ),
             ],
-            class_name="border-bottom border-secondary-subtle mb-3 mt-3",
+            class_name="border-bottom border-primary mb-3 mt-3",
         ),
     )
 
@@ -251,9 +251,9 @@ def create_home_layout(
         dbc.Container(
             dbc.Row(
                 [
-                    dbc.Col(html.H3("Projects")),
+                    dbc.Col(html.H3("Projects", className="mb-0"), class_name="p-0"),
                     dbc.Col(open_btn, class_name="text-end"),
-                ]
+                ],
             )
         ),
         dbc.Container(form_row),
@@ -272,6 +272,7 @@ def create_project_layout(
     success_toast_id,
     settings_submit_id,
     match_filenames_id,
+    tasks_count_id,
 ):
 
     error_toast_row = dbc.Row(error_toast(error_toast_id))
@@ -279,8 +280,10 @@ def create_project_layout(
 
     header_row = dbc.Row(
         [
-            dbc.Col(html.H3(id=project_name_id), width=4),
-            dbc.Col(html.H3("Analyses", className="text-end"), width=4),
+            dbc.Col(
+                html.H3(id=project_name_id, className="mb-0"), width=4, class_name="p-0"
+            ),
+            dbc.Col(html.H3("Analyses", className="text-end mb-0"), width=4),
         ]
     )
 
@@ -301,7 +304,9 @@ def create_project_layout(
                 ],
                 className="mt-3",
             ),
-        ]
+            html.Div(id=tasks_count_id, className="mt-3"),
+        ],
+        class_name="pt-3",
     )
 
     layout = [

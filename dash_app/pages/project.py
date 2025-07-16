@@ -45,6 +45,7 @@ def layout(project_id=None, **kwargs):
         "success-toast-project",
         "settings-submit-project",
         "match-filenames-project",
+        "task-count-project",
     )
 
 
@@ -84,7 +85,26 @@ def get_task_id(search, current_tasks):
 
     updated_tasks = (current_tasks or []) + [task_id]
 
-    return updated_tasks, False, new_search
+    return (
+        updated_tasks,
+        False,
+        new_search,
+    )
+
+
+@callback(
+    Output("task-count-project", "children"),
+    Input("url", "href"),
+    Input("url", "search"),
+    State("project-task-store", "data"),
+)
+def update_running_analyses_count(_1, _2, current_tasks):
+    task_count = len(current_tasks or [])
+    return (
+        f"Amount of running analyses: {task_count}"
+        if task_count > 0
+        else "No analyses running"
+    )
 
 
 # Callback is triggered by 'url' so that we can easily

@@ -80,7 +80,7 @@ def toggle_collapse(n, is_open):
     State("name-proj", "value"),
     prevent_initial_call=True,
 )
-def create_project(n_clicks, name):
+def create_project(_, name):
     _, error = make_api_call({"name": name}, "projects")
     if error:
         return (error, True, dash.no_update, False, False)
@@ -95,11 +95,16 @@ def create_project(n_clicks, name):
     prevent_initial_call=True,
 )
 def display_alert(n_clicks):
+    if not n_clicks:
+        return dash.no_update, dash.no_update
+
     ctx = dash.callback_context
     if all([(btn["value"] == 0) for btn in ctx.triggered]):
         return dash.no_update
 
-    return True, ctx.triggered_id["index"]
+    triggered_button = ctx.triggered_id
+
+    return True, triggered_button["index"] if triggered_button else None
 
 
 @callback(
@@ -107,6 +112,7 @@ def display_alert(n_clicks):
     Output("error-toast-proj", "is_open", allow_duplicate=True),
     Output("success-toast-proj", "children", allow_duplicate=True),
     Output("success-toast-proj", "is_open", allow_duplicate=True),
+    Output("refresh-proj", "data", allow_duplicate=True),
     Input("confirm-delete-proj", "submit_n_clicks"),
     State("delete-analysis-id-proj", "data"),
     prevent_initial_call=True,
@@ -117,6 +123,6 @@ def delete_project(submit_n_clicks, analysis_id):
 
     response, error = make_api_call({}, f"projects/{analysis_id}", "DELETE")
     if error or not response:
-        return (error, True, dash.no_update, False)
+        return (error, True, dash.no_update, False, dash.no_update)
 
-    return (dash.no_update, False, "Project deleted", True)
+    return (dash.no_update, False, "Project deleted", True, "dummy")
