@@ -149,18 +149,34 @@ def create_files_count_plot(df, theme="plotly_white"):
     return fig
 
 
-def create_umap_plot(df, group_col, theme="plotly_white"):
+def create_umap_plot(df, group_col, color_by_directory=False, theme="plotly_white"):
     fig = go.Figure()
 
-    fig.add_trace(
-        go.Scatter(
-            x=df["UMAP1"],
-            y=df["UMAP2"],
-            mode="markers",
-            text=df[group_col],
-            hovertemplate=f"{group_col}: %{{text}}<br>UMAP1: %{{x}}<br>UMAP2:%{{y}}<extra></extra>",
+    if group_col == "seq_id" and color_by_directory:
+        runs = df["run"].unique()
+        for run in runs:
+            df_run = df.filter(pl.col("run") == run)
+
+            fig.add_trace(
+                go.Scatter(
+                    x=df_run["UMAP1"],
+                    y=df_run["UMAP2"],
+                    mode="markers",
+                    text=df_run[group_col],
+                    hovertemplate=f"{group_col}: %{{text}}<br>UMAP1: %{{x}}<br>UMAP2:%{{y}}<extra></extra>",
+                    name=f"Directory: {run}",
+                )
+            )
+    else:
+        fig.add_trace(
+            go.Scatter(
+                x=df["UMAP1"],
+                y=df["UMAP2"],
+                mode="markers",
+                text=df[group_col],
+                hovertemplate=f"{group_col}: %{{text}}<br>UMAP1: %{{x}}<br>UMAP2:%{{y}}<extra></extra>",
+            )
         )
-    )
 
     fig.update_layout(
         title="UMAP comparison",
