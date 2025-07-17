@@ -45,14 +45,14 @@ def layout(analysis_id=None, **kwargs):
 )
 def create_plot(switch_on, analysis_id):
     try:
-        fig, style, metadata_rows, project_id, project_name = create_high_level_plot(
+        fig, style, metadata_rows, project_id = create_high_level_plot(
             switch_on, analysis_id
         )
         return (
             fig,
             style,
             [html.Tbody(metadata_rows)],
-            f"/dash/project/{project_id}?project_name={project_name}",
+            f"/dash/project/{project_id}",
             dash.no_update,
             False,
             dash.no_update,

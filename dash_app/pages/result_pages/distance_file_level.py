@@ -45,15 +45,13 @@ def layout(analysis_id=None, **kwargs):
 )
 def populate_table(analysis_id):
     try:
-        df_dict, columns, metadata_rows, project_id, project_name = populate_datatable(
-            analysis_id
-        )
+        df_dict, columns, metadata_rows, project_id = populate_datatable(analysis_id)
 
         return (
             df_dict,
             columns,
             [html.Tbody(metadata_rows)],
-            f"/dash/project/{project_id}?project_name={project_name}",
+            f"/dash/project/{project_id}",
             dash.no_update,
             False,
             dash.no_update,

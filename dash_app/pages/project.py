@@ -4,9 +4,12 @@ from urllib.parse import parse_qs, urlencode
 import dash
 import dash_bootstrap_components as dbc
 from dash import ALL, Input, Output, State, callback, dcc
-from dash.exceptions import PreventUpdate
 
-from dash_app.callbacks.callback_functions import make_api_call, poll_task_status
+from dash_app.callbacks.callback_functions import (
+    make_api_call,
+    poll_task_status,
+    fetch_project_name,
+)
 from dash_app.components.layouts import create_project_layout
 from dash_app.components.toasts import error_toast, success_toast
 from dash_app.dash_config import DashConfig
@@ -53,15 +56,12 @@ def layout(project_id=None, **kwargs):
     )
 
 
-# TODO: Fetch from the database. This is a pain to maintain.
 @callback(
     Output("project-name", "children"),
-    Input("url", "search"),
+    Input("project-id", "data"),
 )
-def get_project_name(search):
-    name = parse_query_parameter(search, "project_name")
-
-    return name if name else "Name not found"
+def get_project_name(project_id):
+    return fetch_project_name(project_id)
 
 
 # 'task_id' is passed as a query parameter, since there doesn't

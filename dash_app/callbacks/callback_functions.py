@@ -110,13 +110,12 @@ def run_anomaly_detection(
 def populate_datatable(analysis_id):
     metadata = _fetch_analysis_metadata(analysis_id)
     project_id = metadata.get("project_id")
-    project_name = metadata.get("project_name")
     metadata_rows = format_metadata_rows(metadata)
 
     results_content = _fetch_analysis_results(analysis_id)
     df_dict, columns = _parse_response_as_table(results_content)
 
-    return df_dict, columns, metadata_rows, project_id, project_name
+    return df_dict, columns, metadata_rows, project_id
 
 
 def create_high_level_plot(switch_on, analysis_id):
@@ -124,7 +123,6 @@ def create_high_level_plot(switch_on, analysis_id):
     analysis_type = metadata.get("analysis_sub_type")
     analysis_level = metadata.get("analysis_level")
     project_id = metadata.get("project_id")
-    project_name = metadata.get("project_name")
 
     if project_id is None:
         raise ValueError("Project id not found in metadata")
@@ -162,7 +160,7 @@ def create_high_level_plot(switch_on, analysis_id):
 
     metadata_rows = format_metadata_rows(metadata)
 
-    return fig, style, metadata_rows, project_id, project_name
+    return fig, style, metadata_rows, project_id
 
 
 def make_api_call(json_payload, endpoint, requests_type="POST"):
@@ -205,6 +203,16 @@ def get_filter_options(data_path, runs_or_files="runs"):
 
     options = [{"label": item, "value": item} for item in items]
     return options
+
+
+def fetch_project_name(project_id: int) -> str:
+    response, error = make_api_call(
+        {}, f"projects/{project_id}/name", requests_type="GET"
+    )
+    if error or response is None:
+        raise ValueError(f"Was not able to fetch project name: {error}")
+
+    return response.json().get("name", "404")
 
 
 def get_log_data_directory_options():

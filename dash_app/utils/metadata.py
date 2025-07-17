@@ -126,7 +126,7 @@ def format_project_overview(project_data: list[dict]) -> list[dbc.ListGroupItem]
                     [
                         html.A(
                             html.H4(project["name"], className="mb-0"),
-                            href=f"/dash/project/{project['id']}?project_name={project['name']}",
+                            href=f"/dash/project/{project['id']}",
                         ),
                         html.P(_format_iso_time(project["time_created"])),
                     ],

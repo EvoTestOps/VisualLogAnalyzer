@@ -33,7 +33,7 @@ def create_project():
     db.session.add(project)
     db.session.commit()
 
-    return jsonify({"id": project.id})
+    return jsonify({"id": project.id}), 201
 
 
 @crud_bp.route("/projects/<int:project_id>", methods=["DELETE"])
@@ -55,6 +55,12 @@ def delete_project(project_id: int):
             exc_info=True,
         )
         return jsonify({"error": str(e)}), 500
+
+
+@crud_bp.route("/projects/<int:project_id>/name", methods=["GET"])
+def get_project_name(project_id: int):
+    project = db.get_or_404(Project, project_id)
+    return jsonify({"name": project.name}), 200
 
 
 @crud_bp.route("/projects/<int:project_id>/analyses", methods=["GET"])
@@ -141,4 +147,4 @@ def get_analysis_metadata(analysis_id: int):
     metadata = {key: val for (key, val) in analysis.to_dict().items() if val}
     metadata["project_name"] = analysis.project.name
 
-    return jsonify(metadata)
+    return jsonify(metadata), 200

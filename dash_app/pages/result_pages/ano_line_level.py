@@ -91,13 +91,12 @@ def generate_dropdown_and_metadata(encoded_df, analysis_id):
 
     metadata = response.json()
     project_id = metadata.get("project_id")
-    project_name = metadata.get("project_name")
     metadata_rows = format_metadata_rows(metadata)
 
     return (
         options,
         [html.Tbody(metadata_rows)],
-        f"/dash/project/{project_id}?project_name={project_name}",
+        f"/dash/project/{project_id}",
         dash.no_update,
         False,
     )
