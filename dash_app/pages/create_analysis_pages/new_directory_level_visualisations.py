@@ -28,7 +28,7 @@ def layout(**kwargs):
                 html.H3("New Directory Level Visualisation"),
                 error_toast("error-toast-ut"),
                 success_toast("success-toast-ut"),
-                dcc.Location(id="url", refresh=False),
+                dcc.Location(id="url-dir", refresh=False),
                 dcc.Store(id="project-id-ut"),
             ]
         ),
@@ -45,7 +45,7 @@ def layout(**kwargs):
     Output("project-id-ut", "data"),
     Output("error-toast-ut", "children"),
     Output("error-toast-ut", "is_open"),
-    Input("url", "search"),
+    Input("url-dir", "search"),
 )
 def get_project_id(search):
     id = parse_query_parameter(search, "project_id")
@@ -57,7 +57,7 @@ def get_project_id(search):
 
 @callback(
     Output("directory-ut", "options"),
-    Input("url", "search"),
+    Input("url-dir", "search"),
 )
 def get_log_data_directories(_):
     return get_log_data_directory_options()

@@ -36,7 +36,7 @@ def layout(**kwargs):
                 html.H3("New Directory Level Log Distance"),
                 error_toast("error-toast-dis"),
                 success_toast("success-toast-dis"),
-                dcc.Location(id="url", refresh=False),
+                dcc.Location(id="url-dis", refresh=False),
                 dcc.Store(id="project-id-dis"),
             ]
         ),
@@ -53,7 +53,7 @@ def layout(**kwargs):
     Output("project-id-dis", "data"),
     Output("error-toast-dis", "children"),
     Output("error-toast-dis", "is_open"),
-    Input("url", "search"),
+    Input("url-dis", "search"),
 )
 def get_project_id(search):
     id = parse_query_parameter(search, "project_id")
@@ -66,7 +66,7 @@ def get_project_id(search):
 # Input does not matter we just want it to calll once on startup
 @callback(
     Output("directory-dis", "options"),
-    Input("url", "search"),
+    Input("url-dis", "search"),
 )
 def get_log_data_directories(_):
     return get_log_data_directory_options()

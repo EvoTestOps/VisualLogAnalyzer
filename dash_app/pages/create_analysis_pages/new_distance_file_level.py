@@ -35,7 +35,7 @@ def layout(**kwargs):
                 html.H3("New File Level Log Distance"),
                 error_toast("error-toast-dis-file"),
                 success_toast("success-toast-dis-file"),
-                dcc.Location(id="url", refresh=False),
+                dcc.Location(id="url-dis-file", refresh=False),
                 dcc.Store(id="project-id-dis-file"),
             ]
         ),
@@ -52,7 +52,7 @@ def layout(**kwargs):
     Output("project-id-dis-file", "data"),
     Output("error-toast-dis-file", "children"),
     Output("error-toast-dis-file", "is_open"),
-    Input("url", "search"),
+    Input("url-dis-file", "search"),
 )
 def get_project_id(search):
     id = parse_query_parameter(search, "project_id")
@@ -64,7 +64,7 @@ def get_project_id(search):
 
 @callback(
     Output("directory-dis-file", "options"),
-    Input("url", "search"),
+    Input("url-dis-file", "search"),
 )
 def get_log_data_directories(_):
     return get_log_data_directory_options()

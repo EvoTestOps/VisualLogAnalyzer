@@ -36,7 +36,7 @@ def layout(**kwargs):
                 html.H3("New Directory Level Anomaly Detection"),
                 error_toast("error-toast-ano-dir"),
                 success_toast("success-toast-ano-dir"),
-                dcc.Location(id="url", refresh=False),
+                dcc.Location(id="url-ano-dir", refresh=False),
                 dcc.Store(id="project-id-ano-dir"),
             ]
         ),
@@ -53,7 +53,7 @@ def layout(**kwargs):
     Output("project-id-ano-dir", "data"),
     Output("error-toast-ano-dir", "children"),
     Output("error-toast-ano-dir", "is_open"),
-    Input("url", "search"),
+    Input("url-ano-dir", "search"),
 )
 def get_project_id(search):
     id = parse_query_parameter(search, "project_id")
@@ -66,7 +66,7 @@ def get_project_id(search):
 @callback(
     Output("train-data-ano-dir", "options"),
     Output("test-data-ano-dir", "options"),
-    Input("url", "search"),
+    Input("url-ano-dir", "search"),
 )
 def get_log_data_directories(_):
     options = get_log_data_directory_options()

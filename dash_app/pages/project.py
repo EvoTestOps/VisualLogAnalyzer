@@ -245,9 +245,7 @@ def poll_project_tasks(_, task_ids, url_path):
         try:
             result = poll_task_status(task_id)
         except ValueError as e:
-            error_messages.append(
-                f"Unexpected error occured with task id {task_id}: {e}"
-            )
+            error_messages.append(f"Unexpected error occured: {e}")
             continue
 
         if result is None or result.get("ready") is False:

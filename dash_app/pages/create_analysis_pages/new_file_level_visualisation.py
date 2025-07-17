@@ -32,7 +32,7 @@ def layout(**kwargs):
                 html.H3("New File Level Visualisation"),
                 error_toast("error-toast-file"),
                 success_toast("success-toast-file"),
-                dcc.Location(id="url", refresh=False),
+                dcc.Location(id="url-file", refresh=False),
                 dcc.Store(id="project-id-file"),
             ]
         ),
@@ -49,7 +49,7 @@ def layout(**kwargs):
     Output("project-id-file", "data"),
     Output("error-toast-file", "children"),
     Output("error-toast-file", "is_open"),
-    Input("url", "search"),
+    Input("url-file", "search"),
 )
 def get_project_id(search):
     id = parse_query_parameter(search, "project_id")
@@ -61,7 +61,7 @@ def get_project_id(search):
 
 @callback(
     Output("directory-file", "options"),
-    Input("url", "search"),
+    Input("url-file", "search"),
 )
 def get_log_data_directories(_):
     return get_log_data_directory_options()

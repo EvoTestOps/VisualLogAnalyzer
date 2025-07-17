@@ -36,7 +36,7 @@ def layout(**kwargs):
                 html.H3("New File Level Anomaly Detection"),
                 error_toast("error-toast-ano-file"),
                 success_toast("success-toast-ano-file"),
-                dcc.Location(id="url", refresh=False),
+                dcc.Location(id="url-ano-file", refresh=False),
                 dcc.Store(id="project-id-ano-file"),
             ]
         ),
@@ -53,7 +53,7 @@ def layout(**kwargs):
     Output("project-id-ano-file", "data"),
     Output("error-toast-ano-file", "children"),
     Output("error-toast-ano-file", "is_open"),
-    Input("url", "search"),
+    Input("url-ano-file", "search"),
 )
 def get_project_id(search):
     id = parse_query_parameter(search, "project_id")
@@ -66,7 +66,7 @@ def get_project_id(search):
 @callback(
     Output("train-data-ano-file", "options"),
     Output("test-data-ano-file", "options"),
-    Input("url", "search"),
+    Input("url-ano-file", "search"),
 )
 def get_log_data_directories(_):
     options = get_log_data_directory_options()

@@ -259,5 +259,5 @@ def async_log_distance(
         return store_and_format_result(result, project_id, analysis_type, metadata)
 
     except Exception as e:
-        self.update_state(state="FAILURE", meta={"exc": e})
+        self.update_state(state="FAILURE", meta={"exc": str(e)})
         return handle_errors(project_id, "log distance", e)
