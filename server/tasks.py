@@ -22,15 +22,13 @@ from server.analysis.utils.umap_analysis import create_umap_df, create_umap_embe
 from server.models.settings import Settings
 from server.task_helpers import (
     create_vectorizer,
-    handle_errors,
     load_data,
     store_and_format_result,
 )
 
 
-@shared_task(bind=True, ignore_results=False)
+@shared_task(ignore_results=False)
 def async_run_anomaly_detection(
-    self,
     project_id: int,
     train_data_path: str,
     test_data_path: str,
@@ -109,12 +107,11 @@ def async_run_anomaly_detection(
         }
         return store_and_format_result(results, project_id, analysis_type, metadata)
     except Exception as e:
-        self.update_state(state="FAILURE", meta={"exc": e})
-        return handle_errors(project_id, "anomaly detection", e)
+        raise
 
 
-@shared_task(bind=True, ignore_results=False)
-def async_run_file_counts(self, project_id: int, directory_path: str) -> dict:
+@shared_task(ignore_results=False)
+def async_run_file_counts(project_id: int, directory_path: str) -> dict:
     try:
         df = load_data(directory_path)
         result = files_and_lines_count(df)
@@ -129,13 +126,12 @@ def async_run_file_counts(self, project_id: int, directory_path: str) -> dict:
             result, project_id, "directory-level-visualisations", metadata
         )
     except Exception as e:
-        self.update_state(state="FAILURE", meta={"exc": e})
-        return handle_errors(project_id, "file counts", e)
+        raise
 
 
-@shared_task(bind=True, ignore_results=False)
+@shared_task(ignore_results=False)
 def async_run_unique_terms(
-    self, project_id: int, directory_path: str, item_list_col: str, file_level: bool
+    project_id: int, directory_path: str, item_list_col: str, file_level: bool
 ) -> dict:
     try:
         df = load_data(directory_path)
@@ -159,13 +155,11 @@ def async_run_unique_terms(
             unique_terms_count, project_id, analysis_type, metadata
         )
     except Exception as e:
-        self.update_state(state="FAILURE", meta={"exc": e})
-        return handle_errors(project_id, "unique terms", e)
+        raise
 
 
-@shared_task(bind=True, ignore_results=False)
+@shared_task(ignore_results=False)
 def async_create_umap(
-    self,
     project_id: int,
     directory_path: str,
     item_list_col: str,
@@ -205,13 +199,11 @@ def async_create_umap(
 
         return store_and_format_result(result, project_id, analysis_type, metadata)
     except Exception as e:
-        self.update_state(state="FAILURE", meta={"exc": e})
-        return handle_errors(project_id, "UMAP", e)
+        raise
 
 
-@shared_task(bind=True, ignore_results=False)
+@shared_task(ignore_results=False)
 def async_log_distance(
-    self,
     project_id: int,
     directory_path: str,
     target_run: str,
@@ -259,5 +251,4 @@ def async_log_distance(
         return store_and_format_result(result, project_id, analysis_type, metadata)
 
     except Exception as e:
-        self.update_state(state="FAILURE", meta={"exc": str(e)})
-        return handle_errors(project_id, "log distance", e)
+        raise

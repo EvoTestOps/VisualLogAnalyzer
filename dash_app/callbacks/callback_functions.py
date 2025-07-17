@@ -216,9 +216,8 @@ def poll_task_status(task_id: int) -> dict:
     # There shouldn't be any error here unless the task_id is wrong.
     response, error = make_api_call({}, f"task-status/{task_id}", requests_type="GET")
     if error or response is None:
-        raise ValueError(f"Was not able to fetch staus for task_id: {task_id}")
+        raise ValueError(f"Was not able to fetch task status: {error}")
 
-    # f"/dash/analysis/{result['type']}/{result['id']}",
     return response.json()
 
 

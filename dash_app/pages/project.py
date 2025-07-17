@@ -1,13 +1,16 @@
+import re
+from urllib.parse import parse_qs, urlencode
+
 import dash
 import dash_bootstrap_components as dbc
 from dash import ALL, Input, Output, State, callback, dcc
-from urllib.parse import urlencode, parse_qs
+from dash.exceptions import PreventUpdate
 
 from dash_app.callbacks.callback_functions import make_api_call, poll_task_status
 from dash_app.components.layouts import create_project_layout
 from dash_app.components.toasts import error_toast, success_toast
-from dash_app.utils.metadata import format_analysis_overview, parse_query_parameter
 from dash_app.dash_config import DashConfig
+from dash_app.utils.metadata import format_analysis_overview, parse_query_parameter
 
 dash.register_page(__name__, path_template="/project/<project_id>")
 
@@ -248,12 +251,18 @@ def poll_project_tasks(_, task_ids, url_path):
             error_messages.append(f"Unexpected error occured: {e}")
             continue
 
-        if result is None or result.get("ready") is False:
+        if result is None or not result.get("ready"):
             updated_task_store.append(task_id)
-        elif result.get("successful"):
+            continue
+
+        state = result.get("state")
+        if state == "SUCCESS":
             success_messages.append("Analysis complete")
+        elif state == "FAILURE":
+            error = result.get("result")
+            error_messages.append(f"Analysis failed: {error['error']}")
         else:
-            error_messages.append(f"Analysis failed: {result.get("result")}")
+            error_messages.append(f"Task in unexpected state: {state}")
 
     # TODO: what if there is both error messages and success messages
     error_output = "\n".join(error_messages) if error_messages else dash.no_update
@@ -261,7 +270,7 @@ def poll_project_tasks(_, task_ids, url_path):
     success_output = "\n".join(success_messages) if success_messages else dash.no_update
     success_open = bool(success_messages)
 
-    should_refresh = bool(success_messages)
+    should_refresh = bool(success_messages or error_messages)
     refresh_path = url_path if should_refresh else dash.no_update
 
     polling_disabled = False if len(updated_task_store) > 0 else True

@@ -27,7 +27,7 @@ def measure_distances(
     )
 
     if len(comparison_run_names) == 0:
-        raise ValueError("No comparison runs found.")
+        raise ValueError("No comparison runs found. Check your settings.")
 
     df_target = df.filter(pl.col(run_column) == target_run)
 

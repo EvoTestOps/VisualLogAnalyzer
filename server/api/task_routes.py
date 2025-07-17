@@ -8,10 +8,18 @@ task_bp = Blueprint("tasks", __name__)
 def get_task_status(task_id: str):
     task_result = AsyncResult(task_id)
 
-    return jsonify(
-        {
-            "ready": task_result.ready(),
-            "successful": task_result.successful(),
-            "result": task_result.result if task_result.ready() else None,
-        }
-    )
+    response = {
+        "ready": task_result.ready(),
+        "successful": task_result.successful(),
+        "result": None,
+        "state": task_result.state,
+    }
+
+    if task_result.ready():
+        if task_result.state == "FAILURE":
+            response["result"] = {"error": str(task_result.result)}
+
+        else:
+            response["result"] = task_result.result
+
+    return jsonify(response)
