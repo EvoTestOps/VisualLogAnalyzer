@@ -1,5 +1,5 @@
 import dash
-from dash_app.page_templates.distance_result_page_base import (
+from dash_app.page_templates.datatable_result_page_base import (
     create_layout,
     register_callback,
 )
