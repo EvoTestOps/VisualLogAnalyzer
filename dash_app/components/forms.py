@@ -68,7 +68,7 @@ def test_train_file_level_form(
     test_data_id,
     detectors_id,
     enhancement_id,
-    files_filter_id,
+    runs_filter_id,
     mask_input_id,
     vectorizer_id,
 ):
@@ -99,7 +99,7 @@ def test_train_file_level_form(
             ),
             dbc.Row(
                 [
-                    files_filter_input(files_filter_id),
+                    files_filter_input(runs_filter_id),
                 ],
                 class_name="mb-3",
             ),

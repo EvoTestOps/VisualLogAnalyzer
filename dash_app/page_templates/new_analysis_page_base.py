@@ -11,6 +11,8 @@ from dash_app.components.forms import (
     distance_run_level_form,
     directory_level_viz_form,
     file_level_viz_form,
+    test_train_form,
+    test_train_file_level_form,
 )
 from dash_app.utils.metadata import parse_query_parameter
 from dash_app.components.layouts import create_new_analysis_base_layout
@@ -18,10 +20,10 @@ from dash_app.components.layouts import create_new_analysis_base_layout
 
 # Config dictionary expected by the page template and callback registration:
 # {
-#   "title": <str>,                  # Title of the page
 #   "type": <str>,                   # Analysis type, e.g. distance-file-level
 #   "level": <str>,                  # Analysis level: 'file' or 'directory'
 #   "base_ids": {                    # Common components' ids
+#       title: <str>                 # Title of the page
 #       error_toast_id: <str>,
 #       success_toast_id: <str>,
 #       url_id: <str>,
@@ -46,6 +48,8 @@ def create_layout(config):
         "distance-directory-level": distance_run_level_form,
         "directory-level-visualisations": directory_level_viz_form,
         "file-level-visualisations": file_level_viz_form,
+        "ano-directory-level": test_train_form,
+        "ano-file-level": test_train_file_level_form,
     }
     form_type = form_map.get(config["type"])
     form = form_type(**config["form_input_ids"])
@@ -73,12 +77,25 @@ def register_callbacks(config, run_func):
 
         return id, dash.no_update, False
 
-    @callback(
-        Output(form_ids["directory_id"], "options"),
-        Input(base_ids["url_id"], "search"),
-    )
-    def get_log_data_directories(_):
-        return get_log_data_directory_options()
+    if "directory_id" in form_ids:
+
+        @callback(
+            Output(form_ids["directory_id"], "options"),
+            Input(base_ids["url_id"], "search"),
+        )
+        def get_log_data_directories(_):
+            return get_log_data_directory_options()
+
+    else:
+
+        @callback(
+            Output(form_ids["train_data_id"], "options"),
+            Output(form_ids["test_data_id"], "options"),
+            Input(base_ids["url_id"], "search"),
+        )
+        def get_log_data_directories(_):
+            options = get_log_data_directory_options()
+            return options, options
 
     if (
         "directory_id" in form_ids
@@ -95,6 +112,19 @@ def register_callbacks(config, run_func):
             runs_or_files = "files" if config["level"] == "file" else "runs"
             options = get_filter_options(directory_path, runs_or_files=runs_or_files)
             return options, options
+
+    elif (
+        "runs_filter_id" in form_ids or "files_filter_id" in form_ids
+    ) and "test_data_id" in form_ids:
+
+        @callback(
+            Output(form_ids["runs_filter_id"], "options"),
+            Input(form_ids["test_data_id"], "value"),
+        )
+        def get_comparison_options(directory_path):
+            runs_or_files = "files" if config["level"] == "file" else "runs"
+            options = get_filter_options(directory_path, runs_or_files=runs_or_files)
+            return options
 
     @callback(
         Output(base_ids["error_toast_id"], "children", allow_duplicate=True),
