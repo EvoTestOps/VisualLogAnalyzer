@@ -42,7 +42,7 @@ def register_callback(config):
         Input("switch", "value"),
         State(config_ids["analysis_id"], "data"),
     )
-    def populate_table(switch_on, analysis_id):
+    def create_plot(switch_on, analysis_id):
         try:
             fig, style, metadata_rows, project_id = create_high_level_plot(
                 switch_on, analysis_id
