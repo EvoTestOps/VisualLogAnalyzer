@@ -1,4 +1,5 @@
 import dash_bootstrap_components as dbc
+from dash import dcc
 
 from dash_app.components.form_inputs import (
     detectors_unsupervised_input,
@@ -98,9 +99,13 @@ def test_train_file_level_form(
                 class_name="mb-3",
             ),
             dbc.Row(
-                [
-                    files_filter_input(runs_filter_id),
-                ],
+                dcc.Loading(
+                    type="circle",
+                    overlay_style={"visibility": "visible", "filter": "blur(2px)"},
+                    children=[
+                        files_filter_input(runs_filter_id),
+                    ],
+                ),
                 class_name="mb-3",
             ),
             dbc.Row(dbc.Col(submit_btn_tr, class_name="text-end")),
@@ -242,16 +247,14 @@ def distance_file_level_form(
                 class_name="mb-3",
             ),
             dbc.Row(
-                [
-                    target_run_input(target_run_id),
-                ],
-                class_name="mb-3",
-            ),
-            dbc.Row(
-                [
-                    runs_filter_input(runs_filter_id),
-                ],
-                class_name="mb-3",
+                dcc.Loading(
+                    type="circle",
+                    overlay_style={"visibility": "visible", "filter": "blur(2px)"},
+                    children=[
+                        dbc.Row(target_run_input(target_run_id), class_name="mb-3"),
+                        dbc.Row(runs_filter_input(runs_filter_id), class_name="mb-3"),
+                    ],
+                )
             ),
             dbc.Row(dbc.Col(submit_btn, class_name="text-end")),
         ],
