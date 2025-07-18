@@ -84,7 +84,7 @@ def run_anomaly_detection(
     include_items,
     mask_type,
     vectorizer_type,
-    log_format=None,
+    log_format="raw",
     level="directory",
 ):
     json_payload = _build_test_train_payload(
