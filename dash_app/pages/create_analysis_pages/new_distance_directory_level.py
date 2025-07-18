@@ -1,8 +1,9 @@
 import dash
-from dash_app.page_templates.distance_create_page_base import (
+from dash_app.page_templates.new_analysis_page_base import (
     create_layout,
     register_callbacks,
 )
+from dash_app.callbacks.callback_functions import run_log_distance
 
 config = {
     "type": "distance-directory-level",
@@ -25,6 +26,14 @@ config = {
         "mask_id": "mask-dis-dir-new",
         "vectorizer_id": "vectorizer-dis-dir-new",
     },
+    "input_fields": [
+        "directory_id",
+        "target_run_id",
+        "runs_filter_id",
+        "enhancement_id",
+        "vectorizer_id",
+        "mask_id",
+    ],
 }
 
 dash.register_page(__name__, path_template=config["path_template"])
@@ -34,4 +43,4 @@ def layout(**kwargs):
     return create_layout(config)
 
 
-register_callbacks(config)
+register_callbacks(config, run_func=run_log_distance)
