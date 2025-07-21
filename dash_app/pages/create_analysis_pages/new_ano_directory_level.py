@@ -18,6 +18,7 @@ config = {
         "project_store_id": "project-store-ano-dir-new",
         "interval_id": "interval-ano-dir-new",
         "task_store_id": "task-store-ano-dir-new",
+        "project_link_id": "project-link-ano-dir-new",
     },
     "form_input_ids": {
         "submit_id": "submit-ano-dir-new",

@@ -405,10 +405,21 @@ def create_new_analysis_base_layout(
     project_store_id,
     interval_id,
     task_store_id,
+    project_link_id,
 ):
     return dbc.Container(
         [
-            html.H3(title),
+            dbc.Row(
+                [
+                    dbc.Col(html.H3(title)),
+                    dbc.Col(
+                        dcc.Link(
+                            "Back to project", id=project_link_id, href="/dash/project"
+                        ),
+                        className="d-flex justify-content-end",
+                    ),
+                ]
+            ),
             error_toast(error_toast_id),
             success_toast(success_toast_id),
             dcc.Location(id=url_id, refresh=False),

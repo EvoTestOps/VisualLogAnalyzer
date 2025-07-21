@@ -18,6 +18,7 @@ config = {
         "project_store_id": "project-store-high-file-new",
         "interval_id": "interval-high-file-new",
         "task_store_id": "task-store-high-file-new",
+        "project_link_id": "project-link-high-file-new",
     },
     "form_input_ids": {
         "submit_id": "submit-high-file-new",

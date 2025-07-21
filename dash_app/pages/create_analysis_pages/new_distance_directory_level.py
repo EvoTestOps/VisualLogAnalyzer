@@ -18,6 +18,7 @@ config = {
         "project_store_id": "project-store-dis-dir-new",
         "interval_id": "interval-dis-dir-new",
         "task_store_id": "task-store-dis-dir-new",
+        "project_link_id": "project-link-dis-dir-new",
     },
     "form_input_ids": {
         "submit_id": "submit-dis-dir-new",

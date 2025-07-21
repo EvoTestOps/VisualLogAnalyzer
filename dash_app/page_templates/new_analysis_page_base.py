@@ -70,14 +70,20 @@ def register_callbacks(config, run_func):
         Output(base_ids["project_store_id"], "data"),
         Output(base_ids["error_toast_id"], "children"),
         Output(base_ids["error_toast_id"], "is_open"),
+        Output(base_ids["project_link_id"], "href"),
         Input(base_ids["url_id"], "search"),
     )
     def get_project_id(search):
         id = parse_query_parameter(search, "project_id")
         if not id:
-            return None, "No project id provided. The analysis will fail.", True
+            return (
+                None,
+                "No project id provided. The analysis will fail.",
+                True,
+                dash.no_update,
+            )
 
-        return id, dash.no_update, False
+        return id, dash.no_update, False, f"/dash/project/{id}"
 
     if "directory_id" in form_ids:
 
