@@ -44,7 +44,7 @@ layout = [
     Input("project-group", "id"),
     Input("refresh-proj", "data"),
 )
-def get_projects(id, refresh):
+def get_projects(_1, _2):
     response, error = make_api_call({}, "projects", "GET")
     if error or not response:
         return (dash.no_update, error, True, dash.no_update, False)

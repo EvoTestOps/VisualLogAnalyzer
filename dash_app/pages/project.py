@@ -12,7 +12,7 @@ from dash_app.callbacks.callback_functions import (
 from dash_app.components.layouts import create_project_layout
 from dash_app.components.toasts import error_toast, success_toast
 from dash_app.dash_config import DashConfig
-from dash_app.utils.metadata import format_analysis_overview, parse_query_parameter
+from dash_app.utils.metadata import format_analysis_overview
 
 dash.register_page(__name__, path_template="/project/<project_id>")
 

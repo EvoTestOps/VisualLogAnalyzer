@@ -5,7 +5,7 @@ from dash import html
 def nav():
     return dbc.Nav(
         [
-            dbc.NavItem(dbc.NavLink("Projects", href="/dash/")),
+            dbc.NavItem(dbc.NavLink("Home", href="/dash/")),
         ],
         class_name="h4",
     )
@@ -46,7 +46,7 @@ def crate_analysis_nav(project_id, nav_id):
                                 href=f"/dash/analysis/file-level-visualisations/create?project_id={project_id}",
                             ),
                         ],
-                        label="High level Visualisations",
+                        label="High Level Visualisations",
                         nav=True,
                     ),
                     dbc.DropdownMenu(

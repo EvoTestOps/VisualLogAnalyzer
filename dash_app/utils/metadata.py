@@ -88,8 +88,12 @@ def format_analysis_overview(analyses_data: list[dict]) -> list[dbc.ListGroupIte
                     [
                         html.A(
                             html.H4(
-                                _format_key_title(
-                                    analysis["analysis_sub_type"], divider="-"
+                                (
+                                    _format_key_title(
+                                        analysis["analysis_sub_type"], divider="-"
+                                    )
+                                    if analysis["analysis_sub_type"] != "umap"
+                                    else "UMAP"
                                 ),
                                 className="mb-0",
                             ),
