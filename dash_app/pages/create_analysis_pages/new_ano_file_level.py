@@ -16,16 +16,19 @@ config = {
         "url_id": "url-ano-file-new",
         "redirect_id": "analysis-id-ano-file-new",
         "project_store_id": "project-store-ano-file-new",
+        "interval_id": "interval-ano-file-new",
+        "task_store_id": "task-store-ano-file-new",
     },
     "form_input_ids": {
         "submit_id": "submit-ano-file-new",
         "train_data_id": "train-data-ano-file-new",
-        "test_data_id": "test-data-file-file-new",
+        "test_data_id": "test-data-ano-file-new",
         "detectors_id": "detectors-ano-file-new",
         "enhancement_id": "enhancement-ano-file-new",
         "runs_filter_id": "filter-ano-file-new",
         "mask_input_id": "mask-ano-file-new",
         "vectorizer_id": "vectorizer-ano-file-new",
+        "results_redirect_id": "results-redirect-ano-file-new",
     },
     "input_fields": [
         "train_data_id",
@@ -35,6 +38,7 @@ config = {
         "runs_filter_id",
         "mask_input_id",
         "vectorizer_id",
+        "results_redirect_id",
     ],
 }
 

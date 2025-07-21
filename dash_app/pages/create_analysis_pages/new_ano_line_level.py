@@ -1,142 +1,52 @@
 import dash
-import dash_bootstrap_components as dbc
-from dash import Input, Output, State, callback, dcc, html
-
-from dash_app.callbacks.callback_functions import (
-    run_anomaly_detection,
-    get_filter_options,
-    get_log_data_directory_options,
+from dash_app.page_templates.new_analysis_page_base import (
+    create_layout,
+    register_callbacks,
 )
-from dash_app.components.forms import test_train_form
-from dash_app.components.toasts import error_toast, success_toast
-from dash_app.utils.metadata import parse_query_parameter
+from dash_app.callbacks.callback_functions import run_anomaly_detection
 
-dash.register_page(
-    __name__,
-    path="/analysis/ano-line-level/create",
-    title="New Line Level Anomaly Detection",
-)
+config = {
+    "type": "ano-line-level",
+    "level": "line",
+    "path_template": "/analysis/ano-line-level/create",
+    "base_ids": {
+        "title": "New Line Level Anomaly Detection",
+        "error_toast_id": "error-toast-ano-line-new",
+        "success_toast_id": "success-toast-ano-line-new",
+        "url_id": "url-ano-line-new",
+        "redirect_id": "analysis-id-ano-line-new",
+        "project_store_id": "project-store-ano-line-new",
+        "interval_id": "interval-ano-line-new",
+        "task_store_id": "task-store-ano-line-new",
+    },
+    "form_input_ids": {
+        "submit_id": "submit-ano-line-new",
+        "train_data_id": "train-data-ano-line-new",
+        "test_data_id": "test-data-ano-line-new",
+        "detectors_id": "detectors-ano-line-new",
+        "enhancement_id": "enhancement-ano-line-new",
+        "runs_filter_id": "filter-ano-line-new",
+        "mask_input_id": "mask-ano-line-new",
+        "vectorizer_id": "vectorizer-ano-line-new",
+        "results_redirect_id": "results-redirect-ano-line-new",
+    },
+    "input_fields": [
+        "train_data_id",
+        "test_data_id",
+        "detectors_id",
+        "enhancement_id",
+        "runs_filter_id",
+        "mask_input_id",
+        "vectorizer_id",
+        "results_redirect_id",
+    ],
+}
+
+dash.register_page(__name__, path_template=config["path_template"])
 
 
 def layout(**kwargs):
-    form = test_train_form(
-        "submit-ano-line",
-        "train-data-ano-line",
-        "test-data-ano-line",
-        "detectors-ano-line",
-        "enhancement-ano-line",
-        "filter-ano-line",
-        "mask-ano-line",
-        "vectorizer-ano-line",
-    )
-
-    return [
-        dbc.Container(
-            [
-                html.H3("New Line Level Anomaly Detection"),
-                error_toast("error-toast-ano-line"),
-                success_toast("success-toast-ano-line"),
-                dcc.Location(id="url-ano-line", refresh=False),
-                dcc.Store(id="project-id-ano-line"),
-            ]
-        ),
-        dbc.Container(
-            [
-                form,
-                dcc.Loading(dcc.Location(id="redirect-ano-line", refresh=True)),
-            ]
-        ),
-    ]
+    return create_layout(config)
 
 
-@callback(
-    Output("project-id-ano-line", "data"),
-    Output("error-toast-ano-line", "children"),
-    Output("error-toast-ano-line", "is_open"),
-    Input("url-ano-line", "search"),
-)
-def get_project_id(search):
-    id = parse_query_parameter(search, "project_id")
-    if not id:
-        return None, "No project id provided. The analysis will fail.", True
-
-    return id, dash.no_update, False
-
-
-@callback(
-    Output("train-data-ano-line", "options"),
-    Output("test-data-ano-line", "options"),
-    Input("url-ano-line", "search"),
-)
-def get_log_data_directories(_):
-    options = get_log_data_directory_options()
-    return options, options
-
-
-@callback(
-    Output("filter-ano-line", "options"),
-    Input("test-data-ano-line", "value"),
-)
-def get_comparison_options(directory_path):
-    options = get_filter_options(directory_path, runs_or_files="runs")
-    return options
-
-
-@callback(
-    Output("error-toast-ano-line", "children", allow_duplicate=True),
-    Output("error-toast-ano-line", "is_open", allow_duplicate=True),
-    Output("success-toast-ano-line", "children"),
-    Output("success-toast-ano-line", "is_open"),
-    Output("redirect-ano-line", "href"),
-    Input("submit-ano-line", "n_clicks"),
-    State("project-id-ano-line", "data"),
-    State("train-data-ano-line", "value"),
-    State("test-data-ano-line", "value"),
-    State("detectors-ano-line", "value"),
-    State("enhancement-ano-line", "value"),
-    State("filter-ano-line", "value"),
-    State("mask-ano-line", "value"),
-    State("vectorizer-ano-line", "value"),
-    prevent_initial_call=True,
-)
-def run_analysis(
-    n_clicks,
-    project_id,
-    train_data,
-    test_data,
-    detectors,
-    enhancement,
-    filter,
-    mask_type,
-    vectorizer_type,
-):
-
-    try:
-        result = run_anomaly_detection(
-            project_id,
-            train_data,
-            test_data,
-            detectors,
-            enhancement,
-            filter,
-            mask_type,
-            vectorizer_type,
-            "raw",
-            level="line",
-        )
-
-        return (
-            dash.no_update,
-            False,
-            "Analysis complete",
-            True,
-            f"/dash/project/{project_id}?task_id={result.get('task_id')}",
-        )
-    except ValueError as e:
-        return (
-            str(e),
-            True,
-            dash.no_update,
-            False,
-            dash.no_update,
-        )
+register_callbacks(config, run_func=run_anomaly_detection)

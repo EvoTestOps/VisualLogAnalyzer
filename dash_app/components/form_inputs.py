@@ -258,3 +258,24 @@ def color_by_directory_input(id):
             ),
         ]
     )
+
+
+def redirect_to_results_input(id):
+    return dbc.Col(
+        [
+            dbc.Switch(
+                id=id,
+                label=html.Span(
+                    "Open results when ready",
+                    id=f"{id}-label",
+                    style={"textDecoration": "underline", "cursor": "pointer"},
+                ),
+                value=False,
+            ),
+            dbc.Tooltip(
+                "If on, will redirect instantly to analysis results when they are ready. Otherwise will redirect back to project page.",
+                target=f"{id}-label",
+                placement="bottom",
+            ),
+        ]
+    )

@@ -6,6 +6,7 @@ from dash_app.components.form_inputs import submit_button
 from dash_app.components.forms import project_settings_form
 from dash_app.components.nav import crate_analysis_nav, nav
 from dash_app.components.toasts import error_toast, success_toast
+from dash_app.dash_config import DashConfig
 
 
 def create_root_layout():
@@ -396,7 +397,14 @@ def create_result_base_layout(title, analysis_id, project_link_id, analysis_stor
 
 
 def create_new_analysis_base_layout(
-    title, error_toast_id, success_toast_id, url_id, redirect_id, project_store_id
+    title,
+    error_toast_id,
+    success_toast_id,
+    url_id,
+    redirect_id,
+    project_store_id,
+    interval_id,
+    task_store_id,
 ):
     return dbc.Container(
         [
@@ -406,5 +414,9 @@ def create_new_analysis_base_layout(
             dcc.Location(id=url_id, refresh=False),
             dcc.Location(id=redirect_id, refresh=True),
             dcc.Store(id=project_store_id),
+            dcc.Store(id=task_store_id),
+            dcc.Interval(
+                id=interval_id, interval=DashConfig.POLL_RATE * 1000, disabled=True
+            ),
         ]
     )

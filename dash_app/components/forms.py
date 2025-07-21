@@ -16,6 +16,7 @@ from dash_app.components.form_inputs import (
     vectorizer_input,
     match_file_names_input,
     color_by_directory_input,
+    redirect_to_results_input,
 )
 
 
@@ -28,8 +29,19 @@ def test_train_form(
     runs_filter_id,
     mask_input_id,
     vectorizer_id,
+    results_redirect_id=None,
 ):
     submit_btn_tr = submit_button(submit_id, "Analyze")
+
+    if results_redirect_id:
+        submit_row = dbc.Row(
+            [
+                redirect_to_results_input(results_redirect_id),
+                dbc.Col(submit_btn_tr, class_name="text-end"),
+            ]
+        )
+    else:
+        submit_row = dbc.Row(dbc.Col(submit_btn_tr, class_name="text-end"))
 
     form_tr = dbc.Form(
         [
@@ -55,7 +67,8 @@ def test_train_form(
                 ],
                 class_name="mb-3",
             ),
-            dbc.Row(dbc.Col(submit_btn_tr, class_name="text-end")),
+            submit_row,
+            # dbc.Row(dbc.Col(submit_btn_tr, class_name="text-end")),
         ],
         class_name="border border-primary-subtle border-2 p-3",
     )
@@ -72,6 +85,7 @@ def test_train_file_level_form(
     runs_filter_id,
     mask_input_id,
     vectorizer_id,
+    results_redirect_id,
 ):
     submit_btn_tr = submit_button(submit_id, "Analyze")
 
@@ -108,7 +122,12 @@ def test_train_file_level_form(
                 ),
                 class_name="mb-3",
             ),
-            dbc.Row(dbc.Col(submit_btn_tr, class_name="text-end")),
+            dbc.Row(
+                [
+                    redirect_to_results_input(results_redirect_id),
+                    dbc.Col(submit_btn_tr, class_name="text-end"),
+                ]
+            ),
         ],
         class_name="border border-primary-subtle border-2 p-3",
     )
@@ -117,7 +136,12 @@ def test_train_file_level_form(
 
 
 def directory_level_viz_form(
-    submit_id, directory_id, analysis_type_id, mask_id, vectorizer_id
+    submit_id,
+    directory_id,
+    analysis_type_id,
+    mask_id,
+    vectorizer_id,
+    results_redirect_id,
 ):
     submit_btn_ut = submit_button(submit_id, "Analyze")
 
@@ -140,7 +164,12 @@ def directory_level_viz_form(
                 "Mask type and vectorizer are optional inputs for UMAP analysis.",
                 color="secondary",
             ),
-            dbc.Row(dbc.Col(submit_btn_ut, class_name="text-end")),
+            dbc.Row(
+                [
+                    redirect_to_results_input(results_redirect_id),
+                    dbc.Col(submit_btn_ut, class_name="text-end"),
+                ]
+            ),
         ],
         class_name="border border-primary-subtle border-2 p-3",
     )
@@ -149,7 +178,12 @@ def directory_level_viz_form(
 
 
 def file_level_viz_form(
-    submit_id, directory_id, analysis_type_id, mask_id, vectorizer_id
+    submit_id,
+    directory_id,
+    analysis_type_id,
+    mask_id,
+    vectorizer_id,
+    results_redirect_id,
 ):
     submit_btn_ut_file = submit_button(submit_id, "Analyze")
 
@@ -172,7 +206,12 @@ def file_level_viz_form(
                 "Mask type and vectorizer are optional inputs for UMAP analysis.",
                 color="secondary",
             ),
-            dbc.Row(dbc.Col(submit_btn_ut_file, class_name="text-end")),
+            dbc.Row(
+                [
+                    redirect_to_results_input(results_redirect_id),
+                    dbc.Col(submit_btn_ut_file, class_name="text-end"),
+                ]
+            ),
         ],
         class_name="border border-primary-subtle border-2 p-3",
     )
@@ -188,6 +227,7 @@ def distance_run_level_form(
     runs_filter_id,
     mask_id,
     vectorizer_id,
+    results_redirect_id,
 ):
     submit_btn = submit_button(submit_id, "Analyze")
 
@@ -211,7 +251,12 @@ def distance_run_level_form(
                 ],
                 class_name="mb-3",
             ),
-            dbc.Row(dbc.Col(submit_btn, class_name="text-end")),
+            dbc.Row(
+                [
+                    redirect_to_results_input(results_redirect_id),
+                    dbc.Col(submit_btn, class_name="text-end"),
+                ]
+            ),
         ],
         class_name="border border-primary-subtle border-2 p-3",
     )
@@ -227,6 +272,7 @@ def distance_file_level_form(
     runs_filter_id,
     mask_id,
     vectorizer_id,
+    results_redirect_id,
 ):
     submit_btn = submit_button(submit_id, "Analyze")
 
@@ -256,7 +302,12 @@ def distance_file_level_form(
                     ],
                 )
             ),
-            dbc.Row(dbc.Col(submit_btn, class_name="text-end")),
+            dbc.Row(
+                [
+                    redirect_to_results_input(results_redirect_id),
+                    dbc.Col(submit_btn, class_name="text-end"),
+                ]
+            ),
         ],
         class_name="border border-primary-subtle border-2 p-3",
     )

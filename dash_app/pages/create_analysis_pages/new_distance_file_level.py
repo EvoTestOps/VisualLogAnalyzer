@@ -16,6 +16,8 @@ config = {
         "url_id": "url-dis-file-new",
         "redirect_id": "analysis-id-dis-file-new",
         "project_store_id": "project-store-dis-file-new",
+        "interval_id": "interval-dis-file-new",
+        "task_store_id": "task-store-dis-file-new",
     },
     "form_input_ids": {
         "submit_id": "submit-dis-file-new",
@@ -25,6 +27,7 @@ config = {
         "runs_filter_id": "filter-dis-file-new",
         "mask_id": "mask-dis-file-new",
         "vectorizer_id": "vectorizer-dis-file-new",
+        "results_redirect_id": "results-redirect-dis-file-new",
     },
     "input_fields": [
         "directory_id",
@@ -33,6 +36,7 @@ config = {
         "enhancement_id",
         "vectorizer_id",
         "mask_id",
+        "results_redirect_id",
     ],
 }
 

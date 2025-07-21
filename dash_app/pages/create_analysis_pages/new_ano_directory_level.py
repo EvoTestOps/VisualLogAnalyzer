@@ -16,6 +16,8 @@ config = {
         "url_id": "url-ano-dir-new",
         "redirect_id": "analysis-id-ano-dir-new",
         "project_store_id": "project-store-ano-dir-new",
+        "interval_id": "interval-ano-dir-new",
+        "task_store_id": "task-store-ano-dir-new",
     },
     "form_input_ids": {
         "submit_id": "submit-ano-dir-new",
@@ -26,6 +28,7 @@ config = {
         "runs_filter_id": "filter-ano-dir-new",
         "mask_input_id": "mask-ano-dir-new",
         "vectorizer_id": "vectorizer-ano-dir-new",
+        "results_redirect_id": "results-redirect-ano-dir-new",
     },
     "input_fields": [
         "train_data_id",
@@ -35,6 +38,7 @@ config = {
         "runs_filter_id",
         "mask_input_id",
         "vectorizer_id",
+        "results_redirect_id",
     ],
 }
 

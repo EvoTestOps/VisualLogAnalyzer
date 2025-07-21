@@ -5,6 +5,7 @@ from dash import Input, Output, State, callback
 from dash_app.callbacks.callback_functions import (
     get_filter_options,
     get_log_data_directory_options,
+    poll_task_status,
 )
 from dash_app.components.forms import (
     distance_file_level_form,
@@ -21,7 +22,7 @@ from dash_app.components.layouts import create_new_analysis_base_layout
 # Config dictionary expected by the page template and callback registration:
 # {
 #   "type": <str>,                   # Analysis type, e.g. distance-file-level
-#   "level": <str>,                  # Analysis level: 'file' or 'directory'
+#   "level": <str>,                  # Analysis level: 'file', 'line' or 'directory'
 #   "base_ids": {                    # Common components' ids
 #       title: <str>                 # Title of the page
 #       error_toast_id: <str>,
@@ -50,6 +51,7 @@ def create_layout(config):
         "file-level-visualisations": file_level_viz_form,
         "ano-directory-level": test_train_form,
         "ano-file-level": test_train_file_level_form,
+        "ano-line-level": test_train_form,
     }
     form_type = form_map.get(config["type"])
     form = form_type(**config["form_input_ids"])
@@ -132,6 +134,8 @@ def register_callbacks(config, run_func):
         Output(base_ids["success_toast_id"], "children"),
         Output(base_ids["success_toast_id"], "is_open"),
         Output(base_ids["redirect_id"], "href"),
+        Output(base_ids["interval_id"], "disabled"),
+        Output(base_ids["task_store_id"], "data"),
         Input(form_ids["submit_id"], "n_clicks"),
         State(base_ids["project_store_id"], "data"),
         *[State(form_ids[field], "value") for field in config["input_fields"]],
@@ -143,8 +147,26 @@ def register_callbacks(config, run_func):
         *args,
     ):
 
+        redirect_value = None
         try:
+            if "results_redirect_id" in config["input_fields"]:
+                redirect_index = config["input_fields"].index("results_redirect_id")
+                redirect_value = args[redirect_index]
+
+                args = args[:redirect_index] + args[redirect_index + 1 :]
+
             result = run_func(project_id, *args, level=config["level"])
+
+            if redirect_value is True:
+                return (
+                    dash.no_update,
+                    False,
+                    "Analysis is running",
+                    True,
+                    dash.no_update,
+                    False,
+                    result.get("task_id"),
+                )
 
             return (
                 dash.no_update,
@@ -152,6 +174,8 @@ def register_callbacks(config, run_func):
                 "Analysis is running",
                 True,
                 f"/dash/project/{project_id}?task_id={result.get('task_id')}",
+                True,
+                dash.no_update,
             )
         except ValueError as e:
             return (
@@ -160,4 +184,67 @@ def register_callbacks(config, run_func):
                 dash.no_update,
                 False,
                 dash.no_update,
+                True,
+                dash.no_update,
             )
+
+    @callback(
+        Output(base_ids["error_toast_id"], "children", allow_duplicate=True),
+        Output(base_ids["error_toast_id"], "is_open", allow_duplicate=True),
+        Output(base_ids["success_toast_id"], "children", allow_duplicate=True),
+        Output(base_ids["success_toast_id"], "is_open", allow_duplicate=True),
+        Output(base_ids["redirect_id"], "href", allow_duplicate=True),
+        Output(base_ids["interval_id"], "disabled", allow_duplicate=True),
+        Input(base_ids["interval_id"], "n_intervals"),
+        State(base_ids["task_store_id"], "data"),
+        prevent_initial_call=True,
+    )
+    def poll_result(_, task_id):
+        if task_id is None:
+            return (
+                dash.no_update,
+                False,
+                dash.no_update,
+                False,
+                dash.no_update,
+                dash.no_update,
+            )
+
+        try:
+            result = poll_task_status(task_id)
+            if result.get("ready"):
+                state = result.get("state")
+                if state == "SUCCESS":
+                    task_result = result.get("result")
+                    return (
+                        dash.no_update,
+                        False,
+                        dash.no_update,
+                        False,
+                        f"/dash/analysis/{task_result["type"]}/{task_result["id"]}",
+                        True,
+                    )
+                elif state == "FAILURE":
+                    error_message = result["result"].get("error", "Task failed.")
+                    return (
+                        error_message,
+                        True,
+                        dash.no_update,
+                        False,
+                        dash.no_update,
+                        True,
+                    )
+                else:
+                    return (
+                        f"Task is in an unexpected state: {state}",
+                        True,
+                        dash.no_update,
+                        False,
+                        dash.no_update,
+                        True,
+                    )
+
+        except ValueError as e:
+            return str(e), True, dash.no_update, False, dash.no_update, True
+
+        return dash.no_update, False, dash.no_update, False, dash.no_update, False

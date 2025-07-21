@@ -16,6 +16,8 @@ config = {
         "url_id": "url-high-file-new",
         "redirect_id": "analysis-id-high-file-new",
         "project_store_id": "project-store-high-file-new",
+        "interval_id": "interval-high-file-new",
+        "task_store_id": "task-store-high-file-new",
     },
     "form_input_ids": {
         "submit_id": "submit-high-file-new",
@@ -23,12 +25,14 @@ config = {
         "analysis_type_id": "analysis-type-file-new",
         "mask_id": "mask-high-file-new",
         "vectorizer_id": "vectorizer-high-file-new",
+        "results_redirect_id": "results-redirect-high-file-new",
     },
     "input_fields": [
         "directory_id",
         "analysis_type_id",
         "mask_id",
         "vectorizer_id",
+        "results_redirect_id",
     ],
 }
 
