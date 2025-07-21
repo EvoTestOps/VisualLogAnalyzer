@@ -1,18 +1,24 @@
 # Visual Log Analyzer
+
 Web application for visualizing and analysing log files.
 
+![Project page](./images/project_page.png)
+
 ## Run locally (development mode)
+
 By default, the program expects the datasets to be located within the `log_data/` directory. To change the location of the log data, update the `LOG_DATA_DIRECTORY` environment variable in the Docker Compose file and adjust the volume mapping accordingly. The analysis results are stored in `analysis_results/` as parquet files.
 
 It is a good idea to create the log data and results directories yourself so you don't run into permission issues.
 
-To start the application run: `docker compose up`
+To start the application clone this repository and run: `docker compose up`
 
 Dash frontend: [http://localhost:5000/dash/](http://localhost:5000/dash/)\
 API endpoints: [http://localhost:5000/api/](http://localhost:5000/api/)
 
 ### Expected log data structure
+
 Example structure:
+
 ```
 log_data/
 ├── hadoop
