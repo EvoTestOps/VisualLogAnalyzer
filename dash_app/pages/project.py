@@ -1,4 +1,3 @@
-import re
 from urllib.parse import parse_qs, urlencode
 
 import dash
@@ -80,7 +79,7 @@ def get_task_id(search, current_tasks):
     if not task_id:
         return (
             dash.no_update,
-            True if not current_tasks else dash.no_update,
+            True if not current_tasks else False,
             dash.no_update,
         )
 
