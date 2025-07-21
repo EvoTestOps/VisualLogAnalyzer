@@ -412,7 +412,12 @@ def create_new_analysis_base_layout(
             error_toast(error_toast_id),
             success_toast(success_toast_id),
             dcc.Location(id=url_id, refresh=False),
-            dcc.Location(id=redirect_id, refresh=True),
+            dcc.Loading(
+                show_initially=False,
+                delay_hide=DashConfig.POLL_RATE * 1000 + 10,
+                type="circle",
+                children=dcc.Location(id=redirect_id, refresh=True),
+            ),
             dcc.Store(id=project_store_id),
             dcc.Store(id=task_store_id),
             dcc.Interval(
