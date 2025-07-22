@@ -17,6 +17,7 @@ from dash_app.components.form_inputs import (
     match_file_names_input,
     color_by_directory_input,
     redirect_to_results_input,
+    line_display_mode_input,
 )
 
 
@@ -334,7 +335,9 @@ def project_form(submit_id, name_id):
     return form
 
 
-def project_settings_form(submit_id, match_filenames_id, color_by_directory_id):
+def project_settings_form(
+    submit_id, match_filenames_id, color_by_directory_id, line_display_mode_id
+):
     submit_btn = submit_button(submit_id, "Apply")
     form = dbc.Form(
         [
@@ -344,6 +347,7 @@ def project_settings_form(submit_id, match_filenames_id, color_by_directory_id):
                         [
                             match_file_names_input(match_filenames_id),
                             color_by_directory_input(color_by_directory_id),
+                            line_display_mode_input(line_display_mode_id),
                         ]
                     ),
                     dbc.Col(

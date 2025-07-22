@@ -8,7 +8,12 @@ def get_options(df) -> list[dict]:
 
 
 def create_line_level_plot(df, selected_plot, theme="plotly_white"):
-    prediction_columns = [col for col in df.columns if "pred_ano_proba" in col]
+    prediction_columns = [
+        col
+        for col in df.columns
+        if "pred_ano_proba" in col and not col.startswith("moving_avg")
+    ]
+    moving_avg_columns = [col for col in df.columns if "moving_avg" in col]
 
     df = df.filter(pl.col("seq_id") == selected_plot)
     if df.get_column("line_number", default=None) is None:
@@ -19,7 +24,7 @@ def create_line_level_plot(df, selected_plot, theme="plotly_white"):
         xaxis_title = "Line Number"
         x_column = "line_number"
 
-    for col in prediction_columns:
+    for col in prediction_columns + moving_avg_columns:
         df = _normalize_prediction_columns(df, [col])
 
     # polars documentation says that map_elements is slow.
@@ -37,7 +42,7 @@ def create_line_level_plot(df, selected_plot, theme="plotly_white"):
 
     fig = go.Figure()
 
-    for col in prediction_columns:
+    for col in prediction_columns + moving_avg_columns:
         fig.add_trace(
             go.Scatter(
                 x=df[x_column],

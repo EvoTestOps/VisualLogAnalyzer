@@ -85,9 +85,8 @@ def generate_dropdown_and_metadata(encoded_df, analysis_id):
     options = get_options(df)
 
     response, error = make_api_call({}, f"analyses/{analysis_id}/metadata", "GET")
-
     if error or response is None:
-        return dash.no_update, str(error), True
+        return dash.no_update, dash.no_update, dash.no_update, str(error), True
 
     metadata = response.json()
     project_id = metadata.get("project_id")

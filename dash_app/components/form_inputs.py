@@ -260,6 +260,26 @@ def color_by_directory_input(id):
     )
 
 
+def line_display_mode_input(id):
+    return dbc.Col(
+        html.Div(
+            [
+                dbc.Label("Line level display options"),
+                dbc.RadioItems(
+                    options=[
+                        {"label": "Data points only", "value": "data_points_only"},
+                        {"label": "Moving averages only", "value": "moving_avg_only"},
+                        {"label": "Show all", "value": "all"},
+                    ],
+                    value="data_points_only",
+                    id=id,
+                ),
+            ],
+            className="mt-3",
+        )
+    )
+
+
 def redirect_to_results_input(id):
     return dbc.Col(
         [

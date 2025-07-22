@@ -52,6 +52,7 @@ def layout(project_id=None, **kwargs):
         "match-filenames-project",
         "color-by-directory-project",
         "task-count-project",
+        "line-display-mode-project",
     )
 
 
@@ -142,6 +143,7 @@ def get_analyses(_, project_id):
 @callback(
     Output("match-filenames-project", "value"),
     Output("color-by-directory-project", "value"),
+    Output("line-display-mode-project", "value"),
     Input("project-id", "data"),
 )
 def get_settings(project_id):
@@ -153,7 +155,11 @@ def get_settings(project_id):
         return True
 
     settings = response.json()
-    return settings.get("match_filenames"), settings.get("color_by_directory")
+    return (
+        settings.get("match_filenames"),
+        settings.get("color_by_directory"),
+        settings.get("line_level_display_mode"),
+    )
 
 
 @callback(
@@ -205,16 +211,20 @@ def delete_analysis(submit_n_clicks, analysis_id, url_path):
     Input("settings-submit-project", "n_clicks"),
     State("match-filenames-project", "value"),
     State("color-by-directory-project", "value"),
+    State("line-display-mode-project", "value"),
     State("project-id", "data"),
     prevent_initial_call=True,
 )
-def apply_settings(n_clicks, match_filenames, color_by_directory, project_id):
+def apply_settings(
+    n_clicks, match_filenames, color_by_directory, line_display_mode, project_id
+):
     if not n_clicks:
         return dash.no_update, False, dash.no_update, False
 
     payload = {
         "match_filenames": match_filenames,
         "color_by_directory": color_by_directory,
+        "line_level_display_mode": line_display_mode,
     }
     response, error = make_api_call(
         payload, f"projects/{project_id}/settings", requests_type="PATCH"

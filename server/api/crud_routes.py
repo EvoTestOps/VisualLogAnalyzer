@@ -2,6 +2,7 @@ import os
 import io
 import logging
 
+import polars as pl
 from flask import Blueprint, Response, jsonify, request
 from pydantic import ValidationError
 
@@ -84,6 +85,7 @@ def update_settings(project_id: int):
 
     settings.match_filenames = validated_data.match_filenames
     settings.color_by_directory = validated_data.color_by_directory
+    settings.line_level_display_mode = validated_data.line_level_display_mode
     db.session.commit()
 
     return {}, 200
@@ -108,6 +110,34 @@ def get_analysis(analysis_id: int):
             buffer = io.BytesIO(file.read())
 
         buffer.seek(0)
+
+        if analysis.analysis_level == "line":
+            settings = Settings.query.filter_by(
+                project_id=analysis.project_id
+            ).first_or_404()
+            display_mode = settings.line_level_display_mode
+
+            if display_mode == "data_points_only":
+                df = pl.read_parquet(buffer)
+                columns_to_drop = [col for col in df.columns if "moving_avg" in col]
+            elif display_mode == "moving_avg_only":
+                df = pl.read_parquet(buffer)
+                columns_to_drop = [
+                    col
+                    for col in df.columns
+                    if "pred_ano_proba" in col and not col.startswith("moving_avg")
+                ]
+            else:
+                return Response(buffer.getvalue(), mimetype="application/octet-stream")
+
+            if columns_to_drop:
+                df = df.drop([col for col in columns_to_drop if col in df.columns])
+                buffer = io.BytesIO()
+                df.write_parquet(buffer)
+                buffer.seek(0)
+            else:
+                buffer.seek(0)
+                return Response(buffer.getvalue(), mimetype="application/octet-stream")
 
         return Response(buffer.getvalue(), mimetype="application/octet-stream")
     except Exception as e:

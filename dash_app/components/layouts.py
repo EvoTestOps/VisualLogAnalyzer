@@ -275,6 +275,7 @@ def create_project_layout(
     match_filenames_id,
     color_by_directory_id,
     tasks_count_id,
+    line_display_mode_input_id,
 ):
 
     error_toast_row = dbc.Row(error_toast(error_toast_id))
@@ -304,6 +305,7 @@ def create_project_layout(
                             settings_submit_id,
                             match_filenames_id,
                             color_by_directory_id,
+                            line_display_mode_input_id,
                         ),
                         body=True,
                     ),

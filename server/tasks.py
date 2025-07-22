@@ -18,6 +18,9 @@ from server.analysis.utils.run_level_analysis import (
     files_and_lines_count,
     unique_terms_count_by_run,
 )
+from server.analysis.utils.line_level_analysis import (
+    calculate_moving_average_by_columns,
+)
 from server.analysis.utils.umap_analysis import create_umap_df, create_umap_embeddings
 from server.models.settings import Settings
 from server.task_helpers import (
@@ -93,6 +96,19 @@ def async_run_anomaly_detection(
                 results, distance_columns=get_prediction_cols(results)
             )
             results = results.drop(item_list_col)
+
+        if level == "line":
+            prediction_columns = [
+                col for col in results.columns if "pred_ano_proba" in col
+            ]
+            df_moving_avg_100 = calculate_moving_average_by_columns(
+                results, 100, prediction_columns
+            )
+            df_moving_avg_10 = calculate_moving_average_by_columns(
+                results, 10, prediction_columns
+            )
+            results = results.with_columns(df_moving_avg_100)
+            results = results.with_columns(df_moving_avg_10)
 
         analysis_type = f"ano-{level}-level"
         metadata = {
