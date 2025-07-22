@@ -96,22 +96,17 @@ def create_ano_line_level_result_layout(
                 selected_cells=[],
                 fixed_rows={"headers": True},
                 style_table={
-                    "overflowY": "auto",
-                    "overflowX": "auto",
                     "height": 600,
                 },
                 style_cell={
                     "textAlign": "left",
                     "minWidth": "100px",
+                    "width": "150px",
                 },
                 style_header={
                     "overflow": "hidden",
                     "textOverflow": "ellipsis",
-                    "whiteSpace": "nowrap",
-                    "textAlign": "left",
-                    "minWidth": "100px",
                 },
-                page_action="native",
                 page_current=0,
                 page_size=250,
             ),

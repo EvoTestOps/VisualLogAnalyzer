@@ -3,6 +3,7 @@ import io
 
 import dash
 import polars as pl
+import polars.selectors as cs
 from dash import Input, Output, State, callback, html
 
 from dash_app.callbacks.callback_functions import make_api_call
@@ -144,8 +145,20 @@ def populate_table(encoded_df, selected_plot):
         pl.col("seq_id") == selected_plot
     )
 
-    # df clean up
-    df = df.drop(["seq_id", "orig_file_name", "run", "file_name"])
+    # TODO: A better solution for filtering unwanted columns
+    # this does not catch everything since column name is
+    # dependant on the enhancement
+    columns_to_drop = [
+        "seq_id",
+        "orig_file_name",
+        "run",
+        "file_name",
+        "e_message_normalized",
+        "e_words",
+        "e_words_len",
+    ]
+    df = df.drop([col for col in columns_to_drop if col in df.columns])
+    df = df.with_columns(cs.float().round(5))
     df = df.select(
         ["line_number"] + [col for col in df.columns if col != "line_number"]
     )
