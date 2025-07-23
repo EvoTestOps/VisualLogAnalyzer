@@ -158,7 +158,7 @@ def populate_table(encoded_df, selected_plot):
         "e_words_len",
     ]
     df = df.drop([col for col in columns_to_drop if col in df.columns])
-    df = df.with_columns(cs.float().round(5))
+    # df = df.with_columns(cs.float().round(5))
     df = df.select(
         ["line_number"] + [col for col in df.columns if col != "line_number"]
     )

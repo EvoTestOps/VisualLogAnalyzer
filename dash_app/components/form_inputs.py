@@ -43,6 +43,7 @@ def detectors_unsupervised_input(id):
                     {"label": "OOVD", "value": "oovd"},
                     {"label": "Isolation Forest", "value": "if"},
                 ],
+                value=["kmeans", "rm", "oovd", "if"],
                 multi=True,
                 id=id,
                 className="dbc border border-light-subtle rounded",
