@@ -1,6 +1,9 @@
 from datetime import datetime, timezone
 
+import traceback
+
 from celery import shared_task
+from celery.exceptions import Ignore
 
 from server.analysis.enhancer import Enhancer
 from server.analysis.log_analysis_pipeline import ManualTrainTestPipeline
@@ -137,8 +140,17 @@ def async_run_anomaly_detection(
             ),
             "meta": meta,
         }
-    except Exception:
-        raise
+    except Exception as exc:
+        self.update_state(
+            state="FAILURE",
+            meta={
+                "exc_type": type(exc).__name__,
+                "exc_message": traceback.format_exc().split("\n"),
+                "meta": meta,
+                "error_msg": str(exc),
+            },
+        )
+        raise Ignore()
 
 
 @shared_task(bind=True, ignore_results=False)
@@ -166,8 +178,17 @@ def async_run_file_counts(self, project_id: int, directory_path: str) -> dict:
             ),
             "meta": meta,
         }
-    except Exception:
-        raise
+    except Exception as exc:
+        self.update_state(
+            state="FAILURE",
+            meta={
+                "exc_type": type(exc).__name__,
+                "exc_message": traceback.format_exc().split("\n"),
+                "meta": meta,
+                "error_msg": str(exc),
+            },
+        )
+        raise Ignore()
 
 
 @shared_task(bind=True, ignore_results=False)
@@ -206,8 +227,17 @@ def async_run_unique_terms(
             ),
             "meta": meta,
         }
-    except Exception:
-        raise
+    except Exception as exc:
+        self.update_state(
+            state="FAILURE",
+            meta={
+                "exc_type": type(exc).__name__,
+                "exc_message": traceback.format_exc().split("\n"),
+                "meta": meta,
+                "error_msg": str(exc),
+            },
+        )
+        raise Ignore()
 
 
 @shared_task(bind=True, ignore_results=False)
@@ -264,8 +294,17 @@ def async_create_umap(
             ),
             "meta": meta,
         }
-    except Exception:
-        raise
+    except Exception as exc:
+        self.update_state(
+            state="FAILURE",
+            meta={
+                "exc_type": type(exc).__name__,
+                "exc_message": traceback.format_exc().split("\n"),
+                "meta": meta,
+                "error_msg": str(exc),
+            },
+        )
+        raise Ignore()
 
 
 @shared_task(bind=True, ignore_results=False)
@@ -327,5 +366,14 @@ def async_log_distance(
             ),
             "meta": meta,
         }
-    except Exception:
-        raise
+    except Exception as exc:
+        self.update_state(
+            state="FAILURE",
+            meta={
+                "exc_type": type(exc).__name__,
+                "exc_message": traceback.format_exc().split("\n"),
+                "meta": meta,
+                "error_msg": str(exc),
+            },
+        )
+        raise Ignore()
