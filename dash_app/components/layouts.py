@@ -269,7 +269,7 @@ def create_project_layout(
     settings_submit_id,
     match_filenames_id,
     color_by_directory_id,
-    tasks_count_id,
+    task_info_id,
     line_display_mode_input_id,
 ):
 
@@ -289,6 +289,17 @@ def create_project_layout(
         dbc.ListGroup(id=group_id), class_name="mb-3 mt-3 ps-0 ms-0", width=8
     )
 
+    task_info_header = [
+        html.Thead(
+            html.Tr(
+                [html.Th("Analysis Type"), html.Th("Status"), html.Th("Time Elapsed")]
+            )
+        )
+    ]
+    task_info_table = dbc.Table(
+        id=task_info_id, hover=True, responsive=True, children=task_info_header
+    )
+
     nav_col = dbc.Col(
         [
             crate_analysis_nav(project_id, nav_id),
@@ -305,9 +316,14 @@ def create_project_layout(
                         body=True,
                     ),
                 ],
-                className="mt-3",
+                className="mt-3 mb-3",
             ),
-            html.Div(id=tasks_count_id, className="mt-3"),
+            html.Div(
+                [
+                    html.H4("Running analyses"),
+                    task_info_table,
+                ]
+            ),
         ],
         class_name="pt-3",
     )

@@ -2,7 +2,7 @@ from urllib.parse import parse_qs, urlencode
 
 import dash
 import dash_bootstrap_components as dbc
-from dash import ALL, Input, Output, State, callback, dcc
+from dash import ALL, Input, Output, State, callback, dcc, html
 
 from dash_app.callbacks.callback_functions import (
     make_api_call,
@@ -12,7 +12,7 @@ from dash_app.callbacks.callback_functions import (
 from dash_app.components.layouts import create_project_layout
 from dash_app.components.toasts import error_toast, success_toast
 from dash_app.dash_config import DashConfig
-from dash_app.utils.metadata import format_analysis_overview
+from dash_app.utils.metadata import format_analysis_overview, format_task_overview_row
 
 dash.register_page(__name__, path_template="/project/<project_id>")
 
@@ -51,7 +51,7 @@ def layout(project_id=None, **kwargs):
         "settings-submit-project",
         "match-filenames-project",
         "color-by-directory-project",
-        "task-count-project",
+        "task-info-project",
         "line-display-mode-project",
     )
 
@@ -93,21 +93,6 @@ def get_task_id(search, current_tasks):
         updated_tasks,
         False,
         new_search,
-    )
-
-
-@callback(
-    Output("task-count-project", "children"),
-    Input("url", "href"),
-    Input("url", "search"),
-    State("project-task-store", "data"),
-)
-def update_running_analyses_count(_1, _2, current_tasks):
-    task_count = len(current_tasks or [])
-    return (
-        f"Amount of running analyses: {task_count}"
-        if task_count > 0
-        else "No analyses running"
     )
 
 
@@ -243,6 +228,7 @@ def apply_settings(
     Output("project-task-store", "data", allow_duplicate=True),
     Output("url", "href", allow_duplicate=True),
     Output("project-task-poll", "disabled", allow_duplicate=True),
+    Output("task-info-project", "children"),
     Input("project-task-poll", "n_intervals"),
     State("project-task-store", "data"),
     State("url", "href"),
@@ -253,25 +239,43 @@ def poll_project_tasks(_, task_ids, url_path):
     success_messages = []
     error_messages = []
 
+    task_info_header = [
+        html.Thead(
+            html.Tr(
+                [html.Th("Analysis Type"), html.Th("Status"), html.Th("Time Elapsed")]
+            )
+        )
+    ]
+    task_rows = []
+
     for task_id in task_ids or []:
         try:
             result = poll_task_status(task_id)
+            if result is None:
+                updated_task_store.append(task_id)
+                continue
+
+            state = result.get("state", "")
+            meta = result.get("meta", {})
+
+            task_row = format_task_overview_row(meta, state)
+            task_rows.append(task_row)
+
+            if not result.get("ready"):
+                updated_task_store.append(task_id)
+                continue
+
+            if state == "SUCCESS":
+                success_messages.append("Analysis complete")
+            elif state == "FAILURE":
+                error = result.get("result", {"error": "Task failed."})
+                error_messages.append(f"Analysis failed: {error['error']}")
+            else:
+                error_messages.append(f"Task in unexpected state: {state}")
+
         except ValueError as e:
             error_messages.append(f"Unexpected error occured: {e}")
             continue
-
-        if result is None or not result.get("ready"):
-            updated_task_store.append(task_id)
-            continue
-
-        state = result.get("state")
-        if state == "SUCCESS":
-            success_messages.append("Analysis complete")
-        elif state == "FAILURE":
-            error = result.get("result")
-            error_messages.append(f"Analysis failed: {error['error']}")
-        else:
-            error_messages.append(f"Task in unexpected state: {state}")
 
     # TODO: what if there is both error messages and success messages
     error_output = "\n".join(error_messages) if error_messages else dash.no_update
@@ -292,4 +296,5 @@ def poll_project_tasks(_, task_ids, url_path):
         updated_task_store,
         refresh_path,
         polling_disabled,
+        task_info_header + [html.Tbody(task_rows)],
     )

@@ -151,6 +151,36 @@ def format_project_overview(project_data: list[dict]) -> list[dbc.ListGroupItem]
     return group_items
 
 
+def format_task_overview_row(meta: dict, state: str) -> html.Tr:
+    task_row = html.Tr(
+        [
+            html.Td(meta.get("analysis_type", "unknown")),
+            html.Td(state),
+            html.Td(meta.get("relative_time", "unknown")),
+        ]
+    )
+
+    match state:
+        case "STARTED" | "PENDING":
+            task_state = "Running"
+        case "SUCCESS":
+            task_state = "Success"
+        case "FAILURE":
+            task_state = "Failed"
+        case _:
+            task_state = "unknown"
+
+    task_row = html.Tr(
+        [
+            html.Td(meta.get("analysis_type", "unknown")),
+            html.Td(task_state),
+            html.Td(meta.get("relative_time", "unknown")),
+        ]
+    )
+
+    return task_row
+
+
 def parse_query_parameter(search: str, param_name: str) -> str | None:
     query = parse_qs(search.lstrip("?"))
     result = query.get(param_name, [None])[0]

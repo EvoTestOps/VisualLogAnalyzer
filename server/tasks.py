@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from celery import shared_task
 
 from server.analysis.enhancer import Enhancer
@@ -11,15 +13,15 @@ from server.analysis.utils.file_level_analysis import (
     aggregate_file_level,
     unique_terms_count_by_file,
 )
+from server.analysis.utils.line_level_analysis import (
+    calculate_moving_average_by_columns,
+)
 from server.analysis.utils.log_distance import measure_distances
 from server.analysis.utils.run_level_analysis import (
     aggregate_run_level,
     calculate_zscore_sum_anos,
     files_and_lines_count,
     unique_terms_count_by_run,
-)
-from server.analysis.utils.line_level_analysis import (
-    calculate_moving_average_by_columns,
 )
 from server.analysis.utils.umap_analysis import create_umap_df, create_umap_embeddings
 from server.models.settings import Settings
@@ -30,8 +32,9 @@ from server.task_helpers import (
 )
 
 
-@shared_task(ignore_results=False)
+@shared_task(bind=True, ignore_results=False)
 def async_run_anomaly_detection(
+    self,
     project_id: int,
     train_data_path: str,
     test_data_path: str,
@@ -44,6 +47,13 @@ def async_run_anomaly_detection(
     mask_type: str,
     vectorizer: str,
 ) -> dict:
+
+    start_time = datetime.now(timezone.utc).isoformat()
+    meta = {"analysis_type": "Anomaly detection", "start_time": start_time}
+    self.update_state(
+        state="STARTED",
+        meta=meta,
+    )
 
     # TODO: Rather than getting boolean values, take str for level
     if file_level:
@@ -121,13 +131,25 @@ def async_run_anomaly_detection(
             "models": ";".join(models),
             "analysis_level": level,
         }
-        return store_and_format_result(results, project_id, analysis_type, metadata)
-    except Exception as e:
+        return {
+            "result": store_and_format_result(
+                results, project_id, analysis_type, metadata
+            ),
+            "meta": meta,
+        }
+    except Exception:
         raise
 
 
-@shared_task(ignore_results=False)
-def async_run_file_counts(project_id: int, directory_path: str) -> dict:
+@shared_task(bind=True, ignore_results=False)
+def async_run_file_counts(self, project_id: int, directory_path: str) -> dict:
+    start_time = datetime.now(timezone.utc).isoformat()
+    meta = {"analysis_type": "File counts", "start_time": start_time}
+    self.update_state(
+        state="STARTED",
+        meta=meta,
+    )
+
     try:
         df = load_data(directory_path)
         result = files_and_lines_count(df)
@@ -138,17 +160,28 @@ def async_run_file_counts(project_id: int, directory_path: str) -> dict:
             "analysis_sub_type": "file-count",
         }
 
-        return store_and_format_result(
-            result, project_id, "directory-level-visualisations", metadata
-        )
-    except Exception as e:
+        return {
+            "result": store_and_format_result(
+                result, project_id, "directory-level-visualisations", metadata
+            ),
+            "meta": meta,
+        }
+    except Exception:
         raise
 
 
-@shared_task(ignore_results=False)
+@shared_task(bind=True, ignore_results=False)
 def async_run_unique_terms(
-    project_id: int, directory_path: str, item_list_col: str, file_level: bool
+    self, project_id: int, directory_path: str, item_list_col: str, file_level: bool
 ) -> dict:
+
+    start_time = datetime.now(timezone.utc).isoformat()
+    meta = {"analysis_type": "Unique terms", "start_time": start_time}
+    self.update_state(
+        state="STARTED",
+        meta=meta,
+    )
+
     try:
         df = load_data(directory_path)
         if not file_level:
@@ -167,15 +200,19 @@ def async_run_unique_terms(
             "directory_path": directory_path,
         }
 
-        return store_and_format_result(
-            unique_terms_count, project_id, analysis_type, metadata
-        )
-    except Exception as e:
+        return {
+            "result": store_and_format_result(
+                unique_terms_count, project_id, analysis_type, metadata
+            ),
+            "meta": meta,
+        }
+    except Exception:
         raise
 
 
-@shared_task(ignore_results=False)
+@shared_task(bind=True, ignore_results=False)
 def async_create_umap(
+    self,
     project_id: int,
     directory_path: str,
     item_list_col: str,
@@ -183,6 +220,14 @@ def async_create_umap(
     vectorizer: str,
     mask_type: str,
 ) -> dict:
+
+    start_time = datetime.now(timezone.utc).isoformat()
+    meta = {
+        "analysis_type": "UMAP",
+        "start_time": start_time,
+    }
+    self.update_state(state="STARTED", meta=meta)
+
     try:
         df = load_data(directory_path)
 
@@ -213,13 +258,19 @@ def async_create_umap(
             "directory_path": directory_path,
         }
 
-        return store_and_format_result(result, project_id, analysis_type, metadata)
-    except Exception as e:
+        return {
+            "result": store_and_format_result(
+                result, project_id, analysis_type, metadata
+            ),
+            "meta": meta,
+        }
+    except Exception:
         raise
 
 
-@shared_task(ignore_results=False)
+@shared_task(bind=True, ignore_results=False)
 def async_log_distance(
+    self,
     project_id: int,
     directory_path: str,
     target_run: str,
@@ -229,6 +280,12 @@ def async_log_distance(
     mask_type: str | None,
     vectorizer: str,
 ) -> dict:
+    start_time = datetime.now(timezone.utc).isoformat()
+    meta = {
+        "analysis_type": "Log distance",
+        "start_time": start_time,
+    }
+    self.update_state(state="STARTED", meta=meta)
     try:
         settings = Settings.query.filter_by(project_id=project_id).first_or_404()
         match_filenames = settings.match_filenames
@@ -264,7 +321,11 @@ def async_log_distance(
             "distance-file-level" if file_level else "distance-directory-level"
         )
 
-        return store_and_format_result(result, project_id, analysis_type, metadata)
-
-    except Exception as e:
+        return {
+            "result": store_and_format_result(
+                result, project_id, analysis_type, metadata
+            ),
+            "meta": meta,
+        }
+    except Exception:
         raise
