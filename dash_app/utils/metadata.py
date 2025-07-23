@@ -1,5 +1,6 @@
 from datetime import datetime
 from urllib.parse import parse_qs
+import uuid
 
 import dash_bootstrap_components as dbc
 from dash import html
@@ -151,34 +152,34 @@ def format_project_overview(project_data: list[dict]) -> list[dbc.ListGroupItem]
     return group_items
 
 
-def format_task_overview_row(meta: dict, state: str) -> html.Tr:
-    task_row = html.Tr(
-        [
-            html.Td(meta.get("analysis_type", "unknown")),
-            html.Td(state),
-            html.Td(meta.get("relative_time", "unknown")),
-        ]
-    )
-
+def format_task_overview_row(meta: dict, state: str, error: str) -> html.Tr:
+    tooltip_id = None
     match state:
         case "STARTED" | "PENDING":
             task_state = "Running"
         case "SUCCESS":
             task_state = "Success"
         case "FAILURE":
-            task_state = "Failed"
+            tooltip_id = str(uuid.uuid4())
+            task_state = html.Span(
+                "Failed",
+                id=tooltip_id,
+                style={"textDecoration": "underline", "cursor": "pointer"},
+            )
         case _:
             task_state = "unknown"
 
-    task_row = html.Tr(
-        [
-            html.Td(meta.get("analysis_type", "unknown")),
-            html.Td(task_state),
-            html.Td(meta.get("relative_time", "unknown")),
-        ]
-    )
+    row_content = [
+        html.Td(meta.get("analysis_type", "unknown")),
+        html.Td(task_state),
+        html.Td(meta.get("relative_time", "unknown")),
+    ]
 
-    return task_row
+    if state == "FAILURE" and tooltip_id:
+        tooltip = dbc.Tooltip(error or "No error message.", target=tooltip_id)
+        row_content.append(tooltip)
+
+    return html.Tr(row_content)
 
 
 def parse_query_parameter(search: str, param_name: str) -> str | None:

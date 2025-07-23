@@ -257,8 +257,14 @@ def poll_project_tasks(_, task_ids, url_path):
 
             state = result.get("state", "")
             meta = result.get("meta", {})
+            error_result = result.get("result", {})
+            error = (
+                error_result.get("error", "Analysis failed")
+                if error_result
+                else "Analysis failed"
+            )
 
-            task_row = format_task_overview_row(meta, state)
+            task_row = format_task_overview_row(meta, state, error)
             task_rows.append(task_row)
 
             if not result.get("ready"):
@@ -268,8 +274,7 @@ def poll_project_tasks(_, task_ids, url_path):
             if state == "SUCCESS":
                 success_messages.append("Analysis complete")
             elif state == "FAILURE":
-                error = result.get("result", {"error": "Task failed."})
-                error_messages.append(f"Analysis failed: {error['error']}")
+                error_messages.append(error)
             else:
                 error_messages.append(f"Task in unexpected state: {state}")
 
