@@ -271,6 +271,7 @@ def create_project_layout(
     color_by_directory_id,
     task_info_id,
     line_display_mode_input_id,
+    task_error_modal_id,
 ):
 
     error_toast_row = dbc.Row(error_toast(error_toast_id))
@@ -336,11 +337,14 @@ def create_project_layout(
         class_name="pt-3",
     )
 
+    task_error_modal = dbc.Row(dbc.Modal(id=task_error_modal_id, is_open=False))
+
     layout = [
         dbc.Container(
             [
                 error_toast_row,
                 success_toast_row,
+                task_error_modal,
                 header_row,
                 dbc.Row([group_col, nav_col]),
             ]

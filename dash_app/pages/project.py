@@ -33,6 +33,11 @@ def layout(project_id=None, **kwargs):
                     id="project-task-store",
                     storage_type="session",
                 ),
+                dcc.Store(
+                    id="task-error-store",
+                    storage_type="session",
+                    data=[],
+                ),
                 dcc.Interval(
                     id="project-task-poll",
                     interval=DashConfig.POLL_RATE * 1000,
@@ -54,6 +59,7 @@ def layout(project_id=None, **kwargs):
         "color-by-directory-project",
         "task-info-project",
         "line-display-mode-project",
+        "task-error-modal-project",
     )
 
 
@@ -234,17 +240,20 @@ GRACE_PERIOD_FAILURE_SECONDS = timedelta(seconds=60)
     Output("url", "href", allow_duplicate=True),
     Output("project-task-poll", "disabled", allow_duplicate=True),
     Output("task-info-project", "children"),
+    Output("task-error-store", "data"),
     Input("project-task-poll", "n_intervals"),
     State("project-task-store", "data"),
+    State("task-error-store", "data"),
     State("url", "href"),
     prevent_initial_call=True,
 )
-def poll_project_tasks(_, task_store, url_path):
+def poll_project_tasks(_, task_store, task_error_store, url_path):
     time_now = datetime.now(timezone.utc)
     updated_task_store = []
     success_messages = []
     error_messages = []
     task_rows = []
+    task_errors = []
 
     task_info_header = [
         html.Thead(
@@ -280,6 +289,7 @@ def poll_project_tasks(_, task_store, url_path):
                     success_messages.append("Analysis complete")
                 elif state == "FAILURE":
                     error_messages.append(error)
+                    task_errors.append({"id": task_id, "error": error})
                 else:
                     error_messages.append(f"Task in unexpected state: {state}")
 
@@ -323,4 +333,36 @@ def poll_project_tasks(_, task_store, url_path):
         refresh_path,
         polling_disabled,
         task_info_header + [html.Tbody(task_rows)],
+        task_error_store + task_errors,
     )
+
+
+@callback(
+    Output("task-error-modal-project", "is_open"),
+    Output("task-error-modal-project", "children"),
+    Input({"type": "task-error", "index": ALL}, "n_clicks"),
+    State("task-error-store", "data"),
+    prevent_initial_call=True,
+)
+def open_task_error_modal(n_clicks, task_errors):
+    ctx = dash.callback_context
+    if not ctx.triggered or ctx.triggered_id is None:
+        raise dash.exceptions.PreventUpdate
+
+    for i, clicks in enumerate(n_clicks):
+        if clicks and clicks > 0:
+            task_id = ctx.inputs_list[0][i]["id"]["index"]
+
+            error_msg = next(
+                (err["error"] for err in task_errors if err["id"] == task_id), None
+            )
+            if not error_msg:
+                break
+
+            modal_children = [
+                dbc.ModalHeader(dbc.ModalTitle("Error")),
+                dbc.ModalBody(error_msg),
+            ]
+            return True, modal_children
+
+    raise dash.exceptions.PreventUpdate

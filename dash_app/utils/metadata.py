@@ -161,14 +161,17 @@ def _format_elapsed_seconds(seconds: int):
 def format_task_overview_row(
     task_id: str, meta: dict, state: str, error: str | None
 ) -> html.Tr:
-    tooltip_id = None
     match state:
         case "STARTED" | "PENDING":
             task_state = "Running"
         case "SUCCESS":
             task_state = "Success"
         case "FAILURE":
-            task_state = "Failed"
+            task_state = html.Span(
+                "Failed",
+                id={"type": "task-error", "index": task_id},
+                style={"cursor": "pointer", "textDecoration": "underline"},
+            )
         case _:
             task_state = "unknown"
 
@@ -179,10 +182,6 @@ def format_task_overview_row(
         html.Td(task_state),
         html.Td(formatted_time),
     ]
-
-    if state == "FAILURE" and tooltip_id:
-        tooltip = dbc.Tooltip(error or "No error message.", target=tooltip_id)
-        row_content.append(tooltip)
 
     return html.Tr(row_content)
 
