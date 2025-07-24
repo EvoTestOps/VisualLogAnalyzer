@@ -271,6 +271,7 @@ def create_project_layout(
     color_by_directory_id,
     task_info_id,
     line_display_mode_input_id,
+    task_error_modal_id,
 ):
 
     error_toast_row = dbc.Row(error_toast(error_toast_id))
@@ -296,8 +297,16 @@ def create_project_layout(
             )
         )
     ]
+    default_row = [
+        html.Tbody(html.Tr([html.Td("No running analyses"), html.Td(""), html.Td("")]))
+    ]
+
     task_info_table = dbc.Table(
-        id=task_info_id, hover=True, responsive=True, children=task_info_header
+        id=task_info_id,
+        hover=True,
+        responsive=True,
+        bordered=True,
+        children=task_info_header + default_row,
     )
 
     nav_col = dbc.Col(
@@ -328,11 +337,14 @@ def create_project_layout(
         class_name="pt-3",
     )
 
+    task_error_modal = dbc.Row(dbc.Modal(id=task_error_modal_id, is_open=False))
+
     layout = [
         dbc.Container(
             [
                 error_toast_row,
                 success_toast_row,
+                task_error_modal,
                 header_row,
                 dbc.Row([group_col, nav_col]),
             ]

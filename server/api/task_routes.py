@@ -37,16 +37,24 @@ def get_task_status(task_id: str):
 
     if response["meta"] and "start_time" in response["meta"]:
         start_time = datetime.fromisoformat(response["meta"]["start_time"])
-        response["meta"]["relative_time"] = _get_relative_time(start_time)
+        if task_result.ready():
+            completed_time_str = response["meta"].get("completed_time")
+            completed_time = (
+                datetime.fromisoformat(completed_time_str)
+                if completed_time_str
+                else datetime.now(timezone.utc)
+            )
+            response["meta"]["elapsed_seconds"] = _get_elapsed_seconds(
+                start_time, completed_time
+            )
+        else:
+            response["meta"]["elapsed_seconds"] = _get_elapsed_seconds(
+                start_time, datetime.now(timezone.utc)
+            )
 
     return jsonify(response)
 
 
-def _get_relative_time(start_time):
-    time_now = datetime.now(timezone.utc)
-    delta = time_now - start_time
-
-    if delta.total_seconds() < 60:
-        return f"{int(delta.total_seconds())} seconds"
-    else:
-        return f"{int(delta.total_seconds() / 60)} minutes"
+def _get_elapsed_seconds(start_time, end_time):
+    delta = end_time - start_time
+    return int(delta.total_seconds())

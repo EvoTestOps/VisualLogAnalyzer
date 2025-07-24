@@ -19,7 +19,7 @@ services:
       - 6379:6379
   celery:
     build: .
-    command: celery -A server.make_celery worker --loglevel=info
+    command: celery -A server.make_celery worker --concurrency=4 --loglevel=info
     volumes:
       - .:/app
     environment:

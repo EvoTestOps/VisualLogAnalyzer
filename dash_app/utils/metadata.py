@@ -1,6 +1,5 @@
 from datetime import datetime
 from urllib.parse import parse_qs
-import uuid
 
 import dash_bootstrap_components as dbc
 from dash import html
@@ -152,32 +151,37 @@ def format_project_overview(project_data: list[dict]) -> list[dbc.ListGroupItem]
     return group_items
 
 
-def format_task_overview_row(meta: dict, state: str, error: str) -> html.Tr:
-    tooltip_id = None
+def _format_elapsed_seconds(seconds: int):
+    if seconds < 60:
+        return f"{seconds} seconds"
+    else:
+        return f"{int(seconds / 60)} minutes"
+
+
+def format_task_overview_row(
+    task_id: str, meta: dict, state: str, error: str | None
+) -> html.Tr:
     match state:
         case "STARTED" | "PENDING":
             task_state = "Running"
         case "SUCCESS":
             task_state = "Success"
         case "FAILURE":
-            tooltip_id = str(uuid.uuid4())
             task_state = html.Span(
                 "Failed",
-                id=tooltip_id,
-                style={"textDecoration": "underline", "cursor": "pointer"},
+                id={"type": "task-error", "index": task_id},
+                style={"cursor": "pointer", "textDecoration": "underline"},
             )
         case _:
             task_state = "unknown"
 
+    formatted_time = _format_elapsed_seconds(meta.get("elapsed_seconds", 0))
+
     row_content = [
         html.Td(meta.get("analysis_type", "unknown")),
         html.Td(task_state),
-        html.Td(meta.get("relative_time", "unknown")),
+        html.Td(formatted_time),
     ]
-
-    if state == "FAILURE" and tooltip_id:
-        tooltip = dbc.Tooltip(error or "No error message.", target=tooltip_id)
-        row_content.append(tooltip)
 
     return html.Tr(row_content)
 
