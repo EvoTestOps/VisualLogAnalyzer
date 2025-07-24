@@ -152,7 +152,9 @@ def format_project_overview(project_data: list[dict]) -> list[dbc.ListGroupItem]
     return group_items
 
 
-def format_task_overview_row(meta: dict, state: str, error: str) -> html.Tr:
+def format_task_overview_row(
+    task_id: str, meta: dict, state: str, error: str
+) -> html.Tr:
     tooltip_id = None
     match state:
         case "STARTED" | "PENDING":
@@ -160,7 +162,7 @@ def format_task_overview_row(meta: dict, state: str, error: str) -> html.Tr:
         case "SUCCESS":
             task_state = "Success"
         case "FAILURE":
-            tooltip_id = str(uuid.uuid4())
+            tooltip_id = f"tooltip-{task_id}"
             task_state = html.Span(
                 "Failed",
                 id=tooltip_id,

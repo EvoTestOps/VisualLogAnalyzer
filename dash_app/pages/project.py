@@ -264,7 +264,7 @@ def poll_project_tasks(_, task_ids, url_path):
                 else "Analysis failed"
             )
 
-            task_row = format_task_overview_row(meta, state, error)
+            task_row = format_task_overview_row(task_id, meta, state, error)
             task_rows.append(task_row)
 
             if not result.get("ready"):
