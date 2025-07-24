@@ -136,19 +136,23 @@ def async_run_anomaly_detection(
             "models": ";".join(models),
             "analysis_level": level,
         }
+
+        result = store_and_format_result(results, project_id, analysis_type, metadata)
+        completed_time = datetime.now(timezone.utc).isoformat()
+        meta["completed_time"] = completed_time
+
         return {
-            "result": store_and_format_result(
-                results, project_id, analysis_type, metadata
-            ),
+            "result": result,
             "meta": meta,
         }
     except Exception as exc:
+        completed_time = datetime.now(timezone.utc).isoformat()
         self.update_state(
             state="FAILURE",
             meta={
                 "exc_type": type(exc).__name__,
                 "exc_message": traceback.format_exc().split("\n"),
-                "meta": meta,
+                "meta": {**meta, "completed_time": completed_time},
                 "error_msg": str(exc),
             },
         )
@@ -183,19 +187,24 @@ def async_run_file_counts(self, project_id: int, directory_path: str) -> dict:
             "analysis_sub_type": "file-count",
         }
 
+        result = store_and_format_result(
+            result, project_id, "directory-level-visualisations", metadata
+        )
+        completed_time = datetime.now(timezone.utc).isoformat()
+        meta["completed_time"] = completed_time
+
         return {
-            "result": store_and_format_result(
-                result, project_id, "directory-level-visualisations", metadata
-            ),
+            "result": result,
             "meta": meta,
         }
     except Exception as exc:
+        completed_time = datetime.now(timezone.utc).isoformat()
         self.update_state(
             state="FAILURE",
             meta={
                 "exc_type": type(exc).__name__,
                 "exc_message": traceback.format_exc().split("\n"),
-                "meta": meta,
+                "meta": {**meta, "completed_time": completed_time},
                 "error_msg": str(exc),
             },
         )
@@ -241,19 +250,24 @@ def async_run_unique_terms(
             "directory_path": directory_path,
         }
 
+        result = store_and_format_result(
+            unique_terms_count, project_id, analysis_type, metadata
+        )
+        completed_time = datetime.now(timezone.utc).isoformat()
+        meta["completed_time"] = completed_time
+
         return {
-            "result": store_and_format_result(
-                unique_terms_count, project_id, analysis_type, metadata
-            ),
+            "result": result,
             "meta": meta,
         }
     except Exception as exc:
+        completed_time = datetime.now(timezone.utc).isoformat()
         self.update_state(
             state="FAILURE",
             meta={
                 "exc_type": type(exc).__name__,
                 "exc_message": traceback.format_exc().split("\n"),
-                "meta": meta,
+                "meta": {**meta, "completed_time": completed_time},
                 "error_msg": str(exc),
             },
         )
@@ -317,19 +331,23 @@ def async_create_umap(
             "directory_path": directory_path,
         }
 
+        result = store_and_format_result(result, project_id, analysis_type, metadata)
+
+        completed_time = datetime.now(timezone.utc).isoformat()
+        meta["completed_time"] = completed_time
+
         return {
-            "result": store_and_format_result(
-                result, project_id, analysis_type, metadata
-            ),
+            "result": result,
             "meta": meta,
         }
     except Exception as exc:
+        completed_time = datetime.now(timezone.utc).isoformat()
         self.update_state(
             state="FAILURE",
             meta={
                 "exc_type": type(exc).__name__,
                 "exc_message": traceback.format_exc().split("\n"),
-                "meta": meta,
+                "meta": {**meta, "completed_time": completed_time},
                 "error_msg": str(exc),
             },
         )
@@ -399,19 +417,23 @@ def async_log_distance(
             "distance-file-level" if file_level else "distance-directory-level"
         )
 
+        result = store_and_format_result(result, project_id, analysis_type, metadata)
+
+        completed_time = datetime.now(timezone.utc).isoformat()
+        meta["completed_time"] = completed_time
+
         return {
-            "result": store_and_format_result(
-                result, project_id, analysis_type, metadata
-            ),
+            "result": result,
             "meta": meta,
         }
     except Exception as exc:
+        completed_time = datetime.now(timezone.utc).isoformat()
         self.update_state(
             state="FAILURE",
             meta={
                 "exc_type": type(exc).__name__,
                 "exc_message": traceback.format_exc().split("\n"),
-                "meta": meta,
+                "meta": {**meta, "completed_time": completed_time},
                 "error_msg": str(exc),
             },
         )

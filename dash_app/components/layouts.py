@@ -296,8 +296,16 @@ def create_project_layout(
             )
         )
     ]
+    default_row = [
+        html.Tbody(html.Tr([html.Td("No running analyses"), html.Td(""), html.Td("")]))
+    ]
+
     task_info_table = dbc.Table(
-        id=task_info_id, hover=True, responsive=True, children=task_info_header
+        id=task_info_id,
+        hover=True,
+        responsive=True,
+        bordered=True,
+        children=task_info_header + default_row,
     )
 
     nav_col = dbc.Col(

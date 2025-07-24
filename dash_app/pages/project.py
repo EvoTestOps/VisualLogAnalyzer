@@ -1,4 +1,5 @@
 from urllib.parse import parse_qs, urlencode
+from datetime import datetime, timezone, timedelta
 
 import dash
 import dash_bootstrap_components as dbc
@@ -87,7 +88,7 @@ def get_task_id(search, current_tasks):
     query.pop("task_id", None)
     new_search = "?" + urlencode(query, doseq=True) if query else ""
 
-    updated_tasks = (current_tasks or []) + [task_id]
+    updated_tasks = (current_tasks or []) + [{"id": task_id, "completed_at": None}]
 
     return (
         updated_tasks,
@@ -220,6 +221,10 @@ def apply_settings(
     return (dash.no_update, False, "Settings updated", True)
 
 
+GRACE_PERIOD_SUCCESS_SECONDS = timedelta(seconds=30)
+GRACE_PERIOD_FAILURE_SECONDS = timedelta(seconds=60)
+
+
 @callback(
     Output("task-error-toast", "children"),
     Output("task-error-toast", "is_open"),
@@ -234,10 +239,12 @@ def apply_settings(
     State("url", "href"),
     prevent_initial_call=True,
 )
-def poll_project_tasks(_, task_ids, url_path):
+def poll_project_tasks(_, task_store, url_path):
+    time_now = datetime.now(timezone.utc)
     updated_task_store = []
     success_messages = []
     error_messages = []
+    task_rows = []
 
     task_info_header = [
         html.Thead(
@@ -246,11 +253,12 @@ def poll_project_tasks(_, task_ids, url_path):
             )
         )
     ]
-    task_rows = []
 
-    for task_id in task_ids or []:
+    for task_entry in task_store or []:
         try:
+            task_id = task_entry["id"]
             result = poll_task_status(task_id)
+
             if result is None:
                 updated_task_store.append(task_id)
                 continue
@@ -258,25 +266,39 @@ def poll_project_tasks(_, task_ids, url_path):
             state = result.get("state", "")
             meta = result.get("meta", {})
             error_result = result.get("result", {})
-            error = (
-                error_result.get("error", "Analysis failed")
-                if error_result
-                else "Analysis failed"
-            )
+            error = error_result.get("error", None) if error_result else None
 
             task_row = format_task_overview_row(task_id, meta, state, error)
             task_rows.append(task_row)
 
             if not result.get("ready"):
-                updated_task_store.append(task_id)
+                updated_task_store.append(task_entry)
                 continue
 
-            if state == "SUCCESS":
-                success_messages.append("Analysis complete")
-            elif state == "FAILURE":
-                error_messages.append(error)
+            if not task_entry.get("completed_at"):
+                if state == "SUCCESS":
+                    success_messages.append("Analysis complete")
+                elif state == "FAILURE":
+                    error_messages.append(error)
+                else:
+                    error_messages.append(f"Task in unexpected state: {state}")
+
+                if state in ("SUCCESS", "FAILURE"):
+                    task_entry["completed_at"] = time_now.isoformat()
+                    updated_task_store.append(task_entry)
+
             else:
-                error_messages.append(f"Task in unexpected state: {state}")
+                try:
+                    completed_at = datetime.fromisoformat(task_entry["completed_at"])
+                except ValueError:
+                    error_messages.append("Failed to parse time.")
+                    continue
+
+                time_delta = time_now - completed_at
+                if state == "SUCCESS" and time_delta < GRACE_PERIOD_SUCCESS_SECONDS:
+                    updated_task_store.append(task_entry)
+                elif state == "FAILURE" and time_delta < GRACE_PERIOD_FAILURE_SECONDS:
+                    updated_task_store.append(task_entry)
 
         except ValueError as e:
             error_messages.append(f"Unexpected error occured: {e}")
@@ -290,8 +312,7 @@ def poll_project_tasks(_, task_ids, url_path):
 
     should_refresh = bool(success_messages or error_messages)
     refresh_path = url_path if should_refresh else dash.no_update
-
-    polling_disabled = False if len(updated_task_store) > 0 else True
+    polling_disabled = len(updated_task_store) == 0
 
     return (
         error_output,

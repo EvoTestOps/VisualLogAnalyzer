@@ -1,6 +1,5 @@
 from datetime import datetime
 from urllib.parse import parse_qs
-import uuid
 
 import dash_bootstrap_components as dbc
 from dash import html
@@ -152,8 +151,15 @@ def format_project_overview(project_data: list[dict]) -> list[dbc.ListGroupItem]
     return group_items
 
 
+def _format_elapsed_seconds(seconds: int):
+    if seconds < 60:
+        return f"{seconds} seconds"
+    else:
+        return f"{int(seconds / 60)} minutes"
+
+
 def format_task_overview_row(
-    task_id: str, meta: dict, state: str, error: str
+    task_id: str, meta: dict, state: str, error: str | None
 ) -> html.Tr:
     tooltip_id = None
     match state:
@@ -162,19 +168,16 @@ def format_task_overview_row(
         case "SUCCESS":
             task_state = "Success"
         case "FAILURE":
-            tooltip_id = f"tooltip-{task_id}"
-            task_state = html.Span(
-                "Failed",
-                id=tooltip_id,
-                style={"textDecoration": "underline", "cursor": "pointer"},
-            )
+            task_state = "Failed"
         case _:
             task_state = "unknown"
+
+    formatted_time = _format_elapsed_seconds(meta.get("elapsed_seconds", 0))
 
     row_content = [
         html.Td(meta.get("analysis_type", "unknown")),
         html.Td(task_state),
-        html.Td(meta.get("relative_time", "unknown")),
+        html.Td(formatted_time),
     ]
 
     if state == "FAILURE" and tooltip_id:
