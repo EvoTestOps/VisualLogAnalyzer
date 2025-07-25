@@ -40,9 +40,7 @@ def run_high_level_analysis(
 
     response, error = make_api_call(payload, f"{endpoint}/{project_id}")
     if error or response is None:
-        raise ValueError(
-            f"Was not able to run analysis for project {project_id}: {error}"
-        )
+        raise ValueError(str(error))
 
     return response.json()
 
@@ -69,9 +67,7 @@ def run_log_distance(
     }
     response, error = make_api_call(payload, f"log-distance/{project_id}")
     if error or response is None:
-        raise ValueError(
-            f"Was not able to run analysis for project {project_id}: {error}"
-        )
+        raise ValueError(str(error))
     return response.json()
 
 
@@ -101,9 +97,7 @@ def run_anomaly_detection(
 
     response, error = make_api_call(json_payload, f"manual-test-train/{project_id}")
     if error or response is None:
-        raise ValueError(
-            f"Was not able to run analysis for project {project_id}: {error}"
-        )
+        raise ValueError(str(error))
     return response.json()
 
 
