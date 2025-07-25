@@ -25,6 +25,7 @@ class Analysis(db.Model):
     target = db.Column(db.String)
 
     item_list_col = db.Column(db.String)
+    match_filenames = db.Column(db.Boolean)
 
     time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
     time_updated = db.Column(db.DateTime(timezone=True), onupdate=func.now())
@@ -49,6 +50,7 @@ class Analysis(db.Model):
             "mask_type": self.mask_type,
             "vectorizer": self.vectorizer,
             "results_path": self.results_path,
+            "match_filenames": str(self.match_filenames),
             "time_created": (
                 self.time_created.isoformat() if self.time_created else None
             ),

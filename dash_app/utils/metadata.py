@@ -48,6 +48,9 @@ def format_metadata_rows(metadata: dict) -> list[html.Tr]:
             models = value.split(";")
             formatted_models = [_format_model(model) for model in models]
             value = ", ".join(formatted_models)
+        elif key == "match_filenames":
+            if value == "None":
+                continue
 
         display_value = value if value is not None else "-"
         label = _format_key_capitalize(key)
@@ -70,6 +73,7 @@ def _sort_metadata(metadata: dict) -> dict:
         "field",
         "mask_type",
         "vectorizer",
+        "match_filenames",
         "results_path",
         "time_created",
         # "time_updated",

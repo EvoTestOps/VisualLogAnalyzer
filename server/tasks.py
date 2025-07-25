@@ -135,6 +135,7 @@ def async_run_anomaly_detection(
             "mask_type": mask_type,
             "models": ";".join(models),
             "analysis_level": level,
+            "match_filenames": match_filenames if level != "directory" else None,
         }
 
         result = store_and_format_result(results, project_id, analysis_type, metadata)
@@ -390,8 +391,8 @@ def async_log_distance(
         enhancer = Enhancer(load_data(directory_path))
         df = enhancer.enhance_event(item_list_col, mask_type)
 
-        # TODO: Refactor, this seems dubious
-        if file_level and comparison_runs in (None, []) and match_filenames:
+        match_flag = file_level and comparison_runs in (None, []) and match_filenames
+        if match_flag:
             target_file_name = get_file_name_by_orig_file_name(df, target_run)
             df = filter_files(df, [target_file_name], "file_name")
 
@@ -412,6 +413,7 @@ def async_log_distance(
             "vectorizer": vectorizer,
             "directory_path": directory_path,
             "target": target_run,
+            "match_filenames": match_filenames if match_flag else None,
         }
         analysis_type = (
             "distance-file-level" if file_level else "distance-directory-level"
