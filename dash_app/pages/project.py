@@ -245,9 +245,13 @@ GRACE_PERIOD_FAILURE_SECONDS = timedelta(seconds=60)
     State("project-task-store", "data"),
     State("task-error-store", "data"),
     State("url", "href"),
+    State("task-error-toast", "is_open"),
+    State("task-success-toast", "is_open"),
     prevent_initial_call=True,
 )
-def poll_project_tasks(_, task_store, task_error_store, url_path):
+def poll_project_tasks(
+    _, task_store, task_error_store, url_path, current_error_open, current_success_open
+):
     time_now = datetime.now(timezone.utc)
     updated_task_store = []
     success_messages = []
@@ -316,9 +320,10 @@ def poll_project_tasks(_, task_store, task_error_store, url_path):
 
     # TODO: what if there is both error messages and success messages
     error_output = "\n".join(error_messages) if error_messages else dash.no_update
-    error_open = bool(error_messages)
+    error_open = True if error_messages else current_error_open
     success_output = "\n".join(success_messages) if success_messages else dash.no_update
     success_open = bool(success_messages)
+    success_open = True if success_messages else current_success_open
 
     should_refresh = bool(success_messages or error_messages)
     refresh_path = url_path if should_refresh else dash.no_update

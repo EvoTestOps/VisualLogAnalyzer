@@ -20,6 +20,6 @@ def success_toast(id):
         icon="success",
         is_open=False,
         dismissable=True,
-        duration=10000,
+        duration=7000,
         style={"position": "fixed", "top": 40, "right": 10, "width": 400},
     )
