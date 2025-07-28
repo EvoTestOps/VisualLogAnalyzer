@@ -12,3 +12,4 @@ class SettingsParams(BaseModel):
     line_level_display_mode: Literal["data_points_only", "moving_avg_only", "all"] = (
         "data_points_only"
     )
+    manual_filename_input: bool

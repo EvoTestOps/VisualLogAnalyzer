@@ -18,3 +18,24 @@ class LogDistanceParams(BaseModel):
     @classmethod
     def validate_directory_path(cls, value: str) -> str:
         return validate_directory_path(value)
+
+    @field_validator("comparison_runs", mode="before")
+    @classmethod
+    def validate_comparison_runs(cls, value):
+        if value is None:
+            return None
+
+        if isinstance(value, list) and all(isinstance(v, str) for v in value):
+            return value
+
+        if isinstance(value, str):
+            try:
+                return [v.strip() for v in value.split(",") if v.strip()]
+            except Exception as e:
+                raise ValueError(
+                    f"Failed to parse comparison runs from string: {value}. Error: {e}"
+                )
+
+        raise ValueError(
+            "Comparison runs must be a comma-separated string or a list of strings"
+        )

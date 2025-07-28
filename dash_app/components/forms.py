@@ -18,6 +18,7 @@ from dash_app.components.form_inputs import (
     color_by_directory_input,
     redirect_to_results_input,
     line_display_mode_input,
+    manual_filename_input,
 )
 
 
@@ -87,6 +88,7 @@ def test_train_file_level_form(
     mask_input_id,
     vectorizer_id,
     results_redirect_id,
+    manual_filenames=False,
 ):
     submit_btn_tr = submit_button(submit_id, "Analyze")
 
@@ -118,7 +120,7 @@ def test_train_file_level_form(
                     type="circle",
                     overlay_style={"visibility": "visible", "filter": "blur(2px)"},
                     children=[
-                        files_filter_input(runs_filter_id),
+                        files_filter_input(runs_filter_id, manual=manual_filenames),
                     ],
                 ),
                 class_name="mb-3",
@@ -274,6 +276,7 @@ def distance_file_level_form(
     mask_id,
     vectorizer_id,
     results_redirect_id,
+    manual_filenames=False,
 ):
     submit_btn = submit_button(submit_id, "Analyze")
 
@@ -298,8 +301,14 @@ def distance_file_level_form(
                     type="circle",
                     overlay_style={"visibility": "visible", "filter": "blur(2px)"},
                     children=[
-                        dbc.Row(target_run_input(target_run_id), class_name="mb-3"),
-                        dbc.Row(runs_filter_input(runs_filter_id), class_name="mb-3"),
+                        dbc.Row(
+                            target_run_input(target_run_id, manual=manual_filenames),
+                            class_name="mb-3",
+                        ),
+                        dbc.Row(
+                            runs_filter_input(runs_filter_id, manual=manual_filenames),
+                            class_name="mb-3",
+                        ),
                     ],
                 )
             ),
@@ -336,7 +345,11 @@ def project_form(submit_id, name_id):
 
 
 def project_settings_form(
-    submit_id, match_filenames_id, color_by_directory_id, line_display_mode_id
+    submit_id,
+    match_filenames_id,
+    color_by_directory_id,
+    line_display_mode_id,
+    manual_filename_id,
 ):
     submit_btn = submit_button(submit_id, "Apply")
     form = dbc.Form(
@@ -347,6 +360,7 @@ def project_settings_form(
                         [
                             match_file_names_input(match_filenames_id),
                             color_by_directory_input(color_by_directory_id),
+                            manual_filename_input(manual_filename_id),
                             line_display_mode_input(line_display_mode_id),
                         ]
                     ),

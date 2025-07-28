@@ -93,7 +93,22 @@ def delete_button(id, label):
     )
 
 
-def runs_filter_input(id):
+def runs_filter_input(id, manual=False):
+    if manual:
+        return dbc.Col(
+            [
+                dbc.Label(
+                    "Runs to include in test data (manual, comma-separated)",
+                    html_for=id,
+                    width="auto",
+                ),
+                dbc.Input(
+                    type="text",
+                    id=id,
+                    placeholder="e.g. ./log_data/LO2/correct_1/log_file.log, ./log_data/LO2/correct_2/log_file_2.log ...",
+                ),
+            ],
+        )
     return dbc.Col(
         [
             dbc.Label("Runs to include in test data", html_for=id, width="auto"),
@@ -109,7 +124,22 @@ def runs_filter_input(id):
     )
 
 
-def files_filter_input(id):
+def files_filter_input(id, manual=False):
+    if manual:
+        return dbc.Col(
+            [
+                dbc.Label(
+                    "Files to include in test data (manual, comma-separated)",
+                    html_for=id,
+                    width="auto",
+                ),
+                dbc.Input(
+                    type="text",
+                    id=id,
+                    placeholder="e.g. ./log_data/LO2/correct_1/log_file.log, ./log_data/LO2/correct_2/log_file_2.log ...",
+                ),
+            ],
+        )
     return dbc.Col(
         [
             dbc.Label("Files to include in test data", html_for=id, width="auto"),
@@ -125,7 +155,23 @@ def files_filter_input(id):
     )
 
 
-def target_run_input(id):
+def target_run_input(id, manual=False):
+    if manual:
+        return dbc.Col(
+            [
+                dbc.Label(
+                    "Target run",
+                    html_for=id,
+                    width="auto",
+                ),
+                dbc.Input(
+                    type="text",
+                    id=id,
+                    placeholder="e.g. ./log_data/LO2/correct_1/log_file.log",
+                ),
+            ],
+        )
+
     return dbc.Col(
         [
             dbc.Label("Target run", html_for=id, width="auto"),
@@ -278,6 +324,26 @@ def line_display_mode_input(id):
             ],
             className="mt-3",
         )
+    )
+
+
+def manual_filename_input(id):
+    return dbc.Col(
+        [
+            dbc.Checkbox(
+                id=id,
+                label=html.Span(
+                    "Manual filename entry",
+                    id=f"{id}-label",
+                    style={"textDecoration": "underline", "cursor": "pointer"},
+                ),
+            ),
+            dbc.Tooltip(
+                "Filenames are not generated to dropdown automatically. Avoids blocking UI and slow generation times.",
+                target=f"{id}-label",
+                placement="bottom",
+            ),
+        ]
     )
 
 

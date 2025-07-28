@@ -272,6 +272,7 @@ def create_project_layout(
     task_info_id,
     line_display_mode_input_id,
     task_error_modal_id,
+    manual_filename_id,
 ):
 
     error_toast_row = dbc.Row(error_toast(error_toast_id))
@@ -321,6 +322,7 @@ def create_project_layout(
                             match_filenames_id,
                             color_by_directory_id,
                             line_display_mode_input_id,
+                            manual_filename_id,
                         ),
                         body=True,
                     ),
@@ -431,6 +433,8 @@ def create_new_analysis_base_layout(
     interval_id,
     task_store_id,
     project_link_id,
+    manual_filenames_id,
+    manual_filenames=False,
 ):
     return dbc.Container(
         [
@@ -459,5 +463,6 @@ def create_new_analysis_base_layout(
             dcc.Interval(
                 id=interval_id, interval=DashConfig.POLL_RATE * 1000, disabled=True
             ),
+            dcc.Store(id=manual_filenames_id, data=manual_filenames),
         ]
     )

@@ -1,3 +1,5 @@
+import inspect
+
 import dash
 import dash_bootstrap_components as dbc
 from dash import Input, Output, State, callback
@@ -8,16 +10,15 @@ from dash_app.callbacks.callback_functions import (
     poll_task_status,
 )
 from dash_app.components.forms import (
+    directory_level_viz_form,
     distance_file_level_form,
     distance_run_level_form,
-    directory_level_viz_form,
     file_level_viz_form,
-    test_train_form,
     test_train_file_level_form,
+    test_train_form,
 )
-from dash_app.utils.metadata import parse_query_parameter
 from dash_app.components.layouts import create_new_analysis_base_layout
-
+from dash_app.utils.metadata import parse_query_parameter
 
 # Config dictionary expected by the page template and callback registration:
 # {
@@ -54,9 +55,22 @@ def create_layout(config):
         "ano-line-level": test_train_form,
     }
     form_type = form_map.get(config["type"])
-    form = form_type(**config["form_input_ids"])
 
-    base = create_new_analysis_base_layout(**config["base_ids"])
+    form_function_signarute = inspect.signature(form_type)
+    if (
+        "manual_filenames" in config
+        and "manual_filenames" in form_function_signarute.parameters
+    ):
+        form = form_type(
+            **config["form_input_ids"], manual_filenames=config["manual_filenames"]
+        )
+    else:
+        form = form_type(**config["form_input_ids"])
+
+    manual_filenames = config.get("manual_filenames", False)
+    base = create_new_analysis_base_layout(
+        **config["base_ids"], manual_filenames=manual_filenames
+    )
     content = dbc.Container(form)
 
     return [base, content]
@@ -115,8 +129,11 @@ def register_callbacks(config, run_func):
             Output(form_ids["runs_filter_id"], "options"),
             Output(form_ids["target_run_id"], "options"),
             Input(form_ids["directory_id"], "value"),
+            State(base_ids["manual_filenames_id"], "data"),
         )
-        def get_comparison_and_target_options(directory_path):
+        def get_comparison_and_target_options(directory_path, manual_filenames):
+            if manual_filenames:
+                return [], []
             runs_or_files = "files" if config["level"] == "file" else "runs"
             options = get_filter_options(directory_path, runs_or_files=runs_or_files)
             return options, options
@@ -128,8 +145,11 @@ def register_callbacks(config, run_func):
         @callback(
             Output(form_ids["runs_filter_id"], "options"),
             Input(form_ids["test_data_id"], "value"),
+            State(base_ids["manual_filenames_id"], "data"),
         )
-        def get_comparison_options(directory_path):
+        def get_comparison_options(directory_path, manual_filenames):
+            if manual_filenames:
+                return [], []
             runs_or_files = "files" if config["level"] == "file" else "runs"
             options = get_filter_options(directory_path, runs_or_files=runs_or_files)
             return options

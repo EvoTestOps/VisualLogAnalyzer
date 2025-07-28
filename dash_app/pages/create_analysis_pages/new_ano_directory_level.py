@@ -19,6 +19,7 @@ config = {
         "interval_id": "interval-ano-dir-new",
         "task_store_id": "task-store-ano-dir-new",
         "project_link_id": "project-link-ano-dir-new",
+        "manual_filenames_id": "manual-filenames-ano-dir-new",
     },
     "form_input_ids": {
         "submit_id": "submit-ano-dir-new",

@@ -3,7 +3,10 @@ from dash_app.page_templates.new_analysis_page_base import (
     create_layout,
     register_callbacks,
 )
-from dash_app.callbacks.callback_functions import run_anomaly_detection
+from dash_app.callbacks.callback_functions import (
+    run_anomaly_detection,
+    fetch_project_settings,
+)
 
 config = {
     "type": "ano-file-level",
@@ -19,6 +22,7 @@ config = {
         "interval_id": "interval-ano-file-new",
         "task_store_id": "task-store-ano-file-new",
         "project_link_id": "project-link-ano-file-new",
+        "manual_filenames_id": "manual-filenames-ano-file-new",
     },
     "form_input_ids": {
         "submit_id": "submit-ano-file-new",
@@ -47,6 +51,15 @@ dash.register_page(__name__, path_template=config["path_template"])
 
 
 def layout(**kwargs):
+    project_id = kwargs.get("project_id")
+
+    manual_filenames = False
+    if project_id:
+        settings = fetch_project_settings(project_id)
+        manual_filenames = settings.get("manual_filename_input", False)
+
+    config["manual_filenames"] = manual_filenames
+
     return create_layout(config)
 
 

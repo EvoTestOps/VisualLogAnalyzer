@@ -129,7 +129,7 @@ def create_high_level_plot(switch_on, analysis_id):
     results = _fetch_analysis_results(analysis_id)
     df = pl.read_parquet(io.BytesIO(results))
 
-    settings = _fetch_project_settings(project_id)
+    settings = fetch_project_settings(project_id)
     color_by_directory = settings.get("color_by_directory")
 
     theme = "plotly_white" if switch_on else "plotly_dark"
@@ -223,7 +223,7 @@ def poll_task_status(task_id: int) -> dict:
     return response.json()
 
 
-def _fetch_project_settings(project_id: int) -> dict:
+def fetch_project_settings(project_id: int) -> dict:
     response, error = make_api_call({}, f"projects/{project_id}/settings", "GET")
     if error or response is None:
         raise ValueError(
