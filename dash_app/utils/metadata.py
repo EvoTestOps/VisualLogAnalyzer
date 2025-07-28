@@ -163,7 +163,7 @@ def _format_elapsed_seconds(seconds: int):
 
 
 def format_task_overview_row(
-    task_id: str, meta: dict, state: str, error: str | None
+    task_id: str, meta: dict, state: str, project_name: str
 ) -> html.Tr:
     match state:
         case "STARTED" | "PENDING":
@@ -182,7 +182,7 @@ def format_task_overview_row(
     formatted_time = _format_elapsed_seconds(meta.get("elapsed_seconds", 0))
 
     row_content = [
-        html.Td(meta.get("analysis_type", "unknown")),
+        html.Td(f"{meta.get("analysis_type", "unknown")} ({project_name})"),
         html.Td(task_state),
         html.Td(formatted_time),
     ]

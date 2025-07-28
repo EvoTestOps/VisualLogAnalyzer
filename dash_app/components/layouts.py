@@ -298,7 +298,7 @@ def create_project_layout(
         )
     ]
     default_row = [
-        html.Tbody(html.Tr([html.Td("No running analyses"), html.Td(""), html.Td("")]))
+        html.Tbody(html.Tr([html.Td("No recent analyses"), html.Td(""), html.Td("")]))
     ]
 
     task_info_table = dbc.Table(
@@ -329,7 +329,7 @@ def create_project_layout(
             ),
             html.Div(
                 [
-                    html.H4("Running analyses"),
+                    html.H4("Recent analyses"),
                     task_info_table,
                 ]
             ),

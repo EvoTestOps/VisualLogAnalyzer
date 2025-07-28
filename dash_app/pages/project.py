@@ -247,10 +247,17 @@ GRACE_PERIOD_FAILURE_SECONDS = timedelta(seconds=60)
     State("url", "href"),
     State("task-error-toast", "is_open"),
     State("task-success-toast", "is_open"),
+    State("project-name", "children"),
     prevent_initial_call=True,
 )
 def poll_project_tasks(
-    _, task_store, task_error_store, url_path, current_error_open, current_success_open
+    _,
+    task_store,
+    task_error_store,
+    url_path,
+    current_error_open,
+    current_success_open,
+    project_name,
 ):
     time_now = datetime.now(timezone.utc)
     updated_task_store = []
@@ -281,7 +288,7 @@ def poll_project_tasks(
             error_result = result.get("result", {})
             error = error_result.get("error", None) if error_result else None
 
-            task_row = format_task_overview_row(task_id, meta, state, error)
+            task_row = format_task_overview_row(task_id, meta, state, str(project_name))
             task_rows.append(task_row)
 
             if not result.get("ready"):
