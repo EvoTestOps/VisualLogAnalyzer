@@ -51,6 +51,7 @@ def create_line_level_plot(df, selected_plot, theme="plotly_white"):
                 name=col,
                 customdata=df["m_message_wrapped"],
                 hovertemplate=f"{xaxis_title}: %{{x}}<br>Score ({col}): %{{y}}<br>Log: %{{customdata}}<extra></extra>",
+                marker=dict(symbol="x", size=4),
             )
         )
 
