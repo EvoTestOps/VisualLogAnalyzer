@@ -339,6 +339,11 @@ def poll_project_tasks(
                     updated_task_store.append(task_entry)
                 elif state == "FAILURE" and time_delta < GRACE_PERIOD_FAILURE_SECONDS:
                     updated_task_store.append(task_entry)
+                elif state in ("SUCCESS", "FAILURE"):
+                    try:
+                        task_rows.remove(task_row)
+                    except Exception:
+                        pass
 
         except ValueError as e:
             error_messages.append(f"Unexpected error occured: {e}")
