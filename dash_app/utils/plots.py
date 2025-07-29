@@ -15,6 +15,22 @@ def create_line_level_plot(df, selected_plot, theme="plotly_white"):
     ]
     moving_avg_columns = [col for col in df.columns if "moving_avg" in col]
 
+    numeric_dtypes = pl.NUMERIC_DTYPES
+    measure_groups = [
+        [
+            col
+            for col in df.columns
+            if "kmeans" in col and df.schema[col] in numeric_dtypes
+        ],
+        [col for col in df.columns if "if" in col and df.schema[col] in numeric_dtypes],
+        [col for col in df.columns if "rm" in col and df.schema[col] in numeric_dtypes],
+        [
+            col
+            for col in df.columns
+            if "oovd" in col and df.schema[col] in numeric_dtypes
+        ],
+    ]
+
     df = df.filter(pl.col("seq_id") == selected_plot)
     if df.get_column("line_number", default=None) is None:
         df = df.with_row_index()
@@ -24,8 +40,9 @@ def create_line_level_plot(df, selected_plot, theme="plotly_white"):
         xaxis_title = "Line Number"
         x_column = "line_number"
 
-    for col in prediction_columns + moving_avg_columns:
-        df = _normalize_prediction_columns(df, [col])
+    for columns in measure_groups:
+        if columns:
+            df = _normalize_prediction_columns(df, columns)
 
     # polars documentation says that map_elements is slow.
     # Change if it becomes an issue.
@@ -201,7 +218,6 @@ def _wrap_log(text, width=80):
 # Edited version of _normalize_measure_columns from LogDelta by Mika Mäntylä
 # https://github.com/EvoTestOps/LogDelta/blob/main/logdelta/log_analysis_functions.py
 def _normalize_prediction_columns(df, columns):
-
     filled = df.select(columns).with_columns(pl.all().fill_null(pl.all().median()))
 
     measure_min = filled.min().to_numpy().min()
