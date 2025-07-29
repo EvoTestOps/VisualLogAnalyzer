@@ -362,7 +362,8 @@ def project_settings_form(
                             color_by_directory_input(color_by_directory_id),
                             manual_filename_input(manual_filename_id),
                             line_display_mode_input(line_display_mode_id),
-                        ]
+                        ],
+                        width=8,
                     ),
                     dbc.Col(
                         submit_btn,
