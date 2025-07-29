@@ -80,8 +80,9 @@ def get_project_name(project_id):
     Output("url", "search"),
     Input("url", "search"),
     State("project-task-store", "data"),
+    State("project-id", "data"),
 )
-def get_task_id(search, current_tasks):
+def get_task_id(search, current_tasks, project_id):
     query = parse_qs(search.lstrip("?"))
     task_id = query.get("task_id", [None])[0]
 
@@ -95,7 +96,9 @@ def get_task_id(search, current_tasks):
     query.pop("task_id", None)
     new_search = "?" + urlencode(query, doseq=True) if query else ""
 
-    updated_tasks = (current_tasks or []) + [{"id": task_id, "completed_at": None}]
+    updated_tasks = (current_tasks or []) + [
+        {"id": task_id, "completed_at": None, "project_id": project_id}
+    ]
 
     return (
         updated_tasks,
@@ -257,7 +260,7 @@ GRACE_PERIOD_FAILURE_SECONDS = timedelta(seconds=60)
     State("url", "href"),
     State("task-error-toast", "is_open"),
     State("task-success-toast", "is_open"),
-    State("project-name", "children"),
+    State("project-id", "data"),
     prevent_initial_call=True,
 )
 def poll_project_tasks(
@@ -267,7 +270,7 @@ def poll_project_tasks(
     url_path,
     current_error_open,
     current_success_open,
-    project_name,
+    project_id,
 ):
     time_now = datetime.now(timezone.utc)
     updated_task_store = []
@@ -284,6 +287,7 @@ def poll_project_tasks(
         )
     ]
 
+    current_project_tasks = [t for t in task_store if t.get("project_id") == project_id]
     for task_entry in task_store or []:
         try:
             task_id = task_entry["id"]
@@ -298,8 +302,13 @@ def poll_project_tasks(
             error_result = result.get("result", {})
             error = error_result.get("error", None) if error_result else None
 
-            task_row = format_task_overview_row(task_id, meta, state, str(project_name))
-            task_rows.append(task_row)
+            if task_entry in current_project_tasks:
+                task_row = format_task_overview_row(
+                    task_id,
+                    meta,
+                    state,
+                )
+                task_rows.append(task_row)
 
             if not result.get("ready"):
                 updated_task_store.append(task_entry)
@@ -345,6 +354,9 @@ def poll_project_tasks(
     should_refresh = bool(success_messages or error_messages)
     refresh_path = url_path if should_refresh else dash.no_update
     polling_disabled = len(updated_task_store) == 0
+
+    default_row = [html.Tr([html.Td("No recent analyses"), html.Td(""), html.Td("")])]
+    task_rows = task_rows or default_row
 
     return (
         error_output,
