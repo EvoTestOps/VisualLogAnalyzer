@@ -188,6 +188,7 @@ def create_umap_plot(df, group_col, color_by_directory=False, theme="plotly_whit
                     text=df_run[group_col],
                     hovertemplate=f"{group_col}: %{{text}}<br>UMAP1: %{{x}}<br>UMAP2:%{{y}}<extra></extra>",
                     name=f"Directory: {run}",
+                    marker=dict(symbol="x", size=4),
                 )
             )
     else:
