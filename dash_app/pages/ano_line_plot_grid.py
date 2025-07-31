@@ -28,6 +28,8 @@ def layout(analysis_id=None, **kwargs):
         error_toast("error-toast-grid"),
         dcc.Store(id="analysis-id-grid", data=analysis_id),
         dcc.Store(id="stored-data-grid"),
+        dcc.Store(id="image-store"),
+        dcc.Download(id="image-download"),
     ]
 
     image_preview = dbc.Row(
@@ -45,7 +47,23 @@ def layout(analysis_id=None, **kwargs):
         ),
     )
 
-    return [dbc.Container(base), dbc.Container(image_preview, fluid=True)]
+    download_button = dbc.Row(
+        dbc.Col(
+            dbc.Button(
+                "Download",
+                id="download-image-grid",
+                n_clicks=0,
+                style={"display": "none"},
+            ),
+            class_name="text-center",
+        )
+    )
+
+    return [
+        dbc.Container(base),
+        dbc.Container(image_preview, fluid=True),
+        dbc.Container(download_button),
+    ]
 
 
 @callback(
@@ -95,6 +113,8 @@ def get_dropdown_options(encoded_df):
 
 @callback(
     Output("image-preview-grid", "children"),
+    Output("image-store", "data"),
+    Output("download-image-grid", "style"),
     Output("error-toast-grid", "children", allow_duplicate=True),
     Output("error-toast-grid", "is_open", allow_duplicate=True),
     Output("success-toast-grid", "children", allow_duplicate=True),
@@ -107,10 +127,20 @@ def get_dropdown_options(encoded_df):
 )
 def generate_image(_, encoded_df, files_to_include, cols_to_include):
     if not encoded_df or not files_to_include or not cols_to_include:
-        return dash.no_update, "Check your form inputs.", True, dash.no_update, False
+        return (
+            dash.no_update,
+            dash.no_update,
+            dash.no_update,
+            "Check your form inputs.",
+            True,
+            dash.no_update,
+            False,
+        )
 
     if len(files_to_include) > 8:
         return (
+            dash.no_update,
+            dash.no_update,
             dash.no_update,
             "Maximum of 8 files can be used.",
             True,
@@ -132,7 +162,24 @@ def generate_image(_, encoded_df, files_to_include, cols_to_include):
         style={"width": "100%"},
     )
 
-    return img_element, dash.no_update, False, "Image created", False
+    return img_element, base64_img, {}, dash.no_update, False, "Image created", False
+
+
+@callback(
+    Output("image-download", "data"),
+    Input("download-image-grid", "n_clicks"),
+    State("image-store", "data"),
+    prevent_initial_call=True,
+)
+def download_image(_, image_data):
+    if not image_data:
+        return dash.no_update
+
+    image_bytes = base64.b64decode(image_data)
+    return dcc.send_bytes(
+        image_bytes,
+        filename="multiplot.png",
+    )
 
 
 def _plot_to_pil_image(fig, width=600, height=400):
