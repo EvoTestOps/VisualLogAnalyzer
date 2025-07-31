@@ -55,7 +55,7 @@ def layout(analysis_id=None, **kwargs):
                 n_clicks=0,
                 style={"display": "none"},
             ),
-            class_name="text-center",
+            class_name="text-center mb-5",
         )
     )
 
