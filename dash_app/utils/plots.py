@@ -130,7 +130,7 @@ def create_line_level_plot_minimal(
 
     fig.update_layout(
         title=f"{file_name}<br>{directory_name}",
-        margin=dict(l=20, r=20, t=40, b=20),
+        margin=dict(l=20, r=20, t=50, b=20),
         template=theme,
         showlegend=False,
     )

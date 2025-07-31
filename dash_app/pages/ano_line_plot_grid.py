@@ -22,7 +22,8 @@ def layout(analysis_id=None, **kwargs):
 
     form = plot_grid_image_form("submit-grid", "files-to-include", "cols-to-include")
     base = [
-        form,
+        dbc.Row(html.H3("Multi-plot")),
+        dbc.Row(form),
         success_toast("success-toast-grid"),
         error_toast("error-toast-grid"),
         dcc.Store(id="analysis-id-grid", data=analysis_id),
