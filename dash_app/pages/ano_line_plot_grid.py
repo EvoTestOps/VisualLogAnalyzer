@@ -164,7 +164,7 @@ def _create_image(figs):
     img_w, img_h = images[0].size
     cols, rows = _get_grid_shape(len(images))
 
-    grid_img = Image.new("RGB", (img_w * cols, img_h * rows))
+    grid_img = Image.new("RGB", (img_w * cols, img_h * rows), color=(255, 255, 255))
 
     for idx, img in enumerate(images):
         row = idx // cols
