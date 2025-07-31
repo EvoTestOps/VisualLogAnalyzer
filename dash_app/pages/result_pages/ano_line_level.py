@@ -3,7 +3,6 @@ import io
 
 import dash
 import polars as pl
-import polars.selectors as cs
 from dash import Input, Output, State, callback, html
 
 from dash_app.callbacks.callback_functions import make_api_call

@@ -82,6 +82,62 @@ def create_line_level_plot(df, selected_plot, theme="plotly_white"):
     return fig
 
 
+def create_line_level_plot_minimal(
+    df, selected_plot, plot_columns, theme="plotly_white"
+):
+    df = df.filter(pl.col("seq_id") == selected_plot)
+
+    if df.get_column("line_number", default=None) is None:
+        df = df.with_row_index()
+        x_column = "index"
+    else:
+        x_column = "line_number"
+
+    numeric_dtypes = pl.NUMERIC_DTYPES
+    measure_groups = [
+        [
+            col
+            for col in df.columns
+            if "kmeans" in col and df.schema[col] in numeric_dtypes
+        ],
+        [col for col in df.columns if "if" in col and df.schema[col] in numeric_dtypes],
+        [col for col in df.columns if "rm" in col and df.schema[col] in numeric_dtypes],
+        [
+            col
+            for col in df.columns
+            if "oovd" in col and df.schema[col] in numeric_dtypes
+        ],
+    ]
+
+    for columns in measure_groups:
+        if columns:
+            df = _normalize_prediction_columns(df, columns)
+
+    fig = go.Figure()
+    for col in plot_columns:
+        fig.add_trace(
+            go.Scatter(
+                x=df[x_column],
+                y=df[col],
+                mode="markers",
+                marker=dict(symbol="x", size=4),
+                showlegend=False,
+            )
+        )
+
+    directory_name = df["run"][0]
+    file_name = df["file_name"][0]
+
+    fig.update_layout(
+        title=f"{file_name}<br>{directory_name}",
+        margin=dict(l=20, r=20, t=40, b=20),
+        template=theme,
+        showlegend=False,
+    )
+
+    return fig
+
+
 def create_unique_term_count_plot(df, theme="plotly_white"):
     fig = go.Figure()
 

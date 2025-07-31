@@ -9,6 +9,7 @@ cachetools==4.2.1
 celery==5.5.3
 certifi==2025.4.26
 charset-normalizer==3.4.2
+choreographer==1.0.9
 click==8.2.1
 click-didyoumean==0.3.1
 click-plugins==1.1.1.2
@@ -36,9 +37,11 @@ jsonpickle==1.5.1
 jsonschema==4.24.0
 jsonschema-specifications==2025.4.1
 jupyter_core==5.8.1
+kaleido==0.2.1
 kiwisolver==1.4.8
 kombu==5.5.4
 llvmlite==0.44.0
+logistro==1.1.0
 LogLead==1.2.1
 MarkupSafe==3.0.2
 matplotlib==3.10.3
@@ -49,6 +52,7 @@ nest-asyncio==1.6.0
 numba==0.61.2
 numpy==2.2.6
 nvidia-nccl-cu12==2.27.3
+orjson==3.11.1
 packaging==25.0
 pandas==2.2.3
 pillow==11.2.1
@@ -85,6 +89,7 @@ scikit-optimize==0.10.2
 scipy==1.15.3
 setuptools==80.9.0
 shap==0.47.2
+simplejson==3.20.1
 six==1.17.0
 slicer==0.0.8
 smmap==5.0.2
