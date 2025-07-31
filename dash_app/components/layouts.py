@@ -41,12 +41,24 @@ def create_ano_line_level_result_layout(
     metadata_table_id,
     error_toast_id,
     success_toast_id,
+    grid_image_link_id,
 ):
 
     error_toast_row = dbc.Row(error_toast(error_toast_id))
     success_toast_row = dbc.Row(success_toast(success_toast_id))
 
     metadata_row = dbc.Row(dbc.Table(id=metadata_table_id, hover=True, responsive=True))
+
+    create_grid_image_link = dbc.Row(
+        dbc.Col(
+            dcc.Link(
+                "Create multi-plot image",
+                id=grid_image_link_id,
+                href="",
+            ),
+            class_name="d-flex justify-content-end",
+        ),
+    )
 
     plot_selector_row = dbc.Row(
         dcc.Loading(
@@ -115,7 +127,9 @@ def create_ano_line_level_result_layout(
     )
 
     layout = [
-        dbc.Container([metadata_row, error_toast_row, success_toast_row]),
+        dbc.Container(
+            [metadata_row, create_grid_image_link, error_toast_row, success_toast_row]
+        ),
         dbc.Container(plot_selector_row),
         dbc.Container(plot_row, fluid=True),
         dbc.Container(data_table_row, fluid=True),

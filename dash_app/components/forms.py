@@ -382,8 +382,20 @@ def plot_grid_image_form(submit_id, files_to_include_id, columns_to_include_id):
     submit_btn = submit_button(submit_id, "Create")
     form = dbc.Form(
         [
-            dbc.Row(files_to_include_input(files_to_include_id), class_name="mb-3"),
-            dbc.Row(columns_to_include_input(columns_to_include_id), class_name="mb-3"),
+            dcc.Loading(
+                type="circle",
+                delay_show=400,
+                overlay_style={"visibility": "visible", "filter": "blur(2px)"},
+                children=[
+                    dbc.Row(
+                        files_to_include_input(files_to_include_id), class_name="mb-3"
+                    ),
+                    dbc.Row(
+                        columns_to_include_input(columns_to_include_id),
+                        class_name="mb-3",
+                    ),
+                ],
+            ),
             dbc.Row(
                 dbc.Col(submit_btn, class_name="text-end"),
             ),

@@ -34,6 +34,7 @@ def layout(analysis_id=None, **kwargs):
         "metadata-ano-line-res",
         "error-toast-ano-line-res",
         "success-toats-ano-line-res",
+        "multi-plot-link-ano-line-res",
     )
 
     return base + content
@@ -72,13 +73,21 @@ def get_data(analysis_id):
     Output("project-link-ano-line-res", "href"),
     Output("error-toast-ano-line-res", "children", allow_duplicate=True),
     Output("error-toast-ano-line-res", "is_open", allow_duplicate=True),
+    Output("multi-plot-link-ano-line-res", "href"),
     Input("stored-data-ano-line-res", "data"),
     State("analysis-id-ano-line-res", "data"),
     prevent_initial_call=True,
 )
 def generate_dropdown_and_metadata(encoded_df, analysis_id):
     if not encoded_df:
-        return dash.no_update, dash.no_update, dash.no_update, "No results found", True
+        return (
+            dash.no_update,
+            dash.no_update,
+            dash.no_update,
+            "No results found",
+            True,
+            dash.no_update,
+        )
 
     decoded_df = base64.b64decode(encoded_df)
     df = pl.read_parquet(io.BytesIO(decoded_df))
@@ -86,7 +95,14 @@ def generate_dropdown_and_metadata(encoded_df, analysis_id):
 
     response, error = make_api_call({}, f"analyses/{analysis_id}/metadata", "GET")
     if error or response is None:
-        return dash.no_update, dash.no_update, dash.no_update, str(error), True
+        return (
+            dash.no_update,
+            dash.no_update,
+            dash.no_update,
+            str(error),
+            True,
+            dash.no_update,
+        )
 
     metadata = response.json()
     project_id = metadata.get("project_id")
@@ -98,6 +114,7 @@ def generate_dropdown_and_metadata(encoded_df, analysis_id):
         f"/dash/project/{project_id}",
         dash.no_update,
         False,
+        f"/dash/analysis/ano-line-level/{analysis_id}/grid",
     )
 
 
