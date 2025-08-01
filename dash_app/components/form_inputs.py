@@ -366,3 +366,33 @@ def redirect_to_results_input(id):
             ),
         ]
     )
+
+
+def files_to_include_input(id):
+    return dbc.Col(
+        [
+            dbc.Label("Files to include (2-8)", html_for=id, width="auto"),
+            dcc.Dropdown(
+                multi=True,
+                id=id,
+                className="dbc border border-light-subtle rounded",
+                optionHeight=40,
+                maxHeight=350,
+            ),
+        ],
+    )
+
+
+def columns_to_include_input(id):
+    return dbc.Col(
+        [
+            dbc.Label("Columns to include", html_for=id, width="auto"),
+            dcc.Dropdown(
+                multi=True,
+                id=id,
+                className="dbc border border-light-subtle rounded",
+                optionHeight=40,
+                maxHeight=350,
+            ),
+        ],
+    )

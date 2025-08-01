@@ -101,6 +101,7 @@ def get_settings(project_id: int):
 
 @crud_bp.route("/analyses/<int:analysis_id>", methods=["GET"])
 def get_analysis(analysis_id: int):
+    raw = request.args.get("raw", "false").lower() == "true"
     analysis = db.session.get(Analysis, analysis_id)
     if not analysis:
         return jsonify({"error": f"Analysis not found. Id: {analysis_id}"}), 404
@@ -112,7 +113,7 @@ def get_analysis(analysis_id: int):
 
         buffer.seek(0)
 
-        if analysis.analysis_level == "line":
+        if analysis.analysis_level == "line" and not raw:
             settings = Settings.query.filter_by(
                 project_id=analysis.project_id
             ).first_or_404()
