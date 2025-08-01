@@ -73,7 +73,7 @@ def layout(analysis_id=None, **kwargs):
     Input("analysis-id-grid", "data"),
 )
 def get_data(analysis_id):
-    response, error = make_api_call({}, f"analyses/{analysis_id}", "GET")
+    response, error = make_api_call({}, f"analyses/{analysis_id}?raw=true", "GET")
 
     if error or response is None:
         return dash.no_update, str(error), True
