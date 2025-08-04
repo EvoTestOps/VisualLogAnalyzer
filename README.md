@@ -19,14 +19,17 @@ Analyses are run as background tasks which gives the option to run multiple anal
 
 ## Run locally
 
-By default, the program expects the datasets to be located within the `log_data/` directory. To change the location of the log data, update the `LOG_DATA_DIRECTORY` environment variable in the Docker Compose file and adjust the volume mappings accordingly. The analysis results are stored in `analysis_results/` as parquet files.
+By default, the program expects the datasets to be located within the `log_data/` directory. To change the location of the log data, update the `LOG_DATA_DIRECTORY` environment variable in the `.env.sample` file. The analysis results are stored in `analysis_results/` as parquet files.
 
 It is a good idea to create the log data and results directories yourself so you don't run into permission issues.
 
-To start the application clone this repository and run: `docker compose up`
+To start the application, clone this repository and run: `docker compose up`
 
-Dash frontend: [http://localhost:5000/dash/](http://localhost:5000/dash/)\
-API endpoints: [http://localhost:5000/api/](http://localhost:5000/api/)
+**Note:** Before starting, either:
+- Rename `.env.sample` to `.env`
+- or run compose with `docker compose --env-file .env.sample up`
+
+Once running, navigate to [http://localhost:5000/dash/](http://localhost:5000/dash/)
 
 ### Expected log data structure
 
@@ -59,4 +62,4 @@ log_data/
 
 - **“No comparison runs found”-error:** Check “Match filenames”-setting. If it is enabled intentionally, ensure that the log data directory structure is consistent. 
 
-- **Timestamps:** If the timestamps are incorrect, try modifying the PostgreSQL time zone setting in the `docker-compose.yml` file. 
+- **Timestamps:** If the timestamps are incorrect, try modifying the PostgreSQL time zone setting in the env file. 
