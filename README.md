@@ -17,9 +17,9 @@ These features can be applied at different levels: directory, file or line, depe
 
 Analyses are run as background tasks which gives the option to run multiple analyses in parallel. However, performance may vary depending on the size of the datasets and the available memory. 
 
-## Run locally (development mode)
+## Run locally
 
-By default, the program expects the datasets to be located within the `log_data/` directory. To change the location of the log data, update the `LOG_DATA_DIRECTORY` environment variable in the Docker Compose file and adjust the volume mapping accordingly. The analysis results are stored in `analysis_results/` as parquet files.
+By default, the program expects the datasets to be located within the `log_data/` directory. To change the location of the log data, update the `LOG_DATA_DIRECTORY` environment variable in the Docker Compose file and adjust the volume mappings accordingly. The analysis results are stored in `analysis_results/` as parquet files.
 
 It is a good idea to create the log data and results directories yourself so you don't run into permission issues.
 
