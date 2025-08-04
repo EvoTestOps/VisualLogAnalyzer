@@ -2,21 +2,19 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile-dev
     ports:
       - "5000:5000"
-    working_dir: /app
     volumes:
       - ./log_data/:/app/log_data/
       - ./analysis_results/:/app/analysis_results
+      - .:/app
     environment:
       DB_URL: "postgresql://postgres:postgres@db:5432/postgres"
       LOG_DATA_DIRECTORY: "./log_data/"
       RESULTS_DIRECTORY: "./analysis_results/"
       CELERY_BROKER_URL: "redis://redis:6379/0"
-    depends_on:
-      - celery
-      - db
+      FLASK_DEBUG: 1
   redis:
     image: redis:alpine
     ports:
@@ -24,11 +22,10 @@ services:
   celery:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile-dev
     command: celery -A server.make_celery worker --concurrency=4 --loglevel=info
     volumes:
-      - ./log_data/:/app/log_data/
-      - ./analysis_results/:/app/analysis_results
+      - .:/app
     environment:
       DB_URL: "postgresql://postgres:postgres@db:5432/postgres"
       LOG_DATA_DIRECTORY: "./log_data/"
@@ -36,6 +33,7 @@ services:
       CELERY_BROKER_URL: "redis://redis:6379/0"
     depends_on:
       - redis
+      - db
   db:
     image: postgres:alpine
     environment:
