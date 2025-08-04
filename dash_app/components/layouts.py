@@ -287,6 +287,7 @@ def create_project_layout(
     line_display_mode_input_id,
     task_error_modal_id,
     manual_filename_id,
+    clear_recent_id,
 ):
 
     error_toast_row = dbc.Row(error_toast(error_toast_id))
@@ -327,7 +328,7 @@ def create_project_layout(
     nav_col = dbc.Col(
         [
             crate_analysis_nav(project_id, nav_id),
-            html.Div(
+            dbc.Row(
                 [
                     html.H4("Settings"),
                     dbc.Card(
@@ -341,13 +342,21 @@ def create_project_layout(
                         body=True,
                     ),
                 ],
-                className="mt-3 mb-3",
+                className="mt-3 mb-4",
             ),
-            html.Div(
-                [
-                    html.H4("Recent analyses"),
-                    task_info_table,
-                ]
+            dbc.Row(
+                html.H4("Recent analyses"),
+                class_name="pb-1",
+            ),
+            dbc.Row(html.Div(task_info_table, style={"padding": "0px"})),
+            dbc.Row(
+                dbc.Button(
+                    "Clear Completed",
+                    color="secondary",
+                    id=clear_recent_id,
+                    n_clicks=0,
+                ),
+                class_name="text-end",
             ),
         ],
         class_name="pt-3",

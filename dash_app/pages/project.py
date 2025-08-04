@@ -61,6 +61,7 @@ def layout(project_id=None, **kwargs):
         "line-display-mode-project",
         "task-error-modal-project",
         "manual-filename-project",
+        "clear-recent-project",
     )
 
 
@@ -403,3 +404,21 @@ def open_task_error_modal(n_clicks, task_errors):
             return True, modal_children
 
     raise dash.exceptions.PreventUpdate
+
+
+@callback(
+    Output("project-task-store", "data", allow_duplicate=True),
+    Output("project-task-poll", "disabled", allow_duplicate=True),
+    Input("clear-recent-project", "n_clicks"),
+    State("project-task-store", "data"),
+    State("project-id", "data"),
+    prevent_initial_call=True,
+)
+def clear_completed_tasks(_, task_store, project_id):
+    if not task_store or not project_id:
+        return dash.no_update, dash.no_update
+
+    for task in task_store:
+        if task.get("completed_at") and task.get("project_id") == project_id:
+            task["cleared"] = True
+    return task_store, False
