@@ -169,7 +169,7 @@ def create_unique_term_count_plot_by_file(
 
     if color_by_directory:
         runs = df["run"].unique()
-        for run in runs:
+        for run in sorted(runs):
             df_run = df.filter(pl.col("run") == run)
 
             fig.add_trace(
@@ -233,7 +233,7 @@ def create_umap_plot(df, group_col, color_by_directory=False, theme="plotly_whit
 
     if group_col == "seq_id" and color_by_directory:
         runs = df["run"].unique()
-        for run in runs:
+        for run in sorted(runs):
             df_run = df.filter(pl.col("run") == run)
 
             fig.add_trace(
