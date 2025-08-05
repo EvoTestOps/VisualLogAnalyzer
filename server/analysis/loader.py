@@ -1,3 +1,4 @@
+import os
 import polars as pl
 from loglead.loaders import LO2Loader, RawLoader
 
@@ -39,9 +40,10 @@ class Loader:
     #       example-z.log
 
     def _load_raw(self):
+        pattern = "*.log" if os.path.isdir(self._directory_path) else None
         loader = RawLoader(
             self._directory_path,
-            filename_pattern="*.log",
+            filename_pattern=pattern,
             strip_full_data_path=self._directory_path,
         )
         df = loader.execute()
@@ -54,25 +56,38 @@ class Loader:
         self._df = self._prepare_raw_data(df)
 
     def _prepare_raw_data(self, df):
+        is_file = os.path.isfile(self._directory_path)
+        if is_file:
+            df = df.with_columns(pl.lit(str(self._directory_path)).alias("file_name"))
+            df = df.with_columns(
+                pl.lit(str(self._directory_path)).alias("orig_file_name")
+            )
+
         df = df.filter(pl.col("m_message").is_not_null())
         df = df.filter(~pl.col("m_message").str.contains("�"))
 
-        df = df.with_columns(
-            [
-                pl.col("file_name").str.extract(r"^([^/]+)", 1).alias("run"),
-                pl.col("file_name")
-                .str.replace(r"^[^/]+/", "", literal=False)
-                .alias("file_name"),
-            ]
-        )
+        if is_file:
+            df = df.with_columns(pl.col("file_name").alias("run"))
+        else:
+            df = df.with_columns(
+                [
+                    pl.col("file_name").str.extract(r"^([^/]+)", 1).alias("run"),
+                    pl.col("file_name")
+                    .str.replace(r"^[^/]+/", "", literal=False)
+                    .alias("file_name"),
+                ]
+            )
 
-        df = df.with_columns(
-            [
-                pl.concat_str([pl.col(("run")), pl.col("file_name")], separator="_")
-                .str.replace(r"\.log$", "", literal=False)
-                .alias("seq_id")
-            ]
-        )
+        if is_file:
+            df = df.with_columns(pl.col("file_name").alias("seq_id"))
+        else:
+            df = df.with_columns(
+                [
+                    pl.concat_str([pl.col(("run")), pl.col("file_name")], separator="_")
+                    .str.replace(r"\.log$", "", literal=False)
+                    .alias("seq_id")
+                ]
+            )
 
         df = df.with_columns(
             [pl.col("seq_id").cum_count().over("seq_id").alias("line_number")]
