@@ -61,6 +61,7 @@ def layout(project_id=None, **kwargs):
         "line-display-mode-project",
         "task-error-modal-project",
         "manual-filename-project",
+        "clear-recent-project",
     )
 
 
@@ -240,10 +241,6 @@ def apply_settings(
     return (dash.no_update, False, "Settings updated", True)
 
 
-GRACE_PERIOD_SUCCESS_SECONDS = timedelta(seconds=30)
-GRACE_PERIOD_FAILURE_SECONDS = timedelta(seconds=60)
-
-
 @callback(
     Output("task-error-toast", "children"),
     Output("task-error-toast", "is_open"),
@@ -274,10 +271,8 @@ def poll_project_tasks(
 ):
     time_now = datetime.now(timezone.utc)
     updated_task_store = []
-    success_messages = []
-    error_messages = []
+    success_messages, error_messages, task_errors = [], [], []
     task_rows = []
-    task_errors = []
 
     task_info_header = [
         html.Thead(
@@ -287,8 +282,14 @@ def poll_project_tasks(
         )
     ]
 
-    current_project_tasks = [t for t in task_store if t.get("project_id") == project_id]
+    current_project_tasks = [
+        t for t in (task_store or []) if t.get("project_id") == project_id
+    ]
     for task_entry in task_store or []:
+        if task_entry.get("completed_at") or task_entry.get("cleared"):
+            updated_task_store.append(task_entry)
+            continue
+
         try:
             task_id = task_entry["id"]
             result = poll_task_status(task_id)
@@ -299,67 +300,65 @@ def poll_project_tasks(
 
             state = result.get("state", "")
             meta = result.get("meta", {})
+            task_entry["state"] = state
+            task_entry["meta"] = meta
+            task_entry["start_time"] = result.get("start_time", None)
+
             error_result = result.get("result", {})
             error = error_result.get("error", None) if error_result else None
-
-            if task_entry in current_project_tasks:
-                task_row = format_task_overview_row(
-                    task_id,
-                    meta,
-                    state,
-                )
-                task_rows.append(task_row)
 
             if not result.get("ready"):
                 updated_task_store.append(task_entry)
                 continue
 
-            if not task_entry.get("completed_at"):
-                if state == "SUCCESS":
-                    success_messages.append("Analysis complete")
-                elif state == "FAILURE":
-                    error_messages.append(error)
-                    task_errors.append({"id": task_id, "error": error})
-                else:
-                    error_messages.append(f"Task in unexpected state: {state}")
-
-                if state in ("SUCCESS", "FAILURE"):
-                    task_entry["completed_at"] = time_now.isoformat()
-                    updated_task_store.append(task_entry)
-
+            if state == "SUCCESS":
+                success_messages.append("Analysis complete")
+            elif state == "FAILURE":
+                error_messages.append(error)
+                task_errors.append({"id": task_id, "error": error})
             else:
-                try:
-                    completed_at = datetime.fromisoformat(task_entry["completed_at"])
-                except ValueError:
-                    error_messages.append("Failed to parse time.")
-                    continue
+                error_messages.append(f"Task in unexpected state: {state}")
 
-                time_delta = time_now - completed_at
-                if state == "SUCCESS" and time_delta < GRACE_PERIOD_SUCCESS_SECONDS:
-                    updated_task_store.append(task_entry)
-                elif state == "FAILURE" and time_delta < GRACE_PERIOD_FAILURE_SECONDS:
-                    updated_task_store.append(task_entry)
-                elif state in ("SUCCESS", "FAILURE"):
-                    try:
-                        task_rows.remove(task_row)
-                    except Exception:
-                        pass
+            task_entry["completed_at"] = time_now.isoformat()
+            updated_task_store.append(task_entry)
 
         except ValueError as e:
             error_messages.append(f"Unexpected error occured: {e}")
             continue
 
+    sorted_active_tasks = sorted(
+        [t for t in current_project_tasks if not t.get("cleared")],
+        key=lambda t: datetime.fromisoformat(t.get("meta", {}).get("start_time")),
+        reverse=True,
+    )
+    task_rows = [
+        format_task_overview_row(
+            task_entry["id"],
+            task_entry.get("meta", {}),
+            task_entry.get("state", ""),
+        )
+        for task_entry in sorted_active_tasks
+    ]
+
     # TODO: what if there is both error messages and success messages
     error_output = "\n".join(error_messages) if error_messages else dash.no_update
     error_open = True if error_messages else current_error_open
     success_output = "\n".join(success_messages) if success_messages else dash.no_update
-    success_open = bool(success_messages)
     success_open = True if success_messages else current_success_open
 
-    should_refresh = bool(success_messages or error_messages)
-    refresh_path = url_path if should_refresh else dash.no_update
-    polling_disabled = len(updated_task_store) == 0
+    refresh_path = url_path if (success_messages or error_messages) else dash.no_update
+    polling_disabled = not any(
+        not task.get("completed_at") and not task.get("cleared")
+        for task in updated_task_store
+    )
 
+    task_info_header = [
+        html.Thead(
+            html.Tr(
+                [html.Th("Analysis Type"), html.Th("Status"), html.Th("Time Elapsed")]
+            )
+        )
+    ]
     default_row = [html.Tr([html.Td("No recent analyses"), html.Td(""), html.Td("")])]
     task_rows = task_rows or default_row
 
@@ -405,3 +404,21 @@ def open_task_error_modal(n_clicks, task_errors):
             return True, modal_children
 
     raise dash.exceptions.PreventUpdate
+
+
+@callback(
+    Output("project-task-store", "data", allow_duplicate=True),
+    Output("project-task-poll", "disabled", allow_duplicate=True),
+    Input("clear-recent-project", "n_clicks"),
+    State("project-task-store", "data"),
+    State("project-id", "data"),
+    prevent_initial_call=True,
+)
+def clear_completed_tasks(_, task_store, project_id):
+    if not task_store or not project_id:
+        return dash.no_update, dash.no_update
+
+    for task in task_store:
+        if task.get("completed_at") and task.get("project_id") == project_id:
+            task["cleared"] = True
+    return task_store, False
