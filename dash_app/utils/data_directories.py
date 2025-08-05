@@ -6,7 +6,11 @@ from flask import current_app
 
 
 def get_runs(log_directory: str) -> list[str]:
-    if not log_directory or not os.path.exists(log_directory):
+    if (
+        not log_directory
+        or not os.path.exists(log_directory)
+        or not os.path.isdir(log_directory)
+    ):
         return []
 
     runs = [
@@ -33,5 +37,12 @@ def get_all_filenames(log_directory: str) -> list[str]:
 
 def get_all_root_log_directories() -> tuple[list[str], list[str]]:
     base_path = current_app.config["LOG_DATA_PATH"]
-    directories = next(os.walk(base_path))[1]
-    return directories, [os.path.join(base_path, dir) + "/" for dir in directories]
+
+    entries = next(os.walk(base_path))
+    directories = entries[1]
+    files = entries[2]
+
+    directory_paths = [os.path.join(base_path, dir) + "/" for dir in directories]
+    file_paths = [os.path.join(base_path, file) for file in files]
+
+    return directories + files, directory_paths + file_paths
