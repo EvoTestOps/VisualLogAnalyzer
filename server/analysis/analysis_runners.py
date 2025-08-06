@@ -21,7 +21,7 @@ from server.analysis.utils.run_level_analysis import (
 )
 from server.analysis.utils.umap_analysis import create_umap_df, create_umap_embeddings
 from server.models.settings import Settings
-from server.task_helpers import (
+from server.analysis.utils.analysis_helpers import (
     create_vectorizer,
     load_data,
     store_and_format_result,
@@ -140,10 +140,12 @@ def run_log_distance_analysis(
 
     match_flag = file_level and comparison_runs in (None, []) and match_filenames
     if match_flag:
+        # FIX: not an optimal way to get filename
         target_file_name = get_file_name_by_orig_file_name(df, target_run)
         df = filter_files(df, [target_file_name], "file_name")
 
     run_column = "run" if not file_level else "orig_file_name"
+
     df_distances = measure_distances(
         df,
         item_list_col,
