@@ -107,7 +107,12 @@ def async_run_file_counts(
 
 @shared_task(bind=True, ignore_results=False)
 def async_run_unique_terms(
-    self, project_id: int, directory_path: str, item_list_col: str, file_level: bool
+    self,
+    project_id: int,
+    analysis_name: str | None,
+    directory_path: str,
+    item_list_col: str,
+    file_level: bool,
 ) -> dict:
     start_time = datetime.now(timezone.utc).isoformat()
     meta = {"analysis_type": "Unique terms", "start_time": start_time}
@@ -115,7 +120,7 @@ def async_run_unique_terms(
 
     try:
         result = run_unique_terms_analysis(
-            project_id, directory_path, item_list_col, file_level
+            project_id, analysis_name, directory_path, item_list_col, file_level
         )
 
         completed_time = datetime.now(timezone.utc).isoformat()
@@ -145,6 +150,7 @@ def async_run_unique_terms(
 def async_create_umap(
     self,
     project_id: int,
+    analysis_name: str | None,
     directory_path: str,
     item_list_col: str,
     file_level: bool,
@@ -158,7 +164,13 @@ def async_create_umap(
 
     try:
         result = run_umap_analysis(
-            project_id, directory_path, item_list_col, file_level, vectorizer, mask_type
+            project_id,
+            analysis_name,
+            directory_path,
+            item_list_col,
+            file_level,
+            vectorizer,
+            mask_type,
         )
 
         completed_time = datetime.now(timezone.utc).isoformat()

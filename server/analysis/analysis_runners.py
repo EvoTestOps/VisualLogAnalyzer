@@ -50,7 +50,11 @@ def run_file_count_analysis(
 
 
 def run_unique_terms_analysis(
-    project_id: int, directory_path: str, item_list_col: str, file_level: bool
+    project_id: int,
+    analysis_name: str | None,
+    directory_path: str,
+    item_list_col: str,
+    file_level: bool,
 ) -> dict:
     df = load_data(directory_path)
     if not file_level:
@@ -67,6 +71,7 @@ def run_unique_terms_analysis(
         "analysis_sub_type": "unique-terms",
         "analysis_level": "directory" if not file_level else "file",
         "directory_path": directory_path,
+        "name": analysis_name,
     }
 
     result = store_and_format_result(
@@ -80,6 +85,7 @@ def run_unique_terms_analysis(
 
 def run_umap_analysis(
     project_id: int,
+    analysis_name: str | None,
     directory_path: str,
     item_list_col: str,
     file_level: bool,
@@ -113,6 +119,7 @@ def run_umap_analysis(
         "mask_type": mask_type,
         "vectorizer": vectorizer,
         "directory_path": directory_path,
+        "name": analysis_name,
     }
 
     result = store_and_format_result(umap_df, project_id, analysis_type, metadata)
