@@ -71,8 +71,12 @@ class Loader:
         else:
             df = df.with_columns(
                 [
-                    pl.col("file_name").str.extract(r"^([^/]+)", 1).alias("run"),
                     pl.col("file_name")
+                    .str.strip_chars("/")
+                    .str.extract(r"^([^/]+)", 1)
+                    .alias("run"),
+                    pl.col("file_name")
+                    .str.strip_chars("/")
                     .str.replace(r"^[^/]+/", "", literal=False)
                     .alias("file_name"),
                 ]

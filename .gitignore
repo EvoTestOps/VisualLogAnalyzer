@@ -8,3 +8,7 @@ venv
 pyrightconfig.json
 result/
 analysis_results
+.coverage
+htmlcov
+
+datasets/
