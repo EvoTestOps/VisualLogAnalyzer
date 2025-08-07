@@ -16,7 +16,9 @@ class TestRunFileCountsAnalysis:
     def test_run_file_count_valid_inputs(self, mock_add_result):
         mock_add_result.return_value = 42
 
-        result = ar.run_file_count_analysis(project_id=123, directory_path=LABELED)
+        result = ar.run_file_count_analysis(
+            project_id=123, analysis_name="test-1", directory_path=LABELED
+        )
 
         assert result["id"] == 42
         assert result["type"] == "directory-level-visualisations"
@@ -27,7 +29,9 @@ class TestRunFileCountsAnalysis:
         invalid_path = ".tests/datasets/this-does-not-exists"
 
         with pytest.raises(FileNotFoundError):
-            ar.run_file_count_analysis(project_id=123, directory_path=invalid_path)
+            ar.run_file_count_analysis(
+                project_id=123, analysis_name="test 123", directory_path=invalid_path
+            )
 
 
 class TestRunUmapAnalysis:
@@ -47,6 +51,7 @@ class TestRunUmapAnalysis:
 
         result = ar.run_umap_analysis(
             project_id=7,
+            analysis_name="test",
             directory_path=LABELED,
             item_list_col="e_words",
             file_level=file_level,
@@ -63,6 +68,7 @@ class TestRunUmapAnalysis:
 
         result = ar.run_umap_analysis(
             project_id=7,
+            analysis_name="test 0",
             directory_path=HIDDEN_GROUP,
             item_list_col="e_words",
             file_level=True,
@@ -80,6 +86,7 @@ class TestRunUmapAnalysis:
         with pytest.raises(ValueError):
             ar.run_umap_analysis(
                 project_id=7,
+                analysis_name="testing",
                 directory_path=HIDDEN_GROUP,
                 item_list_col="e_words",
                 file_level=True,
@@ -104,6 +111,7 @@ class TestRunUniqueTermsAnalysis:
 
         result = ar.run_unique_terms_analysis(
             project_id=1,
+            analysis_name="test",
             directory_path=LABELED,
             item_list_col="e_words",
             file_level=file_level,
@@ -119,6 +127,7 @@ class TestRunUniqueTermsAnalysis:
         with pytest.raises(ValueError):
             ar.run_unique_terms_analysis(
                 project_id=1,
+                analysis_name="test",
                 directory_path=LABELED,
                 item_list_col="bad_col",
                 file_level=False,
@@ -141,6 +150,7 @@ class TestRunUniqueTermsAnalysis:
 
         _ = ar.run_unique_terms_analysis(
             project_id=123,
+            analysis_name="test",
             directory_path="some/path",
             item_list_col="field",
             file_level=False,
@@ -165,6 +175,7 @@ class TestRunUniqueTermsAnalysis:
 
         _ = ar.run_unique_terms_analysis(
             project_id=321,
+            analysis_name="test",
             directory_path="some/path",
             item_list_col="field",
             file_level=True,
@@ -194,6 +205,7 @@ class TestRunLogDistanceAnalysis:
 
         result = ar.run_log_distance_analysis(
             project_id=7,
+            analysis_name="test",
             directory_path=LABELED,
             target_run="./tests/datasets/labeled/correct_1/light-oauth2-oauth2-code-1.log",
             comparison_runs=[],
@@ -222,6 +234,7 @@ class TestRunLogDistanceAnalysis:
 
         result = ar.run_log_distance_analysis(
             project_id=7,
+            analysis_name="test",
             directory_path=LABELED,
             target_run="./tests/datasets/labeled/correct_1/light-oauth2-oauth2-code-1.log",
             comparison_runs=[],
@@ -251,6 +264,7 @@ class TestRunLogDistanceAnalysis:
         with pytest.raises(ValueError):
             ar.run_log_distance_analysis(
                 project_id=7,
+                analysis_name="test",
                 directory_path=LABELED,
                 target_run="./tests/datasets/labeled/correct_1/light-oauth2-oauth2-code-1.log",
                 comparison_runs=[
@@ -305,6 +319,7 @@ class TestRunAnomalyDetectionAnalysis:
 
         result = ar.run_anomaly_detection_analysis(
             project_id=7,
+            analysis_name="test",
             train_data_path=ONLY_CORRECT_CASES,
             test_data_path=HIDDEN_GROUP,
             models=["kmeans", "oovd"],
@@ -372,6 +387,7 @@ class TestRunAnomalyDetectionAnalysis:
 
         _ = ar.run_anomaly_detection_analysis(
             project_id=456,
+            analysis_name="test",
             train_data_path="some/train/path",
             test_data_path="some/test/path",
             models=["kmeans"],
