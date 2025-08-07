@@ -86,33 +86,39 @@ def _sort_metadata(metadata: dict) -> dict:
 def format_analysis_overview(analyses_data: list[dict]) -> list[dbc.ListGroupItem]:
 
     analyses_data = sorted(analyses_data, key=lambda d: d["time_created"], reverse=True)
-    group_items = [
-        dbc.ListGroupItem(
+
+    group_items = []
+
+    for analysis in analyses_data:
+        analysis_name = analysis.get("name")
+        sub_type_title = _format_key_title(analysis["analysis_sub_type"], divider="-")
+        level_title = _format_key_title(analysis["analysis_level"])
+        created_time = _format_iso_time(analysis["time_created"])
+        analysis_url = f"/dash/analysis/{analysis['analysis_type']}/{analysis['id']}"
+
+        title_block = [html.H4(analysis_name or sub_type_title, className="mb-0")]
+
+        bottom_left_items = []
+
+        if analysis_name:
+            bottom_left_items.append(
+                html.P(f"Type: {sub_type_title}", className="mb-0")
+            )
+
+        bottom_left_items.append(html.P(f"Level: {level_title}", className="mb-0"))
+
+        item = dbc.ListGroupItem(
             [
                 html.Div(
                     [
-                        html.A(
-                            html.H4(
-                                (
-                                    _format_key_title(
-                                        analysis["analysis_sub_type"], divider="-"
-                                    )
-                                    if not analysis.get("name")
-                                    else analysis.get("name", "")
-                                ),
-                                className="mb-0",
-                            ),
-                            href=f"/dash/analysis/{analysis['analysis_type']}/{analysis['id']}",
-                        ),
-                        html.P(_format_iso_time(analysis["time_created"])),
+                        html.A(title_block, href=analysis_url),
+                        html.P(created_time),
                     ],
                     className="d-flex justify-content-between align-items-center",
                 ),
                 html.Div(
                     [
-                        html.P(
-                            f"Level: {_format_key_title(analysis['analysis_level'])}"
-                        ),
+                        html.Div(bottom_left_items),
                         delete_button(id=str(analysis["id"]), label="Delete"),
                     ],
                     className="d-flex justify-content-between align-items-center",
@@ -120,8 +126,8 @@ def format_analysis_overview(analyses_data: list[dict]) -> list[dbc.ListGroupIte
             ],
             class_name="pb-3 pt-3",
         )
-        for analysis in analyses_data
-    ]
+
+        group_items.append(item)
 
     return group_items
 
