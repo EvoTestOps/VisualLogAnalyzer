@@ -8,6 +8,8 @@ class Analysis(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
 
+    name = db.Column(db.String, nullable=False)
+
     results_path = db.Column(db.String, nullable=False)
     analysis_type = db.Column(db.String, nullable=False)
     analysis_sub_type = db.Column(db.String, nullable=False)
@@ -36,6 +38,7 @@ class Analysis(db.Model):
     def to_dict(self):
         return {
             "id": self.id,
+            "name": self.name,
             "project_id": self.project_id,
             "analysis_type": self.analysis_type,
             "analysis_sub_type": self.analysis_sub_type,

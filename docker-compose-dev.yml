@@ -2,7 +2,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile-dev
+      dockerfile: Dockerfile
     ports:
       - "5000:5000"
     volumes:
@@ -15,6 +15,7 @@ services:
       LOG_DATA_DIRECTORY: "/app/log_data/"
       RESULTS_DIRECTORY: "/app/analysis_results/"
       FLASK_DEBUG: "${FLASK_DEBUG:-0}"
+      APP_CMD: "flask --app main.py run --host 0.0.0.0 --port 5000"
   redis:
     image: redis:alpine
     ports:
@@ -22,7 +23,8 @@ services:
   celery:
     build:
       context: .
-      dockerfile: Dockerfile-dev
+      dockerfile: Dockerfile
+    entrypoint: []
     command: celery -A server.make_celery worker --concurrency=4 --loglevel=info
     volumes:
       - .:/app
