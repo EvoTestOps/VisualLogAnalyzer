@@ -34,7 +34,8 @@ def test_train_form(
     runs_filter_id,
     mask_input_id,
     vectorizer_id,
-    results_redirect_id=None,
+    results_redirect_id,
+    analysis_name_id,
 ):
     submit_btn_tr = submit_button(submit_id, "Analyze")
 
@@ -50,6 +51,7 @@ def test_train_form(
 
     form_tr = dbc.Form(
         [
+            dbc.Row(analysis_name_input(analysis_name_id), class_name="mb-3"),
             dbc.Row(
                 [
                     directory_dropdown_input(train_data_id, "Train data directory"),
@@ -91,12 +93,14 @@ def test_train_file_level_form(
     mask_input_id,
     vectorizer_id,
     results_redirect_id,
+    analysis_name_id,
     manual_filenames=False,
 ):
     submit_btn_tr = submit_button(submit_id, "Analyze")
 
     form = dbc.Form(
         [
+            dbc.Row(analysis_name_input(analysis_name_id), class_name="mb-3"),
             dbc.Row(
                 [
                     directory_dropdown_input(train_data_id, "Train data directory"),
@@ -154,7 +158,7 @@ def directory_level_viz_form(
 
     form = dbc.Form(
         [
-            dbc.Row(analysis_name_input(analysis_name_id)),
+            dbc.Row(analysis_name_input(analysis_name_id), class_name="mb-3"),
             dbc.Row(
                 [
                     directory_dropdown_input(directory_id),
@@ -192,11 +196,13 @@ def file_level_viz_form(
     mask_id,
     vectorizer_id,
     results_redirect_id,
+    analysis_name_id,
 ):
     submit_btn_ut_file = submit_button(submit_id, "Analyze")
 
     form = dbc.Form(
         [
+            dbc.Row(analysis_name_input(analysis_name_id), class_name="mb-3"),
             dbc.Row(
                 [
                     directory_dropdown_input(directory_id),
@@ -236,11 +242,13 @@ def distance_run_level_form(
     mask_id,
     vectorizer_id,
     results_redirect_id,
+    analysis_name_id,
 ):
     submit_btn = submit_button(submit_id, "Analyze")
 
     form = dbc.Form(
         [
+            dbc.Row(analysis_name_input(analysis_name_id), class_name="mb-3"),
             dbc.Row(
                 [
                     directory_dropdown_input(directory_id),
@@ -281,12 +289,14 @@ def distance_file_level_form(
     mask_id,
     vectorizer_id,
     results_redirect_id,
+    analysis_name_id,
     manual_filenames=False,
 ):
     submit_btn = submit_button(submit_id, "Analyze")
 
     form = dbc.Form(
         [
+            dbc.Row(analysis_name_input(analysis_name_id), class_name="mb-3"),
             dbc.Row(
                 [
                     directory_dropdown_input(directory_id),

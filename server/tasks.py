@@ -18,6 +18,7 @@ from server.analysis.analysis_runners import (
 def async_run_anomaly_detection(
     self,
     project_id: int,
+    analysis_name: str | None,
     train_data_path: str,
     test_data_path: str,
     models: list[str],
@@ -36,6 +37,7 @@ def async_run_anomaly_detection(
     try:
         result = run_anomaly_detection_analysis(
             project_id,
+            analysis_name,
             train_data_path,
             test_data_path,
             models,
@@ -200,6 +202,7 @@ def async_create_umap(
 def async_log_distance(
     self,
     project_id: int,
+    analysis_name: str | None,
     directory_path: str,
     target_run: str,
     comparison_runs: list[str] | None,
@@ -218,6 +221,7 @@ def async_log_distance(
     try:
         result = run_log_distance_analysis(
             project_id,
+            analysis_name,
             directory_path,
             target_run,
             comparison_runs,

@@ -55,6 +55,7 @@ def run_log_distance(
     enhancement,
     vectorizer_type,
     mask_type=None,
+    analysis_name=None,
     level="directory",
 ):
 
@@ -66,6 +67,7 @@ def run_log_distance(
         "mask_type": mask_type,
         "vectorizer": vectorizer_type,
         "file_level": (level == "file"),
+        "name": analysis_name,
     }
     response, error = make_api_call(payload, f"log-distance/{project_id}")
     if error or response is None:
@@ -82,6 +84,7 @@ def run_anomaly_detection(
     include_items,
     mask_type,
     vectorizer_type,
+    analysis_name=None,
     log_format="raw",
     level="directory",
 ):
@@ -94,6 +97,7 @@ def run_anomaly_detection(
         include_items,
         mask_type,
         vectorizer_type,
+        analysis_name,
         level,
     )
 
@@ -263,6 +267,7 @@ def _build_test_train_payload(
     include_items,
     mask_type,
     vectorizer_type,
+    analysis_name,
     level="directory",
 ):
     payload = {
@@ -273,6 +278,7 @@ def _build_test_train_payload(
         "item_list_col": enhancement,
         "mask_type": mask_type,
         "vectorizer": vectorizer_type,
+        "name": analysis_name,
     }
 
     if level == "directory":

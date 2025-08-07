@@ -44,9 +44,11 @@ def manual_test_train(project_id):
     run_level = validation_result.run_level
     mask_type = validation_result.mask_type
     vectorizer = validation_result.vectorizer
+    analysis_name = validation_result.name
 
     task = async_run_anomaly_detection.delay(
         project_id,
+        analysis_name,
         train_data_path,
         test_data_path,
         models,
@@ -132,9 +134,11 @@ def log_distance(project_id):
     file_level = validation_result.file_level
     mask_type = validation_result.mask_type
     vectorizer = validation_result.vectorizer
+    analysis_name = validation_result.name
 
     task = async_log_distance.delay(
         project_id,
+        analysis_name,
         dir_path,
         target_run,
         comparison_runs,

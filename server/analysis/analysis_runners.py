@@ -132,6 +132,7 @@ def run_umap_analysis(
 
 def run_log_distance_analysis(
     project_id: int,
+    analysis_name: str | None,
     directory_path: str,
     target_run: str,
     comparison_runs: list[str] | None,
@@ -173,6 +174,7 @@ def run_log_distance_analysis(
         "directory_path": directory_path,
         "target": target_run,
         "match_filenames": match_filenames if match_flag else None,
+        "name": analysis_name,
     }
     analysis_type = "distance-file-level" if file_level else "distance-directory-level"
 
@@ -186,6 +188,7 @@ def run_log_distance_analysis(
 
 def run_anomaly_detection_analysis(
     project_id: int,
+    analysis_name: str | None,
     train_data_path: str,
     test_data_path: str,
     models: list[str],
@@ -271,6 +274,7 @@ def run_anomaly_detection_analysis(
         "models": ";".join(models),
         "analysis_level": level,
         "match_filenames": match_filenames if level != "directory" else None,
+        "name": analysis_name,
     }
 
     result = store_and_format_result(results, project_id, analysis_type, metadata)

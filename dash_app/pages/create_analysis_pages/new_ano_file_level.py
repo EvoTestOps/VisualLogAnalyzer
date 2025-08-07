@@ -34,6 +34,7 @@ config = {
         "mask_input_id": "mask-ano-file-new",
         "vectorizer_id": "vectorizer-ano-file-new",
         "results_redirect_id": "results-redirect-ano-file-new",
+        "analysis_name_id": "analysis-name-ano-file-new",
     },
     "input_fields": [
         "train_data_id",
@@ -44,6 +45,7 @@ config = {
         "mask_input_id",
         "vectorizer_id",
         "results_redirect_id",
+        "analysis_name_id",
     ],
 }
 

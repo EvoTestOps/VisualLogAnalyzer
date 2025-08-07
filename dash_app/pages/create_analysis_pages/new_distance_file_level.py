@@ -33,6 +33,7 @@ config = {
         "mask_id": "mask-dis-file-new",
         "vectorizer_id": "vectorizer-dis-file-new",
         "results_redirect_id": "results-redirect-dis-file-new",
+        "analysis_name_id": "analysis-name-dis-file-new",
     },
     "input_fields": [
         "directory_id",
@@ -42,6 +43,7 @@ config = {
         "vectorizer_id",
         "mask_id",
         "results_redirect_id",
+        "analysis_name_id",
     ],
 }
 
