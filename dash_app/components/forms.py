@@ -21,6 +21,7 @@ from dash_app.components.form_inputs import (
     manual_filename_input,
     files_to_include_input,
     columns_to_include_input,
+    analysis_name_input,
 )
 
 
@@ -147,11 +148,13 @@ def directory_level_viz_form(
     mask_id,
     vectorizer_id,
     results_redirect_id,
+    analysis_name_id,
 ):
     submit_btn_ut = submit_button(submit_id, "Analyze")
 
     form = dbc.Form(
         [
+            dbc.Row(analysis_name_input(analysis_name_id)),
             dbc.Row(
                 [
                     directory_dropdown_input(directory_id),

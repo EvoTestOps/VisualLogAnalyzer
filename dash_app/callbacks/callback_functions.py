@@ -23,6 +23,7 @@ def run_high_level_analysis(
     analysis_type,
     mask_type=None,
     vectorizer_type=None,
+    analysis_name=None,
     level="directory",
 ):
     endpoint_map = {
@@ -36,6 +37,7 @@ def run_high_level_analysis(
         "file_level": (level == "file"),
         "mask_type": mask_type,
         "vectorizer": vectorizer_type,
+        "name": analysis_name,
     }
 
     response, error = make_api_call(payload, f"{endpoint}/{project_id}")

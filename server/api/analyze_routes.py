@@ -103,8 +103,9 @@ def run_file_counts(project_id: int):
         return validation_result
 
     dir_path = validation_result.directory_path
+    analysis_name = validation_result.name
 
-    task = async_run_file_counts.delay(project_id, dir_path)
+    task = async_run_file_counts.delay(project_id, analysis_name, dir_path)
     return jsonify({"task_id": task.id}), 202
 
 

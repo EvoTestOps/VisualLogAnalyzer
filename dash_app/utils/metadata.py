@@ -61,6 +61,7 @@ def format_metadata_rows(metadata: dict) -> list[html.Tr]:
 
 def _sort_metadata(metadata: dict) -> dict:
     order = [
+        "name",
         "analysis_type",
         "analysis_sub_type",
         "analysis_level",
@@ -96,8 +97,8 @@ def format_analysis_overview(analyses_data: list[dict]) -> list[dbc.ListGroupIte
                                     _format_key_title(
                                         analysis["analysis_sub_type"], divider="-"
                                     )
-                                    if analysis["analysis_sub_type"] != "umap"
-                                    else "UMAP"
+                                    if not analysis.get("name")
+                                    else analysis.get("name", "")
                                 ),
                                 className="mb-0",
                             ),

@@ -72,13 +72,15 @@ def async_run_anomaly_detection(
 
 
 @shared_task(bind=True, ignore_results=False)
-def async_run_file_counts(self, project_id: int, directory_path: str) -> dict:
+def async_run_file_counts(
+    self, project_id: int, analysis_name: str | None, directory_path: str
+) -> dict:
     start_time = datetime.now(timezone.utc).isoformat()
     meta = {"analysis_type": "File counts", "start_time": start_time}
     self.update_state(state="STARTED", meta=meta)
 
     try:
-        result = run_file_count_analysis(project_id, directory_path)
+        result = run_file_count_analysis(project_id, analysis_name, directory_path)
 
         completed_time = datetime.now(timezone.utc).isoformat()
         meta["completed_time"] = completed_time

@@ -8,6 +8,7 @@ from typing_extensions import Self
 class AnomalyDetectionParams(BaseModel):
     train_data_path: str
     test_data_path: str
+    name: Optional[str]
     models: List[str] = ["kmeans"]
     item_list_col: str = "e_words"
     log_format: Literal["raw", "lo2"] = "raw"

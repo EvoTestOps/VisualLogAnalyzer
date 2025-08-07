@@ -8,12 +8,12 @@ class Analysis(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
 
-    name = db.Column(db.String, nullable=False)
-
     results_path = db.Column(db.String, nullable=False)
     analysis_type = db.Column(db.String, nullable=False)
     analysis_sub_type = db.Column(db.String, nullable=False)
     analysis_level = db.Column(db.String, nullable=False)
+
+    name = db.Column(db.String)
 
     mask_type = db.Column(db.String)
     vectorizer = db.Column(db.String)
