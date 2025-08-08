@@ -115,6 +115,7 @@ def format_analysis_overview(analyses_data: list[dict]) -> list[dbc.ListGroupIte
                 ),
             ],
             label="⋮",
+            color="secondary",
             caret=False,
         )
 
