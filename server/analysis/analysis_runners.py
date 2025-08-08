@@ -206,6 +206,7 @@ def run_anomaly_detection_analysis(
     directory_level: bool,
     mask_type: str,
     vectorizer: str,
+    log=lambda msg: None,
 ) -> dict:
 
     # TODO: Rather than getting boolean values, take str for level
@@ -216,9 +217,11 @@ def run_anomaly_detection_analysis(
     else:
         level = "line"
 
+    log("Getting match filenames setting")
     settings = Settings.query.filter_by(project_id=project_id).first_or_404()
     match_filenames = settings.match_filenames
 
+    log(f"Creating {vectorizer} vectorizer")
     vectorizer_object = create_vectorizer(vectorizer)
     pipeline = ManualTrainTestPipeline(
         model_names=models,
@@ -231,35 +234,46 @@ def run_anomaly_detection_analysis(
         mask_type=mask_type,
     )
 
+    log("Loading data")
     pipeline.load()
+
+    log(f"Enhancing data with enhancement: {item_list_col} and mask: {mask_type}")
     pipeline.enhance()
 
+    log("Running anomaly detection")
+    log(f"Running with models: {models}")
     if match_filenames:
+        log("Match filenames is on")
         if level == "file":
             pipeline.analyze_file_group_by_filenames()
         elif level == "line":
             pipeline.analyze_line_group_by_filenames()
         else:
+            log("Not matching filenames since level is directory")
             pipeline.aggregate_to_run_level()
             pipeline.analyze()
     else:
+        log("Match filenames is off")
         if level == "file":
             pipeline.aggregate_to_file_level()
         elif level == "directory":
             pipeline.aggregate_to_run_level()
         pipeline.analyze()
 
+    log("Anomaly detection is complete")
     results = pipeline.results
     if results is None:
         raise ValueError("Analysis failed to create results")
 
     if directory_level or file_level:
+        log("Normalizing distance measures")
         results = calculate_zscore_sum_anos(
             results, distance_columns=get_prediction_cols(results)
         )
         results = results.drop(item_list_col)
 
     if level == "line":
+        log("Calculating moving averages")
         prediction_columns = [col for col in results.columns if "pred_ano_proba" in col]
         df_moving_avg_100 = calculate_moving_average_by_columns(
             results, 100, prediction_columns
@@ -284,8 +298,9 @@ def run_anomaly_detection_analysis(
         "name": analysis_name,
     }
 
+    log("Storing and formatting results")
     result = store_and_format_result(results, project_id, analysis_type, metadata)
 
+    log("Analysis complete")
     del pipeline
-
     return result

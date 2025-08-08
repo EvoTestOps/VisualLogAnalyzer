@@ -32,6 +32,7 @@ def async_run_anomaly_detection(
 ) -> dict:
     start_time = datetime.now(timezone.utc).isoformat()
     meta = {"analysis_type": "Anomaly detection", "start_time": start_time}
+    logs = []
     self.update_state(state="STARTED", meta=meta)
 
     try:
@@ -48,6 +49,7 @@ def async_run_anomaly_detection(
             directory_level,
             mask_type,
             vectorizer,
+            log=_make_logger(self, meta, logs),
         )
 
         completed_time = datetime.now(timezone.utc).isoformat()
@@ -55,7 +57,7 @@ def async_run_anomaly_detection(
 
         return {
             "result": result,
-            "meta": meta,
+            "meta": {**meta, "logs": logs},
         }
     except Exception as exc:
         completed_time = datetime.now(timezone.utc).isoformat()
@@ -81,19 +83,14 @@ def async_run_file_counts(
     meta = {"analysis_type": "File counts", "start_time": start_time}
     logs = []
 
-    def log_status(msg: str):
-        log_entry = {
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "message": msg,
-        }
-        logs.append(log_entry)
-        self.update_state(state="PROGRESS", meta={**meta, "logs": logs})
-
     self.update_state(state="STARTED", meta=meta)
 
     try:
         result = run_file_count_analysis(
-            project_id, analysis_name, directory_path, log=log_status
+            project_id,
+            analysis_name,
+            directory_path,
+            log=_make_logger(self, meta, logs),
         )
 
         completed_time = datetime.now(timezone.utc).isoformat()
@@ -264,3 +261,15 @@ def async_log_distance(
         raise Ignore()
     finally:
         gc.collect()
+
+
+def _make_logger(self, meta, logs):
+    def log_status(msg: str):
+        log_entry = {
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "message": msg,
+        }
+        logs.append(log_entry)
+        self.update_state(state="PROGRESS", meta={**meta, "logs": logs})
+
+    return log_status
