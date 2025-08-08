@@ -13,6 +13,7 @@ class LogDistanceParams(BaseModel):
     file_level: bool = False
     mask_type: Optional[str] = None
     vectorizer: Literal["count", "tfidf"] = "count"
+    name: Optional[str]
 
     @field_validator("directory_path", mode="after")
     @classmethod

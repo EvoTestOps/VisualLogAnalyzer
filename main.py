@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_migrate import Migrate
 
 from dash_app import create_dash_app
 from server.config import Config
@@ -17,6 +18,8 @@ def create_app():
 
     db.init_app(server)
 
+    migrate = Migrate(server, db)
+
     server.register_blueprint(analyze_bp, url_prefix="/api")
     server.register_blueprint(crud_bp, url_prefix="/api")
     server.register_blueprint(task_bp, url_prefix="/api")
@@ -24,8 +27,8 @@ def create_app():
 
     create_dash_app(server)
 
-    with server.app_context():
-        db.create_all()
+    # with server.app_context():
+    #     db.create_all()
 
     celery_init_app(server)
     return server

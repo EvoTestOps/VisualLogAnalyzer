@@ -8,6 +8,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . /app
 
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 EXPOSE 5000
 
-CMD ["waitress-serve", "--host=0.0.0.0", "--port=5000", "--call", "main:create_app"]
+ENTRYPOINT ["/entrypoint.sh"]

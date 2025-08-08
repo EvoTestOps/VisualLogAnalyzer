@@ -396,3 +396,12 @@ def columns_to_include_input(id):
             ),
         ],
     )
+
+
+def analysis_name_input(id):
+    return dbc.Col(
+        [
+            dbc.Label("Analysis name", html_for=id, width="auto"),
+            dbc.Input(id=id, placeholder="Optional", type="text"),
+        ],
+    )

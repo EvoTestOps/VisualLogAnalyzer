@@ -14,6 +14,7 @@ services:
       CELERY_BROKER_URL: "${CELERY_BROKER_URL}"
       LOG_DATA_DIRECTORY: "/app/log_data/"
       RESULTS_DIRECTORY: "/app/analysis_results/"
+      APP_CMD: "waitress-serve --host=0.0.0.0 --port=5000 --call main:create_app"
     depends_on:
       - celery
       - db
@@ -25,6 +26,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    entrypoint: []
     command: celery -A server.make_celery worker --concurrency=4 --loglevel=info
     volumes:
       - ${LOG_DATA_DIRECTORY}:/app/log_data/

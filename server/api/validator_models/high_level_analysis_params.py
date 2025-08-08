@@ -9,6 +9,7 @@ class UniqueTermsParams(BaseModel):
     directory_path: str = Field(alias="dir_path")
     item_list_col: str = "e_words"
     file_level: bool = False
+    name: Optional[str]
 
     @field_validator("directory_path", mode="after")
     @classmethod
@@ -22,6 +23,7 @@ class UmapParams(BaseModel):
     file_level: bool = False
     vectorizer: Literal["count", "tfidf"] = "count"
     mask_type: Optional[str] = None
+    name: Optional[str]
 
     @field_validator("directory_path", mode="after")
     @classmethod
@@ -31,6 +33,7 @@ class UmapParams(BaseModel):
 
 class FileCountsParams(BaseModel):
     directory_path: str = Field(alias="dir_path")
+    name: Optional[str]
 
     @field_validator("directory_path", mode="after")
     @classmethod

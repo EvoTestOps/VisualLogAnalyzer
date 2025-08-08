@@ -13,6 +13,8 @@ class Analysis(db.Model):
     analysis_sub_type = db.Column(db.String, nullable=False)
     analysis_level = db.Column(db.String, nullable=False)
 
+    name = db.Column(db.String)
+
     mask_type = db.Column(db.String)
     vectorizer = db.Column(db.String)
     enhancement = db.Column(db.String)
@@ -36,6 +38,7 @@ class Analysis(db.Model):
     def to_dict(self):
         return {
             "id": self.id,
+            "name": self.name,
             "project_id": self.project_id,
             "analysis_type": self.analysis_type,
             "analysis_sub_type": self.analysis_sub_type,

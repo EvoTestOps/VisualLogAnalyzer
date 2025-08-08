@@ -28,6 +28,7 @@ config = {
         "mask_id": "mask-high-dir-new",
         "vectorizer_id": "vectorizer-high-dir-new",
         "results_redirect_id": "results-redirect-high-dir-new",
+        "analysis_name_id": "analysis-name-high-dir-new",
     },
     "input_fields": [
         "directory_id",
@@ -35,6 +36,7 @@ config = {
         "mask_id",
         "vectorizer_id",
         "results_redirect_id",
+        "analysis_name_id",
     ],
 }
 

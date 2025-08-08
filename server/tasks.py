@@ -18,6 +18,7 @@ from server.analysis.analysis_runners import (
 def async_run_anomaly_detection(
     self,
     project_id: int,
+    analysis_name: str | None,
     train_data_path: str,
     test_data_path: str,
     models: list[str],
@@ -36,6 +37,7 @@ def async_run_anomaly_detection(
     try:
         result = run_anomaly_detection_analysis(
             project_id,
+            analysis_name,
             train_data_path,
             test_data_path,
             models,
@@ -72,13 +74,15 @@ def async_run_anomaly_detection(
 
 
 @shared_task(bind=True, ignore_results=False)
-def async_run_file_counts(self, project_id: int, directory_path: str) -> dict:
+def async_run_file_counts(
+    self, project_id: int, analysis_name: str | None, directory_path: str
+) -> dict:
     start_time = datetime.now(timezone.utc).isoformat()
     meta = {"analysis_type": "File counts", "start_time": start_time}
     self.update_state(state="STARTED", meta=meta)
 
     try:
-        result = run_file_count_analysis(project_id, directory_path)
+        result = run_file_count_analysis(project_id, analysis_name, directory_path)
 
         completed_time = datetime.now(timezone.utc).isoformat()
         meta["completed_time"] = completed_time
@@ -105,7 +109,12 @@ def async_run_file_counts(self, project_id: int, directory_path: str) -> dict:
 
 @shared_task(bind=True, ignore_results=False)
 def async_run_unique_terms(
-    self, project_id: int, directory_path: str, item_list_col: str, file_level: bool
+    self,
+    project_id: int,
+    analysis_name: str | None,
+    directory_path: str,
+    item_list_col: str,
+    file_level: bool,
 ) -> dict:
     start_time = datetime.now(timezone.utc).isoformat()
     meta = {"analysis_type": "Unique terms", "start_time": start_time}
@@ -113,7 +122,7 @@ def async_run_unique_terms(
 
     try:
         result = run_unique_terms_analysis(
-            project_id, directory_path, item_list_col, file_level
+            project_id, analysis_name, directory_path, item_list_col, file_level
         )
 
         completed_time = datetime.now(timezone.utc).isoformat()
@@ -143,6 +152,7 @@ def async_run_unique_terms(
 def async_create_umap(
     self,
     project_id: int,
+    analysis_name: str | None,
     directory_path: str,
     item_list_col: str,
     file_level: bool,
@@ -156,7 +166,13 @@ def async_create_umap(
 
     try:
         result = run_umap_analysis(
-            project_id, directory_path, item_list_col, file_level, vectorizer, mask_type
+            project_id,
+            analysis_name,
+            directory_path,
+            item_list_col,
+            file_level,
+            vectorizer,
+            mask_type,
         )
 
         completed_time = datetime.now(timezone.utc).isoformat()
@@ -186,6 +202,7 @@ def async_create_umap(
 def async_log_distance(
     self,
     project_id: int,
+    analysis_name: str | None,
     directory_path: str,
     target_run: str,
     comparison_runs: list[str] | None,
@@ -204,6 +221,7 @@ def async_log_distance(
     try:
         result = run_log_distance_analysis(
             project_id,
+            analysis_name,
             directory_path,
             target_run,
             comparison_runs,

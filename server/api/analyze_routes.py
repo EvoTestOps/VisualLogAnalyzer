@@ -44,9 +44,11 @@ def manual_test_train(project_id):
     run_level = validation_result.run_level
     mask_type = validation_result.mask_type
     vectorizer = validation_result.vectorizer
+    analysis_name = validation_result.name
 
     task = async_run_anomaly_detection.delay(
         project_id,
+        analysis_name,
         train_data_path,
         test_data_path,
         models,
@@ -71,8 +73,11 @@ def run_unique_terms(project_id: int):
     dir_path = validation_result.directory_path
     item_list_col = validation_result.item_list_col
     file_level = validation_result.file_level
+    analysis_name = validation_result.name
 
-    task = async_run_unique_terms.delay(project_id, dir_path, item_list_col, file_level)
+    task = async_run_unique_terms.delay(
+        project_id, analysis_name, dir_path, item_list_col, file_level
+    )
 
     return jsonify({"task_id": task.id}), 202
 
@@ -88,9 +93,16 @@ def create_umap(project_id):
     file_level = validation_result.file_level
     vectorizer = validation_result.vectorizer
     mask_type = validation_result.mask_type
+    analysis_name = validation_result.name
 
     task = async_create_umap.delay(
-        project_id, dir_path, item_list_col, file_level, vectorizer, mask_type
+        project_id,
+        analysis_name,
+        dir_path,
+        item_list_col,
+        file_level,
+        vectorizer,
+        mask_type,
     )
 
     return jsonify({"task_id": task.id}), 202
@@ -103,8 +115,9 @@ def run_file_counts(project_id: int):
         return validation_result
 
     dir_path = validation_result.directory_path
+    analysis_name = validation_result.name
 
-    task = async_run_file_counts.delay(project_id, dir_path)
+    task = async_run_file_counts.delay(project_id, analysis_name, dir_path)
     return jsonify({"task_id": task.id}), 202
 
 
@@ -121,9 +134,11 @@ def log_distance(project_id):
     file_level = validation_result.file_level
     mask_type = validation_result.mask_type
     vectorizer = validation_result.vectorizer
+    analysis_name = validation_result.name
 
     task = async_log_distance.delay(
         project_id,
+        analysis_name,
         dir_path,
         target_run,
         comparison_runs,

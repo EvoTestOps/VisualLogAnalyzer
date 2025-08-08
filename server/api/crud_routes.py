@@ -180,3 +180,17 @@ def get_analysis_metadata(analysis_id: int):
     metadata["project_name"] = analysis.project.name
 
     return jsonify(metadata), 200
+
+
+@crud_bp.route("/analyses/<int:analysis_id>/name", methods=["PATCH"])
+def update_analysis_name(analysis_id: int):
+    analysis = Analysis.query.filter_by(id=analysis_id).first_or_404()
+
+    name = request.get_json().get("name")
+    if not name:
+        return {"error": "Name is required"}, 400
+
+    analysis.name = name
+    db.session.commit()
+
+    return {}, 200
