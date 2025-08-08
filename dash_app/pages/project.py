@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 
 import dash
 import dash_bootstrap_components as dbc
-from dash import ALL, Input, Output, State, callback, dcc, html
+from dash import ALL, MATCH, Input, Output, State, callback, dcc, html
 
 from dash_app.callbacks.callback_functions import (
     make_api_call,
@@ -521,11 +521,46 @@ def open_task_logs_modal(_, task_logs):
 
         modal_children = [
             dbc.ModalHeader(dbc.ModalTitle(f"Logs for task_id {task_id}")),
-            dbc.ModalBody(modal_body),
+            dbc.ModalBody(
+                children=modal_body,
+                id={"type": "task-logs-modal-body", "index": task_id},
+            ),
+            dbc.ModalFooter(
+                dbc.Button(
+                    "Refresh Logs", id={"type": "refresh-logs", "index": task_id}
+                )
+            ),
         ]
         return True, modal_children
 
     raise dash.exceptions.PreventUpdate
+
+
+@callback(
+    Output({"type": "task-logs-modal-body", "index": MATCH}, "children"),
+    Input({"type": "refresh-logs", "index": MATCH}, "n_clicks"),
+    State("task-logs-store", "data"),
+    prevent_initial_call=True,
+)
+def refresh_task_logs(n_clicks, task_logs):
+    if not n_clicks:
+        raise dash.exceptions.PreventUpdate
+
+    ctx = dash.callback_context
+    if not ctx.triggered or ctx.triggered_id is None:
+        raise dash.exceptions.PreventUpdate
+
+    task_id = ctx.triggered_id["index"]
+
+    log_entries = next(
+        (entry["logs"] for entry in task_logs if entry["id"] == task_id), []
+    )
+
+    if not log_entries:
+        return html.Pre("No logs found")
+    else:
+        log_texts = [f"[{log['timestamp']}] {log['message']}" for log in log_entries]
+        return html.Pre("\n".join(log_texts))
 
 
 @callback(
