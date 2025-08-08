@@ -90,6 +90,7 @@ def format_analysis_overview(analyses_data: list[dict]) -> list[dbc.ListGroupIte
     group_items = []
 
     for analysis in analyses_data:
+        analysis_id = analysis["id"]
         analysis_name = analysis.get("name")
         sub_type_title = _format_key_title(analysis["analysis_sub_type"], divider="-")
         level_title = _format_key_title(analysis["analysis_level"])
@@ -99,6 +100,23 @@ def format_analysis_overview(analyses_data: list[dict]) -> list[dbc.ListGroupIte
         title_block = [html.H4(analysis_name or sub_type_title, className="mb-0")]
 
         bottom_left_items = []
+
+        edit_dropdown = dbc.DropdownMenu(
+            children=[
+                dbc.DropdownMenuItem(
+                    "Edit name",
+                    id={"type": "edit-button", "index": str(analysis_id)},
+                    n_clicks=0,
+                ),
+                dbc.DropdownMenuItem(
+                    "Delete",
+                    id={"type": "delete-button", "index": str(analysis_id)},
+                    n_clicks=0,
+                ),
+            ],
+            label="⋮",
+            caret=False,
+        )
 
         if analysis_name:
             bottom_left_items.append(
@@ -119,7 +137,8 @@ def format_analysis_overview(analyses_data: list[dict]) -> list[dbc.ListGroupIte
                 html.Div(
                     [
                         html.Div(bottom_left_items),
-                        delete_button(id=str(analysis["id"]), label="Delete"),
+                        edit_dropdown,
+                        # delete_button(id=str(analysis["id"]), label="Delete"),
                     ],
                     className="d-flex justify-content-between align-items-center",
                 ),

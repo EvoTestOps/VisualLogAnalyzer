@@ -288,6 +288,9 @@ def create_project_layout(
     task_error_modal_id,
     manual_filename_id,
     clear_recent_id,
+    edit_name_modal_id,
+    edit_name_input_id,
+    submit_edit_name_id,
 ):
 
     error_toast_row = dbc.Row(error_toast(error_toast_id))
@@ -364,12 +367,33 @@ def create_project_layout(
 
     task_error_modal = dbc.Row(dbc.Modal(id=task_error_modal_id, is_open=False))
 
+    analysis_edit_name_modal = dbc.Row(
+        dbc.Modal(
+            [
+                dbc.ModalHeader("Edit Analysis Name"),
+                dbc.ModalBody(
+                    dbc.Input(
+                        id=edit_name_input_id, type="text", placeholder="New name"
+                    )
+                ),
+                dbc.ModalFooter(
+                    dbc.Button(
+                        "Save", id=submit_edit_name_id, color="primary", n_clicks=0
+                    )
+                ),
+            ],
+            id=edit_name_modal_id,
+            is_open=False,
+        )
+    )
+
     layout = [
         dbc.Container(
             [
                 error_toast_row,
                 success_toast_row,
                 task_error_modal,
+                analysis_edit_name_modal,
                 header_row,
                 dbc.Row([group_col, nav_col]),
             ]

@@ -1,5 +1,5 @@
 from urllib.parse import parse_qs, urlencode
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 
 import dash
 import dash_bootstrap_components as dbc
@@ -29,6 +29,7 @@ def layout(project_id=None, **kwargs):
                     message="Are you sure you want to delete this analysis. All data related to this analysis will be lost.",
                 ),
                 dcc.Store(id="delete-analysis-id"),
+                dcc.Store(id="edit-analysis-id"),
                 dcc.Store(
                     id="project-task-store",
                     storage_type="session",
@@ -62,6 +63,9 @@ def layout(project_id=None, **kwargs):
         "task-error-modal-project",
         "manual-filename-project",
         "clear-recent-project",
+        "edit-name-modal",
+        "edit-name-input",
+        "submit-edit-name",
     )
 
 
@@ -175,9 +179,12 @@ def display_alert(n_clicks):
     #  on the first page open and will return all the buttons in the callback_context.
     # So we need to manually check that non of the buttons were pressed.
     if all([(btn["value"] == 0) for btn in ctx.triggered]):
-        return dash.no_update
+        return dash.no_update, dash.no_update
 
-    return True, ctx.triggered_id["index"]
+    if ctx.triggered_id:
+        return True, ctx.triggered_id["index"]
+
+    return dash.no_update, dash.no_update
 
 
 @callback(
@@ -200,6 +207,66 @@ def delete_analysis(submit_n_clicks, analysis_id, url_path):
         return (error, True, dash.no_update, False, dash.no_update)
 
     return (dash.no_update, False, "Analysis deleted", True, url_path)
+
+
+@callback(
+    Output("edit-name-modal", "is_open"),
+    Output("edit-analysis-id", "data"),
+    Input({"type": "edit-button", "index": ALL}, "n_clicks"),
+    prevent_initial_call=True,
+)
+def display_edit_modal(n_clicks):
+    ctx = dash.callback_context
+
+    if all([(btn["value"] == 0) for btn in ctx.triggered]):
+        return dash.no_update, dash.no_update
+
+    if ctx.triggered_id:
+        return True, ctx.triggered_id["index"]
+
+    return dash.no_update, dash.no_update
+
+
+@callback(
+    Output("error-toast-project", "children", allow_duplicate=True),
+    Output("error-toast-project", "is_open", allow_duplicate=True),
+    Output("success-toast-project", "children", allow_duplicate=True),
+    Output("success-toast-project", "is_open", allow_duplicate=True),
+    Output("edit-name-modal", "is_open", allow_duplicate=True),
+    Output("url", "href", allow_duplicate=True),
+    Input("submit-edit-name", "n_clicks"),
+    State("edit-name-input", "value"),
+    State("edit-analysis-id", "data"),
+    State("url", "href"),
+    prevent_initial_call=True,
+)
+def edit_analysis_name(submit_n_clicks, new_name, analysis_id, url_path):
+    if not submit_n_clicks or not analysis_id:
+        return (
+            dash.no_update,
+            False,
+            dash.no_update,
+            False,
+            dash.no_update,
+            dash.no_update,
+        )
+    if not new_name:
+        return (
+            "Analysis name cannot be empty",
+            True,
+            dash.no_update,
+            False,
+            False,
+            dash.no_update,
+        )
+
+    response, error = make_api_call(
+        {"name": new_name}, f"analyses/{analysis_id}/name", "PATCH"
+    )
+    if error or not response:
+        return (error, True, dash.no_update, False, False, dash.no_update)
+
+    return (dash.no_update, False, "Name changed successfully", True, False, url_path)
 
 
 @callback(
