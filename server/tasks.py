@@ -79,17 +79,29 @@ def async_run_file_counts(
 ) -> dict:
     start_time = datetime.now(timezone.utc).isoformat()
     meta = {"analysis_type": "File counts", "start_time": start_time}
+    logs = []
+
+    def log_status(msg: str):
+        log_entry = {
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "message": msg,
+        }
+        logs.append(log_entry)
+        self.update_state(state="PROGRESS", meta={**meta, "logs": logs})
+
     self.update_state(state="STARTED", meta=meta)
 
     try:
-        result = run_file_count_analysis(project_id, analysis_name, directory_path)
+        result = run_file_count_analysis(
+            project_id, analysis_name, directory_path, log=log_status
+        )
 
         completed_time = datetime.now(timezone.utc).isoformat()
         meta["completed_time"] = completed_time
 
         return {
             "result": result,
-            "meta": meta,
+            "meta": {**meta, "logs": logs},
         }
     except Exception as exc:
         completed_time = datetime.now(timezone.utc).isoformat()

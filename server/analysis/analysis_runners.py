@@ -29,11 +29,18 @@ from server.analysis.utils.analysis_helpers import (
 
 
 def run_file_count_analysis(
-    project_id: int, analysis_name: str | None, directory_path: str
+    project_id: int,
+    analysis_name: str | None,
+    directory_path: str,
+    log=lambda msg: None,
 ) -> dict:
+    log(f"Loading data from directory: {directory_path}")
     df = load_data(directory_path)
+
+    log("Counting files and lines")
     result = files_and_lines_count(df)
 
+    log("Storing and formatting results")
     metadata = {
         "analysis_level": "directory",
         "directory_path": directory_path,
@@ -44,8 +51,8 @@ def run_file_count_analysis(
         result, project_id, "directory-level-visualisations", metadata
     )
 
+    log("Analysis complete")
     del df
-
     return result
 
 

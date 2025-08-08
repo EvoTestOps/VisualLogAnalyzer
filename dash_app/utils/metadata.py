@@ -191,15 +191,26 @@ def _format_elapsed_seconds(seconds: int):
 
 def format_task_overview_row(task_id: str, meta: dict, state: str) -> html.Tr:
     match state:
-        case "STARTED" | "PENDING":
-            task_state = "Running"
+        case "STARTED" | "PENDING" | "PROGRESS":
+            task_state = html.Span(
+                "Running",
+                id={"type": "task-logs", "index": task_id},
+                style={"cursor": "pointer", "textDecoration": "underline"},
+                n_clicks=0,
+            )
         case "SUCCESS":
-            task_state = "Success"
+            task_state = html.Span(
+                "Success",
+                id={"type": "task-logs", "index": task_id},
+                style={"cursor": "pointer", "textDecoration": "underline"},
+                n_clicks=0,
+            )
         case "FAILURE":
             task_state = html.Span(
                 "Failed",
                 id={"type": "task-error", "index": task_id},
                 style={"cursor": "pointer", "textDecoration": "underline"},
+                n_clicks=0,
             )
         case _:
             task_state = "unknown"
