@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from urllib.parse import parse_qs
 
 import dash_bootstrap_components as dbc
@@ -184,31 +184,54 @@ def format_project_overview(project_data: list[dict]) -> list[dbc.ListGroupItem]
 
 def _format_elapsed_seconds(seconds: int):
     if seconds < 60:
-        return f"{seconds} seconds"
+        return f"{seconds} sec"
     else:
-        return f"{int(seconds / 60)} minutes"
+        return f"{int(seconds / 60)} min"
+
+
+def _format_start_time(timestamp: str) -> str:
+    try:
+        utc_time = datetime.fromisoformat(timestamp)
+        # Should convert to system time but not sure how consistent it is with docker
+        corrected_time = utc_time.replace(tzinfo=timezone.utc).astimezone(tz=None)
+        return corrected_time.strftime("%H:%M")
+    except Exception:
+        return timestamp
 
 
 def format_task_overview_row(task_id: str, meta: dict, state: str) -> html.Tr:
     match state:
-        case "STARTED" | "PENDING":
-            task_state = "Running"
+        case "STARTED" | "PENDING" | "PROGRESS":
+            task_state = html.Span(
+                "Running",
+                id={"type": "task-logs", "index": task_id},
+                style={"cursor": "pointer", "textDecoration": "underline"},
+                n_clicks=0,
+            )
         case "SUCCESS":
-            task_state = "Success"
+            task_state = html.Span(
+                "Success",
+                id={"type": "task-logs", "index": task_id},
+                style={"cursor": "pointer", "textDecoration": "underline"},
+                n_clicks=0,
+            )
         case "FAILURE":
             task_state = html.Span(
                 "Failed",
                 id={"type": "task-error", "index": task_id},
                 style={"cursor": "pointer", "textDecoration": "underline"},
+                n_clicks=0,
             )
         case _:
             task_state = "unknown"
 
     formatted_time = _format_elapsed_seconds(meta.get("elapsed_seconds", 0))
+    start_time = _format_start_time(str(meta.get("start_time")))
 
     row_content = [
         html.Td(f"{meta.get("analysis_type", "unknown")}"),
         html.Td(task_state),
+        html.Td(start_time),
         html.Td(formatted_time),
     ]
 

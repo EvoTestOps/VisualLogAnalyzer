@@ -29,11 +29,18 @@ from server.analysis.utils.analysis_helpers import (
 
 
 def run_file_count_analysis(
-    project_id: int, analysis_name: str | None, directory_path: str
+    project_id: int,
+    analysis_name: str | None,
+    directory_path: str,
+    log=lambda msg: None,
 ) -> dict:
+    log(f"Loading data from directory: {directory_path}")
     df = load_data(directory_path)
+
+    log("Counting files and lines")
     result = files_and_lines_count(df)
 
+    log("Storing and formatting results")
     metadata = {
         "analysis_level": "directory",
         "directory_path": directory_path,
@@ -44,8 +51,8 @@ def run_file_count_analysis(
         result, project_id, "directory-level-visualisations", metadata
     )
 
+    log("Analysis complete")
     del df
-
     return result
 
 
@@ -55,13 +62,18 @@ def run_unique_terms_analysis(
     directory_path: str,
     item_list_col: str,
     file_level: bool,
+    log=lambda msg: None,
 ) -> dict:
+    log(f"Loading data from directory: {directory_path}")
     df = load_data(directory_path)
     if not file_level:
+        log("Counting unique terms by directory")
         unique_terms_count = unique_terms_count_by_run(df, item_list_col)
     else:
+        log("Counting unique terms by file")
         unique_terms_count = unique_terms_count_by_file(df, item_list_col)
 
+    log("Storing and formatting results")
     analysis_type = (
         "directory-level-visualisations"
         if not file_level
@@ -78,8 +90,8 @@ def run_unique_terms_analysis(
         unique_terms_count, project_id, analysis_type, metadata
     )
 
+    log("Analysis complete")
     del df
-
     return result
 
 
@@ -91,13 +103,18 @@ def run_umap_analysis(
     file_level: bool,
     vectorizer: str,
     mask_type: str,
+    log=lambda msg: None,
 ) -> dict:
+    log(f"Loading data from directory: {directory_path}")
     df = load_data(directory_path)
 
+    log(f"Creating {vectorizer} vectorizer")
     vectorizer_object = create_vectorizer(vectorizer)
+
     aggregate_func = aggregate_run_level if not file_level else aggregate_file_level
     group_col = "run" if not file_level else "seq_id"
 
+    log(f"Aggregating data with function: {aggregate_func}")
     df_agg = (
         aggregate_func(df, item_list_col, mask_type)
         .select(item_list_col)
@@ -105,9 +122,13 @@ def run_umap_analysis(
         .to_list()
     )
 
+    log("Creating umap embeddings")
     embeddings = create_umap_embeddings(df_agg, vectorizer_object)
+
+    log("Creating umap dataframe")
     umap_df = create_umap_df(df, embeddings, group_col=group_col)
 
+    log("Storing and formatting results")
     analysis_type = (
         "directory-level-visualisations"
         if not file_level
@@ -124,6 +145,7 @@ def run_umap_analysis(
 
     result = store_and_format_result(umap_df, project_id, analysis_type, metadata)
 
+    log("Analysis complete")
     del umap_df
     del embeddings
 
@@ -140,23 +162,31 @@ def run_log_distance_analysis(
     file_level: bool,
     mask_type: str | None,
     vectorizer: str,
+    log=lambda msg: None,
 ) -> dict:
-
+    log("Getting match filenames setting")
     settings = Settings.query.filter_by(project_id=project_id).first_or_404()
     match_filenames = settings.match_filenames
+
+    log(f"Creating {vectorizer} vectorizer")
     vectorizer_object = create_vectorizer(vectorizer)
 
+    log("Loading data")
     enhancer = Enhancer(load_data(directory_path))
+
+    log(f"Enhancing data with enhancement: {item_list_col} and mask: {mask_type}")
     df = enhancer.enhance_event(item_list_col, mask_type)
 
     match_flag = file_level and comparison_runs in (None, []) and match_filenames
     if match_flag:
         # FIX: not an optimal way to get filename
+        log("Matching filenames")
         target_file_name = get_file_name_by_orig_file_name(df, target_run)
         df = filter_files(df, [target_file_name], "file_name")
 
     run_column = "run" if not file_level else "orig_file_name"
 
+    log("Measuring distances")
     df_distances = measure_distances(
         df,
         item_list_col,
@@ -166,6 +196,7 @@ def run_log_distance_analysis(
         vectorizer=vectorizer_object,
     )
 
+    log("Storing and formatting results")
     metadata = {
         "analysis_level": "directory" if not file_level else "file",
         "analysis_sub_type": "log-distance",
@@ -180,6 +211,7 @@ def run_log_distance_analysis(
 
     result = store_and_format_result(df_distances, project_id, analysis_type, metadata)
 
+    log("Analysis complete")
     del df
     del df_distances
 
@@ -199,6 +231,7 @@ def run_anomaly_detection_analysis(
     directory_level: bool,
     mask_type: str,
     vectorizer: str,
+    log=lambda msg: None,
 ) -> dict:
 
     # TODO: Rather than getting boolean values, take str for level
@@ -209,9 +242,11 @@ def run_anomaly_detection_analysis(
     else:
         level = "line"
 
+    log("Getting match filenames setting")
     settings = Settings.query.filter_by(project_id=project_id).first_or_404()
     match_filenames = settings.match_filenames
 
+    log(f"Creating {vectorizer} vectorizer")
     vectorizer_object = create_vectorizer(vectorizer)
     pipeline = ManualTrainTestPipeline(
         model_names=models,
@@ -224,35 +259,46 @@ def run_anomaly_detection_analysis(
         mask_type=mask_type,
     )
 
+    log("Loading data")
     pipeline.load()
+
+    log(f"Enhancing data with enhancement: {item_list_col} and mask: {mask_type}")
     pipeline.enhance()
 
+    log("Running anomaly detection")
+    log(f"Running with models: {models}")
     if match_filenames:
+        log("Match filenames is on")
         if level == "file":
             pipeline.analyze_file_group_by_filenames()
         elif level == "line":
             pipeline.analyze_line_group_by_filenames()
         else:
+            log("Not matching filenames since level is directory")
             pipeline.aggregate_to_run_level()
             pipeline.analyze()
     else:
+        log("Match filenames is off")
         if level == "file":
             pipeline.aggregate_to_file_level()
         elif level == "directory":
             pipeline.aggregate_to_run_level()
         pipeline.analyze()
 
+    log("Anomaly detection is complete")
     results = pipeline.results
     if results is None:
         raise ValueError("Analysis failed to create results")
 
     if directory_level or file_level:
+        log("Normalizing distance measures")
         results = calculate_zscore_sum_anos(
             results, distance_columns=get_prediction_cols(results)
         )
         results = results.drop(item_list_col)
 
     if level == "line":
+        log("Calculating moving averages")
         prediction_columns = [col for col in results.columns if "pred_ano_proba" in col]
         df_moving_avg_100 = calculate_moving_average_by_columns(
             results, 100, prediction_columns
@@ -277,8 +323,9 @@ def run_anomaly_detection_analysis(
         "name": analysis_name,
     }
 
+    log("Storing and formatting results")
     result = store_and_format_result(results, project_id, analysis_type, metadata)
 
+    log("Analysis complete")
     del pipeline
-
     return result

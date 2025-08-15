@@ -291,6 +291,7 @@ def create_project_layout(
     edit_name_modal_id,
     edit_name_input_id,
     submit_edit_name_id,
+    task_logs_modal_id,
 ):
 
     error_toast_row = dbc.Row(error_toast(error_toast_id))
@@ -312,12 +313,21 @@ def create_project_layout(
     task_info_header = [
         html.Thead(
             html.Tr(
-                [html.Th("Analysis Type"), html.Th("Status"), html.Th("Time Elapsed")]
+                [
+                    html.Th("Analysis Type"),
+                    html.Th("Status"),
+                    html.Th("ST"),
+                    html.Th("ET"),
+                ]
             )
         )
     ]
     default_row = [
-        html.Tbody(html.Tr([html.Td("No recent analyses"), html.Td(""), html.Td("")]))
+        html.Tbody(
+            html.Tr(
+                [html.Td("No recent analyses"), html.Td(""), html.Td(""), html.Td("")]
+            )
+        )
     ]
 
     task_info_table = dbc.Table(
@@ -366,6 +376,9 @@ def create_project_layout(
     )
 
     task_error_modal = dbc.Row(dbc.Modal(id=task_error_modal_id, is_open=False))
+    task_logs_modal = dbc.Row(
+        dbc.Modal(id=task_logs_modal_id, size="lg", is_open=False)
+    )
 
     analysis_edit_name_modal = dbc.Row(
         dbc.Modal(
@@ -393,6 +406,7 @@ def create_project_layout(
                 error_toast_row,
                 success_toast_row,
                 task_error_modal,
+                task_logs_modal,
                 analysis_edit_name_modal,
                 header_row,
                 dbc.Row([group_col, nav_col]),

@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 
 import dash
 import dash_bootstrap_components as dbc
-from dash import ALL, Input, Output, State, callback, dcc, html
+from dash import ALL, MATCH, Input, Output, State, callback, dcc, html
 
 from dash_app.callbacks.callback_functions import (
     make_api_call,
@@ -39,6 +39,7 @@ def layout(project_id=None, **kwargs):
                     storage_type="session",
                     data=[],
                 ),
+                dcc.Store(id="task-logs-store", storage_type="session", data=[]),
                 dcc.Interval(
                     id="project-task-poll",
                     interval=DashConfig.POLL_RATE * 1000,
@@ -66,6 +67,7 @@ def layout(project_id=None, **kwargs):
         "edit-name-modal",
         "edit-name-input",
         "submit-edit-name",
+        "task-logs-modal-project",
     )
 
 
@@ -318,6 +320,7 @@ def apply_settings(
     Output("project-task-poll", "disabled", allow_duplicate=True),
     Output("task-info-project", "children"),
     Output("task-error-store", "data"),
+    Output("task-logs-store", "data"),
     Input("project-task-poll", "n_intervals"),
     State("project-task-store", "data"),
     State("task-error-store", "data"),
@@ -325,6 +328,7 @@ def apply_settings(
     State("task-error-toast", "is_open"),
     State("task-success-toast", "is_open"),
     State("project-id", "data"),
+    State("task-logs-store", "data"),
     prevent_initial_call=True,
 )
 def poll_project_tasks(
@@ -335,19 +339,12 @@ def poll_project_tasks(
     current_error_open,
     current_success_open,
     project_id,
+    task_log_store,
 ):
     time_now = datetime.now(timezone.utc)
     updated_task_store = []
     success_messages, error_messages, task_errors = [], [], []
     task_rows = []
-
-    task_info_header = [
-        html.Thead(
-            html.Tr(
-                [html.Th("Analysis Type"), html.Th("Status"), html.Th("Time Elapsed")]
-            )
-        )
-    ]
 
     current_project_tasks = [
         t for t in (task_store or []) if t.get("project_id") == project_id
@@ -373,6 +370,15 @@ def poll_project_tasks(
 
             error_result = result.get("result", {})
             error = error_result.get("error", None) if error_result else None
+
+            logs = meta.get("logs", [])
+            existing_task_logs = next(
+                (item for item in task_log_store if item["id"] == task_id), None
+            )
+            if existing_task_logs:
+                existing_task_logs["logs"] = logs
+            else:
+                task_log_store.append({"id": task_id, "logs": logs})
 
             if not result.get("ready"):
                 updated_task_store.append(task_entry)
@@ -422,11 +428,18 @@ def poll_project_tasks(
     task_info_header = [
         html.Thead(
             html.Tr(
-                [html.Th("Analysis Type"), html.Th("Status"), html.Th("Time Elapsed")]
+                [
+                    html.Th("Analysis Type"),
+                    html.Th("Status"),
+                    html.Th("ST"),
+                    html.Th("ET"),
+                ]
             )
         )
     ]
-    default_row = [html.Tr([html.Td("No recent analyses"), html.Td(""), html.Td("")])]
+    default_row = [
+        html.Tr([html.Td("No recent analyses"), html.Td(""), html.Td(""), html.Td("")])
+    ]
     task_rows = task_rows or default_row
 
     return (
@@ -439,6 +452,7 @@ def poll_project_tasks(
         polling_disabled,
         task_info_header + [html.Tbody(task_rows)],
         task_error_store + task_errors,
+        task_log_store,
     )
 
 
@@ -471,6 +485,81 @@ def open_task_error_modal(n_clicks, task_errors):
             return True, modal_children
 
     raise dash.exceptions.PreventUpdate
+
+
+@callback(
+    Output("task-logs-modal-project", "is_open"),
+    Output("task-logs-modal-project", "children"),
+    Input({"type": "task-logs", "index": ALL}, "n_clicks"),
+    State("task-logs-store", "data"),
+    prevent_initial_call=True,
+)
+def open_task_logs_modal(_, task_logs):
+    ctx = dash.callback_context
+
+    if not ctx.triggered or ctx.triggered_id is None:
+        raise dash.exceptions.PreventUpdate
+    if all([(btn["value"] == 0) for btn in ctx.triggered]):
+        raise dash.exceptions.PreventUpdate
+
+    triggered_id = ctx.triggered_id
+    if isinstance(triggered_id, dict) and triggered_id.get("type") == "task-logs":
+        task_id = triggered_id.get("index")
+
+        log_entries = next(
+            (entry["logs"] for entry in task_logs if entry["id"] == task_id), []
+        )
+
+        if not log_entries:
+            modal_body = html.Pre("No logs found")
+        else:
+            log_texts = [
+                f"[{log['timestamp']}] {log['message']}" for log in log_entries
+            ]
+            modal_body = html.Pre("\n".join(log_texts))
+
+        modal_children = [
+            dbc.ModalHeader(dbc.ModalTitle("Logs")),
+            dbc.ModalBody(
+                children=modal_body,
+                id={"type": "task-logs-modal-body", "index": task_id},
+            ),
+            dbc.ModalFooter(
+                dbc.Button(
+                    "Refresh Logs", id={"type": "refresh-logs", "index": task_id}
+                )
+            ),
+        ]
+        return True, modal_children
+
+    raise dash.exceptions.PreventUpdate
+
+
+@callback(
+    Output({"type": "task-logs-modal-body", "index": MATCH}, "children"),
+    Input({"type": "refresh-logs", "index": MATCH}, "n_clicks"),
+    State("task-logs-store", "data"),
+    prevent_initial_call=True,
+)
+def refresh_task_logs(n_clicks, task_logs):
+    if not n_clicks:
+        raise dash.exceptions.PreventUpdate
+
+    ctx = dash.callback_context
+    if not ctx.triggered or ctx.triggered_id is None:
+        raise dash.exceptions.PreventUpdate
+
+    task_id = ctx.triggered_id["index"]
+
+    log_entries = next(
+        (entry["logs"] for entry in task_logs if entry["id"] == task_id), []
+    )
+
+    if not log_entries:
+        return html.Pre("No logs found")
+    else:
+        log_texts = [f"[{log['timestamp']}] {log['message']}" for log in log_entries]
+        return html.Pre("\n".join(log_texts))
 
 
 @callback(
