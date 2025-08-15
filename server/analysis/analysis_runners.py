@@ -62,13 +62,18 @@ def run_unique_terms_analysis(
     directory_path: str,
     item_list_col: str,
     file_level: bool,
+    log=lambda msg: None,
 ) -> dict:
+    log(f"Loading data from directory: {directory_path}")
     df = load_data(directory_path)
     if not file_level:
+        log("Counting unique terms by directory")
         unique_terms_count = unique_terms_count_by_run(df, item_list_col)
     else:
+        log("Counting unique terms by file")
         unique_terms_count = unique_terms_count_by_file(df, item_list_col)
 
+    log("Storing and formatting results")
     analysis_type = (
         "directory-level-visualisations"
         if not file_level
@@ -85,8 +90,8 @@ def run_unique_terms_analysis(
         unique_terms_count, project_id, analysis_type, metadata
     )
 
+    log("Analysis complete")
     del df
-
     return result
 
 
@@ -98,13 +103,18 @@ def run_umap_analysis(
     file_level: bool,
     vectorizer: str,
     mask_type: str,
+    log=lambda msg: None,
 ) -> dict:
+    log(f"Loading data from directory: {directory_path}")
     df = load_data(directory_path)
 
+    log(f"Creating {vectorizer} vectorizer")
     vectorizer_object = create_vectorizer(vectorizer)
+
     aggregate_func = aggregate_run_level if not file_level else aggregate_file_level
     group_col = "run" if not file_level else "seq_id"
 
+    log(f"Aggregating data with function: {aggregate_func}")
     df_agg = (
         aggregate_func(df, item_list_col, mask_type)
         .select(item_list_col)
@@ -112,9 +122,13 @@ def run_umap_analysis(
         .to_list()
     )
 
+    log("Creating umap embeddings")
     embeddings = create_umap_embeddings(df_agg, vectorizer_object)
+
+    log("Creating umap dataframe")
     umap_df = create_umap_df(df, embeddings, group_col=group_col)
 
+    log("Storing and formatting results")
     analysis_type = (
         "directory-level-visualisations"
         if not file_level
@@ -131,6 +145,7 @@ def run_umap_analysis(
 
     result = store_and_format_result(umap_df, project_id, analysis_type, metadata)
 
+    log("Analysis complete")
     del umap_df
     del embeddings
 
@@ -147,23 +162,31 @@ def run_log_distance_analysis(
     file_level: bool,
     mask_type: str | None,
     vectorizer: str,
+    log=lambda msg: None,
 ) -> dict:
-
+    log("Getting match filenames setting")
     settings = Settings.query.filter_by(project_id=project_id).first_or_404()
     match_filenames = settings.match_filenames
+
+    log(f"Creating {vectorizer} vectorizer")
     vectorizer_object = create_vectorizer(vectorizer)
 
+    log("Loading data")
     enhancer = Enhancer(load_data(directory_path))
+
+    log(f"Enhancing data with enhancement: {item_list_col} and mask: {mask_type}")
     df = enhancer.enhance_event(item_list_col, mask_type)
 
     match_flag = file_level and comparison_runs in (None, []) and match_filenames
     if match_flag:
         # FIX: not an optimal way to get filename
+        log("Matching filenames")
         target_file_name = get_file_name_by_orig_file_name(df, target_run)
         df = filter_files(df, [target_file_name], "file_name")
 
     run_column = "run" if not file_level else "orig_file_name"
 
+    log("Measuring distances")
     df_distances = measure_distances(
         df,
         item_list_col,
@@ -173,6 +196,7 @@ def run_log_distance_analysis(
         vectorizer=vectorizer_object,
     )
 
+    log("Storing and formatting results")
     metadata = {
         "analysis_level": "directory" if not file_level else "file",
         "analysis_sub_type": "log-distance",
@@ -187,6 +211,7 @@ def run_log_distance_analysis(
 
     result = store_and_format_result(df_distances, project_id, analysis_type, metadata)
 
+    log("Analysis complete")
     del df
     del df_distances
 

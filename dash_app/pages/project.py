@@ -520,7 +520,7 @@ def open_task_logs_modal(_, task_logs):
             modal_body = html.Pre("\n".join(log_texts))
 
         modal_children = [
-            dbc.ModalHeader(dbc.ModalTitle(f"Logs for task_id {task_id}")),
+            dbc.ModalHeader(dbc.ModalTitle("Logs")),
             dbc.ModalBody(
                 children=modal_body,
                 id={"type": "task-logs-modal-body", "index": task_id},
