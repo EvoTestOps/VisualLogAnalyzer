@@ -313,12 +313,21 @@ def create_project_layout(
     task_info_header = [
         html.Thead(
             html.Tr(
-                [html.Th("Analysis Type"), html.Th("Status"), html.Th("Time Elapsed")]
+                [
+                    html.Th("Analysis Type"),
+                    html.Th("Status"),
+                    html.Th("ST"),
+                    html.Th("ET"),
+                ]
             )
         )
     ]
     default_row = [
-        html.Tbody(html.Tr([html.Td("No recent analyses"), html.Td(""), html.Td("")]))
+        html.Tbody(
+            html.Tr(
+                [html.Td("No recent analyses"), html.Td(""), html.Td(""), html.Td("")]
+            )
+        )
     ]
 
     task_info_table = dbc.Table(

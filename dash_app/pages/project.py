@@ -346,14 +346,6 @@ def poll_project_tasks(
     success_messages, error_messages, task_errors = [], [], []
     task_rows = []
 
-    task_info_header = [
-        html.Thead(
-            html.Tr(
-                [html.Th("Analysis Type"), html.Th("Status"), html.Th("Time Elapsed")]
-            )
-        )
-    ]
-
     current_project_tasks = [
         t for t in (task_store or []) if t.get("project_id") == project_id
     ]
@@ -436,11 +428,18 @@ def poll_project_tasks(
     task_info_header = [
         html.Thead(
             html.Tr(
-                [html.Th("Analysis Type"), html.Th("Status"), html.Th("Time Elapsed")]
+                [
+                    html.Th("Analysis Type"),
+                    html.Th("Status"),
+                    html.Th("ST"),
+                    html.Th("ET"),
+                ]
             )
         )
     ]
-    default_row = [html.Tr([html.Td("No recent analyses"), html.Td(""), html.Td("")])]
+    default_row = [
+        html.Tr([html.Td("No recent analyses"), html.Td(""), html.Td(""), html.Td("")])
+    ]
     task_rows = task_rows or default_row
 
     return (
