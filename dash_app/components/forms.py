@@ -33,6 +33,7 @@ def test_train_form(
     detectors_id,
     enhancement_id,
     runs_filter_id,
+    runs_filter_train_id,
     mask_input_id,
     vectorizer_id,
     results_redirect_id,
@@ -62,15 +63,24 @@ def test_train_form(
             ),
             dbc.Row(
                 [
-                    detectors_unsupervised_input(detectors_id),
+                    runs_filter_input(
+                        id=runs_filter_train_id,
+                        label="Directories to include in train data",
+                    ),
                     runs_filter_input(runs_filter_id),
                 ],
                 class_name="mb-3",
             ),
             dbc.Row(
                 [
-                    enhancement_input(enhancement_id),
+                    detectors_unsupervised_input(detectors_id),
                     vectorizer_input(vectorizer_id),
+                ],
+                class_name="mb-3",
+            ),
+            dbc.Row(
+                [
+                    enhancement_input(enhancement_id),
                     mask_input(mask_input_id),
                 ],
                 class_name="mb-3",
@@ -91,6 +101,7 @@ def test_train_file_level_form(
     detectors_id,
     enhancement_id,
     runs_filter_id,
+    runs_filter_train_id,
     mask_input_id,
     vectorizer_id,
     results_redirect_id,
@@ -121,6 +132,20 @@ def test_train_file_level_form(
                     mask_input(mask_input_id),
                     vectorizer_input(vectorizer_id),
                 ],
+                class_name="mb-3",
+            ),
+            dbc.Row(
+                dcc.Loading(
+                    type="circle",
+                    overlay_style={"visibility": "visible", "filter": "blur(2px)"},
+                    children=[
+                        files_filter_input(
+                            runs_filter_train_id,
+                            label="Files to include in train data",
+                            manual=manual_filenames,
+                        ),
+                    ],
+                ),
                 class_name="mb-3",
             ),
             dbc.Row(

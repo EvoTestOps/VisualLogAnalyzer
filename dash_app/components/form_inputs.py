@@ -93,7 +93,7 @@ def delete_button(id, label):
     )
 
 
-def runs_filter_input(id, manual=False):
+def runs_filter_input(id, label=None, manual=False):
     if manual:
         return dbc.Col(
             [
@@ -111,7 +111,11 @@ def runs_filter_input(id, manual=False):
         )
     return dbc.Col(
         [
-            dbc.Label("Runs to include in test data", html_for=id, width="auto"),
+            dbc.Label(
+                label if label else "Directories to include in test data",
+                html_for=id,
+                width="auto",
+            ),
             dcc.Dropdown(
                 multi=True,
                 id=id,
@@ -124,12 +128,12 @@ def runs_filter_input(id, manual=False):
     )
 
 
-def files_filter_input(id, manual=False):
+def files_filter_input(id, label=None, manual=False):
     if manual:
         return dbc.Col(
             [
                 dbc.Label(
-                    "Files to include in test data (manual, comma-separated)",
+                    f"{label if label else 'Files to include in test data'} (manual, comma-separated)",
                     html_for=id,
                     width="auto",
                 ),
@@ -142,7 +146,11 @@ def files_filter_input(id, manual=False):
         )
     return dbc.Col(
         [
-            dbc.Label("Files to include in test data", html_for=id, width="auto"),
+            dbc.Label(
+                label if label else "Files to include in test data",
+                html_for=id,
+                width="auto",
+            ),
             dcc.Dropdown(
                 multi=True,
                 id=id,

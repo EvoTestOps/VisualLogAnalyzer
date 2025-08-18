@@ -81,7 +81,8 @@ def run_anomaly_detection(
     test_data,
     detectors,
     enhancement,
-    include_items,
+    include_test_items,
+    include_train_items,
     mask_type,
     vectorizer_type,
     analysis_name=None,
@@ -94,7 +95,8 @@ def run_anomaly_detection(
         log_format,
         detectors,
         enhancement,
-        include_items,
+        include_test_items,
+        include_train_items,
         mask_type,
         vectorizer_type,
         analysis_name,
@@ -274,7 +276,8 @@ def _build_test_train_payload(
     log_format,
     detectors,
     enhancement,
-    include_items,
+    include_test_items,
+    include_train_items,
     mask_type,
     vectorizer_type,
     analysis_name,
@@ -292,17 +295,20 @@ def _build_test_train_payload(
     }
 
     if level == "directory":
-        payload["runs_to_include"] = include_items
+        payload["runs_to_include"] = include_test_items
+        payload["runs_to_include_train"] = include_train_items
         payload["run_level"] = True
     elif level == "file":
-        payload["files_to_include"] = include_items
+        payload["files_to_include"] = include_test_items
+        payload["files_to_include_train"] = include_train_items
         payload["file_level"] = True
     elif level == "line":
-        payload["runs_to_include"] = include_items
+        payload["runs_to_include"] = include_test_items
+        payload["runs_to_include_train"] = include_train_items
         payload["file_level"] = False
         payload["run_level"] = False
     else:
-        raise ValueError("Level must be either 'file' or 'directory'")
+        raise ValueError("Level must be 'line', 'file' or 'directory'")
 
     return payload
 

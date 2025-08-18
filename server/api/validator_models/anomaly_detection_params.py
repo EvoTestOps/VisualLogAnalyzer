@@ -14,8 +14,10 @@ class AnomalyDetectionParams(BaseModel):
     log_format: Literal["raw", "lo2"] = "raw"
     sequence_enhancement: bool = Field(default=False, alias="seq")
     runs_to_include: Optional[List[str]] = None
+    runs_to_include_train: Optional[List[str]] = None
     run_level: bool = False
     files_to_include: Optional[List[str]] = None
+    files_to_include_train: Optional[List[str]] = None
     file_level: bool = False
     mask_type: Optional[str] = None
     vectorizer: Literal["count", "tfidf"] = "count"
