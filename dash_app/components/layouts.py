@@ -454,7 +454,7 @@ def create_high_level_viz_result_layout(
 
     layout = [
         dbc.Container([table_row, error_toast_row, success_toast_row]),
-        dbc.Container(plot_row, fluid=True),
+        dbc.Container(plot_row, fluid=True, style={"paddingBottom": "200px"}),
     ]
 
     return layout
