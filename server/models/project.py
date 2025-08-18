@@ -32,6 +32,7 @@ class Project(db.Model):
         data = {
             "id": self.id,
             "name": self.name,
+            "base_path": self.base_path,
             "time_created": (
                 self.time_created.isoformat() if self.time_created else None
             ),
