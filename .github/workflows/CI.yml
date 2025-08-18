@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: Build images
+      run: docker-compose -f docker-compose.yml build
+      
+    - name: Start services
+      run: docker-compose --env-file .env.sample -f docker-compose.yml up -d
+      
+    - name: Wait for postgres to be ready
+      run: |
+        echo "Waiting for postgres..."
+        until docker exec $(docker ps -q -f "name=db") pg_isready -U postgres; do
+          sleep 1
+        done
+        
+    - name: Wait for app to be ready
+      run: |
+        echo "Waiting for app..."
+        until curl -s http://localhost:5000/health >/dev/null; do
+          sleep 1
+        done
+        
+    - name: Ensure browsers are installed
+      run: python -m playwright install --with-deps
+      
+    - name: Run tests
+      run: pytest --tracing=retain-on-failure tests
+      
+    - uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: playwright-traces
+        path: test-results/
+        
+    - name: Shut down services
+      run: docker-compose -f docker-compose.yml down -v
