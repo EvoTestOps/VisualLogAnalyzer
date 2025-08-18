@@ -23,7 +23,7 @@ jobs:
         pip install -r requirements.txt
         
     - name: Build images
-      run: docker compose -f docker-compose.yml build
+      run: docker compose --env-file .env.sample -f docker-compose.yml build
       
     - name: Start services
       run: docker compose --env-file .env.sample -f docker-compose.yml up -d
