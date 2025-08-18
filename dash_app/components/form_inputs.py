@@ -408,12 +408,23 @@ def analysis_name_input(id):
 
 
 def base_path_input(id):
+    label_id = f"{id}-label"
     return dbc.Col(
         [
-            dbc.Label("Base path", html_for=id, width="auto"),
+            dbc.Label(
+                "Base path",
+                id=label_id,
+                html_for=id,
+                width="auto",
+                style={"textDecoration": "underline", "cursor": "pointer"},
+            ),
+            dbc.Tooltip(
+                "Optional. Must be directory inside log_data/. Leave empty or unchanged to use the default. Directory must already exist.",
+                target=label_id,
+                placement="bottom",
+            ),
             dbc.Input(
                 id=id,
-                placeholder="Optional, defaults to log_data/",
                 type="text",
                 value="./log_data",
             ),
