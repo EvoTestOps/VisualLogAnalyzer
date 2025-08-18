@@ -103,20 +103,20 @@ def register_callbacks(config, run_func):
 
         @callback(
             Output(form_ids["directory_id"], "options"),
-            Input(base_ids["url_id"], "search"),
+            Input(base_ids["project_store_id"], "data"),
         )
-        def get_log_data_directories(_):
-            return get_log_data_directory_options()
+        def get_log_data_directories(project_id):
+            return get_log_data_directory_options(project_id)
 
     else:
 
         @callback(
             Output(form_ids["train_data_id"], "options"),
             Output(form_ids["test_data_id"], "options"),
-            Input(base_ids["url_id"], "search"),
+            Input(base_ids["project_store_id"], "data"),
         )
-        def get_log_data_directories(_):
-            options = get_log_data_directory_options()
+        def get_log_data_directories(project_id):
+            options = get_log_data_directory_options(project_id)
             return options, options
 
     if (

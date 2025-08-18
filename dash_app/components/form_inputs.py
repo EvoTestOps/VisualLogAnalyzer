@@ -405,3 +405,17 @@ def analysis_name_input(id):
             dbc.Input(id=id, placeholder="Optional", type="text"),
         ],
     )
+
+
+def base_path_input(id):
+    return dbc.Col(
+        [
+            dbc.Label("Base path", html_for=id, width="auto"),
+            dbc.Input(
+                id=id,
+                placeholder="Optional, defaults to log_data/",
+                type="text",
+                value="./log_data",
+            ),
+        ],
+    )

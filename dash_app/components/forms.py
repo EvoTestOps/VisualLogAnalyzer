@@ -22,6 +22,7 @@ from dash_app.components.form_inputs import (
     files_to_include_input,
     columns_to_include_input,
     analysis_name_input,
+    base_path_input,
 )
 
 
@@ -340,13 +341,14 @@ def distance_file_level_form(
     return form
 
 
-def project_form(submit_id, name_id):
+def project_form(submit_id, name_id, base_path_id):
     submit_btn = submit_button(submit_id, "Create")
     form = dbc.Form(
         [
             dbc.Row(
                 [
-                    name_input((name_id)),
+                    dbc.Col(name_input((name_id))),
+                    dbc.Col(base_path_input((base_path_id))),
                     dbc.Col(
                         submit_btn,
                         class_name="d-flex justify-content-end align-middle align-items-end",

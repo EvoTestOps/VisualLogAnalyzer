@@ -30,7 +30,7 @@ def create_project():
         error = e.errors()[0]  # take the first one
         return jsonify({"error": f"{error['loc'][0]}: {error['msg']}"}), 400
 
-    project = Project(name=validated_data.name)
+    project = Project(name=validated_data.name, base_path=validated_data.base_path)
     db.session.add(project)
     db.session.commit()
 
@@ -62,6 +62,12 @@ def delete_project(project_id: int):
 def get_project_name(project_id: int):
     project = db.get_or_404(Project, project_id)
     return jsonify({"name": project.name}), 200
+
+
+@crud_bp.route("/projects/<int:project_id>/base_path", methods=["GET"])
+def get_project_base_path(project_id: int):
+    project = db.get_or_404(Project, project_id)
+    return jsonify({"base_path": project.base_path}), 200
 
 
 @crud_bp.route("/projects/<int:project_id>/analyses", methods=["GET"])
