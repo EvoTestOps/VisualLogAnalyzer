@@ -45,4 +45,7 @@ def get_all_root_log_directories(base_path=None) -> tuple[list[str], list[str]]:
     directory_paths = [os.path.join(base_path, dir) + "/" for dir in directories]
     file_paths = [os.path.join(base_path, file) for file in files]
 
-    return directories + files, directory_paths + file_paths
+    names = [f"{os.path.basename(base_path) or base_path} (root)"] + directories + files
+    paths = [os.path.abspath(base_path) + "/"] + directory_paths + file_paths
+
+    return names, paths
