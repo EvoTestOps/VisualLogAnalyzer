@@ -1,0 +1,294 @@
+00:00:45.139 [hz._hzInstance_1_dev.partition-operation.thread-13]   DEBUG c.n.oauth.cache.RefreshTokenMapStore load - Load:bf2abecb-aaa9-4d72-999f-1088b6d22fac
+00:00:45.141 [hz._hzInstance_1_dev.partition-operation.thread-6]   DEBUG c.n.oauth.cache.ServiceMapStore load - Load:82555a99
+00:00:45.163 [hz._hzInstance_1_dev.partition-operation.thread-2]   DEBUG c.n.oauth.cache.ServiceMapStore store - Store:161ba0a5
+00:00:45.237 [hz._hzInstance_1_dev.partition-operation.thread-6]   DEBUG c.n.oauth.cache.ServiceMapStore store - Store:82555a99
+00:00:45.507 [hz._hzInstance_1_dev.partition-operation.thread-8]   DEBUG c.n.oauth.cache.RefreshTokenMapStore store - Store:c81d6941-2a69-48c6-b5fa-9430642dceac
+00:00:45.541 [hz._hzInstance_1_dev.partition-operation.thread-8]   DEBUG c.n.oauth.cache.RefreshTokenMapStore delete - Delete:c81d6941-2a69-48c6-b5fa-9430642dceac
+00:00:45.585 [hz._hzInstance_1_dev.partition-operation.thread-5]   DEBUG c.n.oauth.cache.RefreshTokenMapStore store - Store:41eb5ea3-080b-4df9-854e-3cf01244124b
+00:00:45.602 [hz._hzInstance_1_dev.partition-operation.thread-8]   DEBUG c.n.oauth.cache.RefreshTokenMapStore load - Load:c81d6941-2a69-48c6-b5fa-9430642dceac
+00:00:45.726 [hz._hzInstance_1_dev.partition-operation.thread-6]   DEBUG c.n.oauth.cache.ServiceMapStore delete - Delete:82555a99
+00:00:45.980 [hz._hzInstance_1_dev.partition-operation.thread-4]   DEBUG c.n.oauth.cache.RefreshTokenMapStore load - Load:6a2a42f9-0d69-468c-bb0c-306fb7ea52e0
+00:00:46.231 [hz._hzInstance_1_dev.partition-operation.thread-8]   DEBUG c.n.oauth.cache.RefreshTokenMapStore load - Load:f0c0fb59-cbcd-4dba-8b6b-12550dba26ab
+00:00:46.232 [hz._hzInstance_1_dev.partition-operation.thread-8]   DEBUG c.n.oauth.cache.RefreshTokenMapStore load - Load:f0c0fb59-cbcd-4dba-8b6b-12550dba26ab
+00:00:46.281 [hz._hzInstance_1_dev.partition-operation.thread-2]   DEBUG c.n.oauth.cache.ServiceMapStore delete - Delete:161ba0a5
+00:00:46.291 [hz._hzInstance_1_dev.partition-operation.thread-9]   DEBUG c.networknt.oauth.cache.UserMapStore store - Store:3a7785f4
+00:00:46.336 [hz._hzInstance_1_dev.partition-operation.thread-9]   DEBUG c.networknt.oauth.cache.UserMapStore store - Store:3a7785f4
+00:00:46.378 [hz._hzInstance_1_dev.partition-operation.thread-9]   DEBUG c.networknt.oauth.cache.UserMapStore store - Store:3a7785f4
+00:00:46.397 [hz._hzInstance_1_dev.partition-operation.thread-9]   DEBUG c.networknt.oauth.cache.UserMapStore delete - Delete:3a7785f4
+00:00:46.775 [hz._hzInstance_1_dev.partition-operation.thread-5]   DEBUG c.n.oauth.cache.RefreshTokenMapStore store - Store:1c7350f2-56e6-436f-ae63-d2c6fe8e0165
+00:00:46.840 [hz._hzInstance_1_dev.partition-operation.thread-5]   DEBUG c.n.oauth.cache.RefreshTokenMapStore delete - Delete:1c7350f2-56e6-436f-ae63-d2c6fe8e0165
+00:00:46.858 [hz._hzInstance_1_dev.partition-operation.thread-5]   DEBUG c.n.oauth.cache.RefreshTokenMapStore store - Store:951c4414-4ba0-4433-a08a-64934b43edd8
+00:00:46.886 [hz._hzInstance_1_dev.partition-operation.thread-2]   DEBUG c.n.oauth.cache.ClientMapStore load - Load:67afd27b-3ebd-434c-b2c0-45ea60b2228a
+00:00:46.890 [hz._hzInstance_1_dev.partition-operation.thread-2]   DEBUG c.n.oauth.cache.ClientMapStore load - Load:67afd27b-3ebd-434c-b2c0-45ea60b2228a
+00:00:47.053 [hz._hzInstance_1_dev.partition-operation.thread-4]   DEBUG c.n.oauth.cache.RefreshTokenMapStore store - Store:0917e2a0-1bee-49bf-a5b6-c210f1c17658
+00:00:47.077 [hz._hzInstance_1_dev.partition-operation.thread-4]   DEBUG c.n.oauth.cache.RefreshTokenMapStore delete - Delete:0917e2a0-1bee-49bf-a5b6-c210f1c17658
+00:00:47.170 [hz._hzInstance_1_dev.partition-operation.thread-12]   DEBUG c.networknt.oauth.cache.UserMapStore store - Store:7150a20c
+00:00:47.183 [hz._hzInstance_1_dev.partition-operation.thread-13]   DEBUG c.n.oauth.cache.ServiceMapStore load - Load:7881aeed
+00:00:47.186 [hz._hzInstance_1_dev.partition-operation.thread-13]   DEBUG c.n.oauth.cache.ServiceMapStore load - Load:7881aeed
+00:00:47.257 [hz._hzInstance_1_dev.partition-operation.thread-12]   DEBUG c.networknt.oauth.cache.UserMapStore load - Load:7150a20c
+00:00:47.291 [hz._hzInstance_1_dev.partition-operation.thread-6]   DEBUG c.networknt.oauth.cache.UserMapStore store - Store:f4b02c25
+00:00:47.407 [hz._hzInstance_1_dev.partition-operation.thread-14]   DEBUG c.networknt.oauth.cache.UserMapStore load - Load:ced14368
+00:00:47.410 [hz._hzInstance_1_dev.partition-operation.thread-14]   DEBUG c.networknt.oauth.cache.UserMapStore load - Load:ced14368
+00:00:47.442 [hz._hzInstance_1_dev.partition-operation.thread-12]   DEBUG c.networknt.oauth.cache.UserMapStore load - Load:7150a20c
+00:00:47.464 [hz._hzInstance_1_dev.partition-operation.thread-12]   DEBUG c.networknt.oauth.cache.UserMapStore load - Load:7150a20c
+00:00:47.514 [hz._hzInstance_1_dev.partition-operation.thread-2]   DEBUG c.n.oauth.cache.RefreshTokenMapStore load - Load:8a00dcad-48ac-4d43-a242-7df23e01957f
+00:00:47.515 [hz._hzInstance_1_dev.partition-operation.thread-8]   DEBUG c.networknt.oauth.cache.UserMapStore load - Load:eaadfbd7
+00:00:47.515 [hz._hzInstance_1_dev.partition-operation.thread-2]   DEBUG c.n.oauth.cache.RefreshTokenMapStore load - Load:8a00dcad-48ac-4d43-a242-7df23e01957f
+00:00:47.576 [hz._hzInstance_1_dev.partition-operation.thread-14]   ERROR c.n.oauth.cache.ClientMapStore delete - Exception:
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:117)
+Jun 29, 2024 12:00:47 AM com.hazelcast.map.impl.operation.DeleteOperation
+java.lang.RuntimeException: java.sql.SQLIntegrityConstraintViolationException: Cannot delete or update a parent row: a foreign key constraint fails (`oauth2`.`refresh_token`, CONSTRAINT `refresh_token_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `client` (`client_id`))
+	at com.networknt.oauth.cache.ClientMapStore.delete(ClientMapStore.java:19)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:955)
+	at com.hazelcast.map.impl.mapstore.writethrough.WriteThroughStore.remove(WriteThroughStore.java:28)
+	at com.hazelcast.map.impl.recordstore.DefaultRecordStore.removeRecord(DefaultRecordStore.java:1034)
+	at com.hazelcast.map.impl.recordstore.DefaultRecordStore.delete(DefaultRecordStore.java:455)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeUpdate(ProxyPreparedStatement.java:61)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeUpdate(HikariProxyPreparedStatement.java)
+	at com.hazelcast.spi.impl.operationservice.impl.OperationRunnerImpl.call(OperationRunnerImpl.java:210)
+	at com.hazelcast.spi.impl.operationservice.impl.OperationRunnerImpl.run(OperationRunnerImpl.java:199)
+	at com.hazelcast.spi.impl.operationservice.impl.OperationRunnerImpl.run(OperationRunnerImpl.java:416)
+	at com.hazelcast.spi.impl.operationexecutor.impl.OperationThread.process(OperationThread.java:153)
+	at com.hazelcast.map.impl.mapstore.writethrough.WriteThroughStore.remove(WriteThroughStore.java:28)
+	at com.hazelcast.map.impl.recordstore.DefaultRecordStore.delete(DefaultRecordStore.java:455)
+	at com.hazelcast.map.impl.operation.DeleteOperation.run(DeleteOperation.java:44)
+	at com.hazelcast.spi.Operation.call(Operation.java:170)
+Caused by: java.sql.SQLIntegrityConstraintViolationException: Cannot delete or update a parent row: a foreign key constraint fails (`oauth2`.`refresh_token`, CONSTRAINT `refresh_token_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `client` (`client_id`))
+	at com.hazelcast.spi.impl.operationservice.impl.OperationRunnerImpl.run(OperationRunnerImpl.java:416)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:117)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:97)
+	at com.hazelcast.spi.impl.operationexecutor.impl.OperationThread.run(OperationThread.java:110)
+00:00:47.593 [hz._hzInstance_1_dev.partition-operation.thread-2]   DEBUG c.n.oauth.cache.RefreshTokenMapStore load - Load:cff59a29-c904-4dd2-829e-6f801e780526
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdateInternal(ClientPreparedStatement.java:1042)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdate(ClientPreparedStatement.java:1027)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeUpdate(HikariProxyPreparedStatement.java)
+00:00:47.595 [hz._hzInstance_1_dev.partition-operation.thread-2]   DEBUG c.n.oauth.cache.RefreshTokenMapStore store - Store:cff59a29-c904-4dd2-829e-6f801e780526
+
+00:00:47.595 [hz._hzInstance_1_dev.partition-operation.thread-2]   DEBUG c.n.oauth.cache.RefreshTokenMapStore load - Load:cff59a29-c904-4dd2-829e-6f801e780526
+00:00:47.673 [hz._hzInstance_1_dev.partition-operation.thread-14]   DEBUG c.networknt.oauth.cache.UserMapStore delete - Delete:ced14368
+00:00:47.746 [hz._hzInstance_1_dev.partition-operation.thread-6]   DEBUG c.networknt.oauth.cache.UserMapStore store - Store:4e681ac8
+00:00:47.762 [hz._hzInstance_1_dev.partition-operation.thread-8]   DEBUG c.networknt.oauth.cache.UserMapStore delete - Delete:eaadfbd7
+00:00:47.842 [hz._hzInstance_1_dev.partition-operation.thread-6]   DEBUG c.n.oauth.cache.ClientMapStore store - Store:cc6f64ca-ac5a-43cc-97b2-a469c87bd798
+00:00:47.897 [hz._hzInstance_1_dev.partition-operation.thread-6]   DEBUG c.networknt.oauth.cache.UserMapStore delete - Delete:4e681ac8
+Jun 29, 2024 12:00:47 AM com.hazelcast.map.impl.operation.DeleteOperation
+java.sql.SQLIntegrityConstraintViolationException: Cannot delete or update a parent row: a foreign key constraint fails (`oauth2`.`refresh_token`, CONSTRAINT `refresh_token_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `client` (`client_id`))
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:117)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:97)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:955)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdateInternal(ClientPreparedStatement.java:1094)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdateInternal(ClientPreparedStatement.java:1042)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeLargeUpdate(ClientPreparedStatement.java:1345)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdate(ClientPreparedStatement.java:1027)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeUpdate(ProxyPreparedStatement.java:61)
+	at com.hazelcast.map.impl.recordstore.DefaultRecordStore.delete(DefaultRecordStore.java:455)
+	at com.networknt.oauth.cache.ClientMapStore.delete(ClientMapStore.java:33)
+	at com.networknt.oauth.cache.ClientMapStore.delete(ClientMapStore.java:19)
+	at com.hazelcast.spi.impl.operationservice.impl.OperationRunnerImpl.call(OperationRunnerImpl.java:210)
+	at com.hazelcast.spi.impl.operationservice.impl.OperationRunnerImpl.run(OperationRunnerImpl.java:199)
+	at com.hazelcast.spi.impl.operationservice.impl.OperationRunnerImpl.run(OperationRunnerImpl.java:416)
+	at com.hazelcast.spi.impl.operationexecutor.impl.OperationThread.process(OperationThread.java:153)
+	at com.hazelcast.spi.impl.operationexecutor.impl.OperationThread.process(OperationThread.java:123)
+	at com.hazelcast.spi.impl.operationexecutor.impl.OperationThread.run(OperationThread.java:110)
+Caused by: java.sql.SQLIntegrityConstraintViolationException: Cannot delete or update a parent row: a foreign key constraint fails (`oauth2`.`refresh_token`, CONSTRAINT `refresh_token_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `client` (`client_id`))
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:117)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:97)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:955)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdateInternal(ClientPreparedStatement.java:1094)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdateInternal(ClientPreparedStatement.java:1042)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeLargeUpdate(ClientPreparedStatement.java:1345)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeUpdate(ProxyPreparedStatement.java:61)
+	at com.networknt.oauth.cache.ClientMapStore.delete(ClientMapStore.java:33)
+
+00:00:48.038 [hz._hzInstance_1_dev.partition-operation.thread-10]   DEBUG c.n.oauth.cache.ClientMapStore load - Load:c131ee59-5ccb-4e9a-a8a7-be2cfe002e15
+00:00:48.040 [hz._hzInstance_1_dev.partition-operation.thread-10]   DEBUG c.n.oauth.cache.ClientMapStore load - Load:c131ee59-5ccb-4e9a-a8a7-be2cfe002e15
+00:00:48.120 [hz._hzInstance_1_dev.partition-operation.thread-5]   DEBUG c.n.oauth.cache.ServiceMapStore store - Store:7f18890a
+00:00:48.123 [hz._hzInstance_1_dev.partition-operation.thread-13]   DEBUG c.n.oauth.cache.ClientMapStore load - Load:56f0f3a6-69cb-4f50-9b5a-a06e2e786dc0
+00:00:48.124 [hz._hzInstance_1_dev.partition-operation.thread-13]   DEBUG c.n.oauth.cache.ClientMapStore load - Load:56f0f3a6-69cb-4f50-9b5a-a06e2e786dc0
+00:00:48.202 [hz._hzInstance_1_dev.partition-operation.thread-3]   DEBUG c.n.oauth.cache.ClientMapStore delete - Delete:053ac611-7e0b-4119-8ec8-693366fcb7ef
+Jun 29, 2024 12:00:48 AM com.hazelcast.map.impl.operation.DeleteOperation
+SEVERE: [172.24.0.6]:5701 [dev] [3.12] java.sql.SQLIntegrityConstraintViolationException: Cannot delete or update a parent row: a foreign key constraint fails (`oauth2`.`refresh_token`, CONSTRAINT `refresh_token_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `client` (`client_id`))
+java.lang.RuntimeException: java.sql.SQLIntegrityConstraintViolationException: Cannot delete or update a parent row: a foreign key constraint fails (`oauth2`.`refresh_token`, CONSTRAINT `refresh_token_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `client` (`client_id`))
+	at com.networknt.oauth.cache.ClientMapStore.delete(ClientMapStore.java:36)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:955)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdateInternal(ClientPreparedStatement.java:1094)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdateInternal(ClientPreparedStatement.java:1042)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeLargeUpdate(ClientPreparedStatement.java:1345)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdate(ClientPreparedStatement.java:1027)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeUpdate(ProxyPreparedStatement.java:61)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeUpdate(HikariProxyPreparedStatement.java)
+	at com.networknt.oauth.cache.ClientMapStore.delete(ClientMapStore.java:33)
+	at com.hazelcast.spi.impl.operationservice.impl.OperationRunnerImpl.call(OperationRunnerImpl.java:210)
+	at com.hazelcast.spi.impl.operationservice.impl.OperationRunnerImpl.run(OperationRunnerImpl.java:199)
+	at com.hazelcast.spi.impl.operationservice.impl.OperationRunnerImpl.run(OperationRunnerImpl.java:416)
+	at com.hazelcast.spi.impl.operationexecutor.impl.OperationThread.process(OperationThread.java:153)
+	at com.hazelcast.spi.impl.operationexecutor.impl.OperationThread.process(OperationThread.java:123)
+	at com.hazelcast.spi.impl.operationexecutor.impl.OperationThread.run(OperationThread.java:110)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:117)
+	at com.hazelcast.map.impl.recordstore.DefaultRecordStore.delete(DefaultRecordStore.java:455)
+	at com.hazelcast.spi.Operation.call(Operation.java:170)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:955)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdateInternal(ClientPreparedStatement.java:1042)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdate(ClientPreparedStatement.java:1027)
+	at com.hazelcast.spi.impl.operationservice.impl.OperationRunnerImpl.run(OperationRunnerImpl.java:416)
+	at com.hazelcast.spi.impl.operationexecutor.impl.OperationThread.process(OperationThread.java:123)
+	at com.networknt.oauth.cache.ClientMapStore.delete(ClientMapStore.java:33)
+
+Jun 29, 2024 12:00:48 AM com.hazelcast.map.impl.operation.DeleteOperation
+java.lang.RuntimeException: java.sql.SQLIntegrityConstraintViolationException: Cannot delete or update a parent row: a foreign key constraint fails (`oauth2`.`refresh_token`, CONSTRAINT `refresh_token_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `client` (`client_id`))
+	at com.networknt.oauth.cache.ClientMapStore.delete(ClientMapStore.java:19)
+	at com.hazelcast.map.impl.mapstore.writethrough.WriteThroughStore.remove(WriteThroughStore.java:56)
+	at com.hazelcast.map.impl.recordstore.DefaultRecordStore.removeRecord(DefaultRecordStore.java:1034)
+	at com.hazelcast.map.impl.operation.DeleteOperation.run(DeleteOperation.java:44)
+	at com.hazelcast.spi.impl.operationservice.impl.OperationRunnerImpl.call(OperationRunnerImpl.java:210)
+	at com.hazelcast.spi.impl.operationservice.impl.OperationRunnerImpl.run(OperationRunnerImpl.java:416)
+	at com.hazelcast.spi.impl.operationexecutor.impl.OperationThread.process(OperationThread.java:123)
+Caused by: java.sql.SQLIntegrityConstraintViolationException: Cannot delete or update a parent row: a foreign key constraint fails (`oauth2`.`refresh_token`, CONSTRAINT `refresh_token_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `client` (`client_id`))
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:97)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:955)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdateInternal(ClientPreparedStatement.java:1042)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdate(ClientPreparedStatement.java:1027)
+	at com.hazelcast.spi.impl.operationexecutor.impl.OperationThread.run(OperationThread.java:110)
+00:00:48.244 [hz._hzInstance_1_dev.partition-operation.thread-3]   ERROR c.n.oauth.cache.ClientMapStore delete - Exception:
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:117)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeUpdate(HikariProxyPreparedStatement.java)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:955)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdateInternal(ClientPreparedStatement.java:1042)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdate(ClientPreparedStatement.java:1027)
+	... 14 more
+
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeUpdate(HikariProxyPreparedStatement.java)
+	at com.networknt.oauth.cache.ClientMapStore.delete(ClientMapStore.java:19)
+	at com.hazelcast.map.impl.mapstore.writethrough.WriteThroughStore.remove(WriteThroughStore.java:56)
+	at com.hazelcast.map.impl.recordstore.DefaultRecordStore.removeRecord(DefaultRecordStore.java:1034)
+	at com.hazelcast.map.impl.operation.DeleteOperation.run(DeleteOperation.java:44)
+	at com.hazelcast.spi.impl.operationservice.impl.OperationRunnerImpl.call(OperationRunnerImpl.java:210)
+	at com.hazelcast.spi.impl.operationservice.impl.OperationRunnerImpl.run(OperationRunnerImpl.java:416)
+	at com.hazelcast.spi.impl.operationexecutor.impl.OperationThread.process(OperationThread.java:123)
+00:00:48.395 [hz._hzInstance_1_dev.partition-operation.thread-10]   DEBUG c.n.oauth.cache.ClientMapStore delete - Delete:c131ee59-5ccb-4e9a-a8a7-be2cfe002e15
+00:00:48.424 [hz._hzInstance_1_dev.partition-operation.thread-14]   ERROR c.n.oauth.cache.ClientMapStore delete - Exception:
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:117)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+Jun 29, 2024 12:00:48 AM com.hazelcast.map.impl.operation.DeleteOperation
+java.lang.RuntimeException: java.sql.SQLIntegrityConstraintViolationException: Cannot delete or update a parent row: a foreign key constraint fails (`oauth2`.`refresh_token`, CONSTRAINT `refresh_token_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `client` (`client_id`))
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdateInternal(ClientPreparedStatement.java:1094)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeLargeUpdate(ClientPreparedStatement.java:1345)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeUpdate(ProxyPreparedStatement.java:61)
+	at com.networknt.oauth.cache.ClientMapStore.delete(ClientMapStore.java:33)
+	at com.hazelcast.map.impl.MapStoreWrapper.delete(MapStoreWrapper.java:115)
+	at com.hazelcast.map.impl.mapstore.writethrough.WriteThroughStore.remove(WriteThroughStore.java:28)
+	at com.hazelcast.map.impl.recordstore.DefaultRecordStore.delete(DefaultRecordStore.java:455)
+	at com.hazelcast.spi.Operation.call(Operation.java:170)
+	at com.networknt.oauth.cache.ClientMapStore.delete(ClientMapStore.java:19)
+	at com.hazelcast.map.impl.MapStoreWrapper.delete(MapStoreWrapper.java:115)
+	at com.hazelcast.map.impl.mapstore.writethrough.WriteThroughStore.remove(WriteThroughStore.java:56)
+	at com.hazelcast.map.impl.mapstore.writethrough.WriteThroughStore.remove(WriteThroughStore.java:28)
+	at com.hazelcast.spi.impl.operationexecutor.impl.OperationThread.run(OperationThread.java:110)
+	at com.hazelcast.map.impl.recordstore.DefaultRecordStore.delete(DefaultRecordStore.java:455)
+	at com.hazelcast.spi.Operation.call(Operation.java:170)
+	at com.hazelcast.spi.impl.operationservice.impl.OperationRunnerImpl.run(OperationRunnerImpl.java:199)
+	at com.hazelcast.spi.impl.operationexecutor.impl.OperationThread.process(OperationThread.java:153)
+	at com.hazelcast.spi.impl.operationexecutor.impl.OperationThread.run(OperationThread.java:110)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:117)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdateInternal(ClientPreparedStatement.java:1094)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeLargeUpdate(ClientPreparedStatement.java:1345)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeUpdate(ProxyPreparedStatement.java:61)
+	at com.networknt.oauth.cache.ClientMapStore.delete(ClientMapStore.java:33)
+
+00:00:48.501 [hz._hzInstance_1_dev.partition-operation.thread-13]   DEBUG c.n.o.cache.ServiceEndpointMapStore delete - Delete:7881aeed
+00:00:48.597 [hz._hzInstance_1_dev.partition-operation.thread-13]   DEBUG c.n.oauth.cache.RefreshTokenMapStore store - Store:f84c5a0c-3dc7-4ae4-8710-8bb05f417820
+00:00:48.617 [hz._hzInstance_1_dev.partition-operation.thread-13]   DEBUG c.n.oauth.cache.ClientMapStore delete - Delete:21f5eb34-6c70-4921-af18-37a600be7a03
+Jun 29, 2024 12:00:48 AM com.hazelcast.map.impl.operation.DeleteOperation
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:117)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:97)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdateInternal(ClientPreparedStatement.java:1094)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeLargeUpdate(ClientPreparedStatement.java:1345)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdate(ClientPreparedStatement.java:1027)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeUpdate(ProxyPreparedStatement.java:61)
+	at com.networknt.oauth.cache.ClientMapStore.delete(ClientMapStore.java:33)
+	at com.hazelcast.map.impl.MapStoreWrapper.delete(MapStoreWrapper.java:115)
+	at com.hazelcast.map.impl.MapStoreWrapper.delete(MapStoreWrapper.java:115)
+	at com.hazelcast.map.impl.mapstore.writethrough.WriteThroughStore.remove(WriteThroughStore.java:56)
+	at com.hazelcast.map.impl.mapstore.writethrough.WriteThroughStore.remove(WriteThroughStore.java:28)
+	at com.hazelcast.map.impl.operation.DeleteOperation.run(DeleteOperation.java:44)
+	at com.hazelcast.spi.Operation.call(Operation.java:170)
+	at com.hazelcast.spi.impl.operationservice.impl.OperationRunnerImpl.call(OperationRunnerImpl.java:210)
+	at com.hazelcast.spi.impl.operationservice.impl.OperationRunnerImpl.run(OperationRunnerImpl.java:199)
+	at com.hazelcast.spi.impl.operationservice.impl.OperationRunnerImpl.run(OperationRunnerImpl.java:416)
+	at com.hazelcast.spi.impl.operationservice.impl.OperationRunnerImpl.run(OperationRunnerImpl.java:199)
+	at com.hazelcast.spi.impl.operationexecutor.impl.OperationThread.process(OperationThread.java:153)
+	at com.hazelcast.spi.impl.operationexecutor.impl.OperationThread.process(OperationThread.java:123)
+	at com.hazelcast.spi.impl.operationexecutor.impl.OperationThread.process(OperationThread.java:123)
+Caused by: java.sql.SQLIntegrityConstraintViolationException: Cannot delete or update a parent row: a foreign key constraint fails (`oauth2`.`refresh_token`, CONSTRAINT `refresh_token_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `client` (`client_id`))
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:97)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:955)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdateInternal(ClientPreparedStatement.java:1042)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdate(ClientPreparedStatement.java:1027)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeUpdate(HikariProxyPreparedStatement.java)
+	... 14 more
+
+Jun 29, 2024 12:00:48 AM com.hazelcast.map.impl.operation.DeleteOperation
+SEVERE: [172.24.0.6]:5701 [dev] [3.12] java.sql.SQLIntegrityConstraintViolationException: Cannot delete or update a parent row: a foreign key constraint fails (`oauth2`.`refresh_token`, CONSTRAINT `refresh_token_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `client` (`client_id`))
+java.lang.RuntimeException: java.sql.SQLIntegrityConstraintViolationException: Cannot delete or update a parent row: a foreign key constraint fails (`oauth2`.`refresh_token`, CONSTRAINT `refresh_token_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `client` (`client_id`))
+	at com.networknt.oauth.cache.ClientMapStore.delete(ClientMapStore.java:36)
+	at com.networknt.oauth.cache.ClientMapStore.delete(ClientMapStore.java:19)
+	at com.hazelcast.map.impl.MapStoreWrapper.delete(MapStoreWrapper.java:115)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:955)
+	at com.hazelcast.map.impl.recordstore.DefaultRecordStore.removeRecord(DefaultRecordStore.java:1034)
+	at com.hazelcast.map.impl.recordstore.DefaultRecordStore.delete(DefaultRecordStore.java:455)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdateInternal(ClientPreparedStatement.java:1042)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeLargeUpdate(ClientPreparedStatement.java:1345)
+	at com.hazelcast.spi.impl.operationservice.impl.OperationRunnerImpl.call(OperationRunnerImpl.java:210)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeUpdate(ProxyPreparedStatement.java:61)
+	at com.networknt.oauth.cache.ClientMapStore.delete(ClientMapStore.java:33)
+	at com.hazelcast.map.impl.MapStoreWrapper.delete(MapStoreWrapper.java:115)
+	at com.hazelcast.map.impl.mapstore.writethrough.WriteThroughStore.remove(WriteThroughStore.java:28)
+	at com.hazelcast.map.impl.recordstore.DefaultRecordStore.delete(DefaultRecordStore.java:455)
+	at com.hazelcast.spi.Operation.call(Operation.java:170)
+	at com.hazelcast.spi.impl.operationservice.impl.OperationRunnerImpl.run(OperationRunnerImpl.java:199)
+	at com.hazelcast.spi.impl.operationexecutor.impl.OperationThread.process(OperationThread.java:153)
+	at com.hazelcast.spi.impl.operationexecutor.impl.OperationThread.run(OperationThread.java:110)
+	at com.hazelcast.spi.impl.operationexecutor.impl.OperationThread.process(OperationThread.java:153)
+	at com.hazelcast.spi.impl.operationexecutor.impl.OperationThread.run(OperationThread.java:110)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:117)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdateInternal(ClientPreparedStatement.java:1094)
+00:00:48.826 [hz._hzInstance_1_dev.partition-operation.thread-0]   DEBUG c.n.oauth.cache.RefreshTokenMapStore load - Load:dafd6ae1-bd67-4d62-b95a-27682e42bc9b
+00:00:48.826 [hz._hzInstance_1_dev.partition-operation.thread-3]   DEBUG c.n.oauth.cache.ClientMapStore delete - Delete:053ac611-7e0b-4119-8ec8-693366fcb7ef
+00:00:48.827 [hz._hzInstance_1_dev.partition-operation.thread-0]   DEBUG c.n.oauth.cache.RefreshTokenMapStore store - Store:dafd6ae1-bd67-4d62-b95a-27682e42bc9b
+00:00:48.827 [hz._hzInstance_1_dev.partition-operation.thread-0]   DEBUG c.n.oauth.cache.RefreshTokenMapStore load - Load:dafd6ae1-bd67-4d62-b95a-27682e42bc9b
+00:00:48.832 [hz._hzInstance_1_dev.partition-operation.thread-3]   ERROR c.n.oauth.cache.ClientMapStore delete - Exception:
+java.sql.SQLIntegrityConstraintViolationException: Cannot delete or update a parent row: a foreign key constraint fails (`oauth2`.`refresh_token`, CONSTRAINT `refresh_token_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `client` (`client_id`))
+
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:117)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:97)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:955)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdateInternal(ClientPreparedStatement.java:1094)
+	at com.hazelcast.map.impl.MapStoreWrapper.delete(MapStoreWrapper.java:115)
+	at com.hazelcast.map.impl.mapstore.writethrough.WriteThroughStore.remove(WriteThroughStore.java:56)
+	at com.hazelcast.map.impl.mapstore.writethrough.WriteThroughStore.remove(WriteThroughStore.java:28)
+	at com.hazelcast.map.impl.recordstore.DefaultRecordStore.removeRecord(DefaultRecordStore.java:1034)
+	at com.hazelcast.map.impl.recordstore.DefaultRecordStore.delete(DefaultRecordStore.java:455)
+	at com.hazelcast.map.impl.operation.DeleteOperation.run(DeleteOperation.java:44)
+	at com.networknt.oauth.cache.ClientMapStore.delete(ClientMapStore.java:33)
+	at com.hazelcast.spi.impl.operationservice.impl.OperationRunnerImpl.run(OperationRunnerImpl.java:199)
+	at com.hazelcast.map.impl.MapStoreWrapper.delete(MapStoreWrapper.java:115)
+	at com.hazelcast.map.impl.mapstore.writethrough.WriteThroughStore.remove(WriteThroughStore.java:28)
+	at com.hazelcast.map.impl.recordstore.DefaultRecordStore.delete(DefaultRecordStore.java:455)
+	at com.hazelcast.spi.Operation.call(Operation.java:170)
+	at com.hazelcast.spi.impl.operationservice.impl.OperationRunnerImpl.run(OperationRunnerImpl.java:199)
+	at com.hazelcast.spi.impl.operationexecutor.impl.OperationThread.process(OperationThread.java:153)
+	at com.hazelcast.spi.impl.operationexecutor.impl.OperationThread.run(OperationThread.java:110)
+00:00:48.848 [hz._hzInstance_1_dev.partition-operation.thread-5]   DEBUG c.networknt.oauth.cache.UserMapStore store - Store:5dbe300d
+00:00:48.855 [hz._hzInstance_1_dev.partition-operation.thread-0]   DEBUG c.n.oauth.cache.RefreshTokenMapStore delete - Delete:dafd6ae1-bd67-4d62-b95a-27682e42bc9b
+00:00:48.861 [hz._hzInstance_1_dev.partition-operation.thread-5]   DEBUG c.n.oauth.cache.ServiceMapStore load - Load:765c6790
+00:00:48.863 [hz._hzInstance_1_dev.partition-operation.thread-5]   DEBUG c.n.oauth.cache.ServiceMapStore load - Load:765c6790
+00:00:48.870 [hz._hzInstance_1_dev.partition-operation.thread-5]   DEBUG c.networknt.oauth.cache.UserMapStore load - Load:5dbe300d
+	at com.hazelcast.spi.impl.operationexecutor.impl.OperationThread.process(OperationThread.java:123)
+Caused by: java.sql.SQLIntegrityConstraintViolationException: Cannot delete or update a parent row: a foreign key constraint fails (`oauth2`.`refresh_token`, CONSTRAINT `refresh_token_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `client` (`client_id`))
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:97)

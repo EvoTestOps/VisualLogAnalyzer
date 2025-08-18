@@ -1,5 +1,8 @@
 test_data
-log_data
+
+log_data/*
+!log_data/LO2/
+
 output
 __pycache__/
 .env

@@ -6,9 +6,8 @@ import pytest
 import server.analysis.analysis_runners as ar
 
 # Test data paths
-HIDDEN_GROUP = "./tests/datasets/hidden_group_1"
-LABELED = "./tests/datasets/labeled"
-ONLY_CORRECT_CASES = "./tests/datasets/only_correct_cases"
+HIDDEN_GROUP = "./log_data/LO2/Hidden_Group_1"
+LABELED = "./log_data/LO2/Labeled"
 
 
 class TestRunFileCountsAnalysis:
@@ -320,12 +319,14 @@ class TestRunAnomalyDetectionAnalysis:
         result = ar.run_anomaly_detection_analysis(
             project_id=7,
             analysis_name="test",
-            train_data_path=ONLY_CORRECT_CASES,
+            train_data_path=LABELED,
             test_data_path=HIDDEN_GROUP,
             models=["kmeans", "oovd"],
             item_list_col="e_words",
             runs_to_include=None,
+            runs_to_include_train=None,
             files_to_include=None,
+            files_to_include_train=None,
             file_level=file_level,
             directory_level=directory_level,
             mask_type="myllari",
@@ -393,7 +394,9 @@ class TestRunAnomalyDetectionAnalysis:
             models=["kmeans"],
             item_list_col="e_words",
             runs_to_include=None,
+            runs_to_include_train=None,
             files_to_include=None,
+            files_to_include_train=None,
             file_level=file_level,
             directory_level=directory_level,
             mask_type="myllari",
