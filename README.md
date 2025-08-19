@@ -21,7 +21,7 @@ Analyses are run as background tasks which gives the option to run multiple anal
 
 By default, the program expects the datasets to be located within the `log_data/` directory. To change the location of the log data, update the `LOG_DATA_DIRECTORY` environment variable in the `.env.sample` file. The analysis results are stored in `analysis_results/` as parquet files.
 
-It is a good idea to create the log data and results directories yourself so you don't run into permission issues.
+It is a good idea to create the result directory yourself so you don't run into permission issues.
 
 To start the application, clone this repository and run: `docker compose up`
 
@@ -30,6 +30,8 @@ To start the application, clone this repository and run: `docker compose up`
 - or run compose with `docker compose --env-file .env.sample up`
 
 Once running, navigate to [http://localhost:5000/dash/](http://localhost:5000/dash/)
+
+The repo comes with an example light-oauth2 dataset that you can use when trying out the application. Feel free to delete it if you have no use for it.
 
 ### Expected log data structure
 
@@ -50,6 +52,19 @@ log_data/
     │   └── passing_logs.log
     └── correct-n
 ```
+
+You can also structure your datasets into subdirectories for easier management, and then specify the base path when creating a project:
+```
+log_data/
+├── hadoop
+└── LO2
+    ├── lo2_test
+    │   └── unknown-logs
+    └── lo2_train
+        ├── correct_1
+        └── correct_n
+```
+With project base path `./log_data/LO2` when working with the LO2-dataset.
 
 ## Usage Tips & Troubleshooting 
 - **Isolate a specific trace:** Double-clicking a legend item will isolate that trace, hiding all others. This is especially useful in line-level anomaly detection, where plots can be cluttered. 
