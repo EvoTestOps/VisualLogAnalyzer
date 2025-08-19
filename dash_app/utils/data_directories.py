@@ -35,8 +35,8 @@ def get_all_filenames(log_directory: str) -> list[str]:
     return sorted(all_files)
 
 
-def get_all_root_log_directories() -> tuple[list[str], list[str]]:
-    base_path = current_app.config["LOG_DATA_PATH"]
+def get_all_root_log_directories(base_path=None) -> tuple[list[str], list[str]]:
+    base_path = current_app.config["LOG_DATA_PATH"] if not base_path else base_path
 
     entries = next(os.walk(base_path))
     directories = entries[1]
@@ -45,4 +45,7 @@ def get_all_root_log_directories() -> tuple[list[str], list[str]]:
     directory_paths = [os.path.join(base_path, dir) + "/" for dir in directories]
     file_paths = [os.path.join(base_path, file) for file in files]
 
-    return directories + files, directory_paths + file_paths
+    names = [f"{os.path.basename(base_path) or base_path} (root)"] + directories + files
+    paths = [os.path.abspath(base_path) + "/"] + directory_paths + file_paths
+
+    return names, paths

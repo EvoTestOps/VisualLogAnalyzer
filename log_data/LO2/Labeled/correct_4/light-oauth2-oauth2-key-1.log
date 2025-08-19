@@ -1,0 +1,212 @@
+19:00:44.983 [hz._hzInstance_1_dev.partition-operation.thread-2]   DEBUG c.n.oauth.cache.ServiceMapStore load - Load:165d296d
+19:00:45.052 [hz._hzInstance_1_dev.partition-operation.thread-12]   DEBUG c.n.oauth.cache.RefreshTokenMapStore load - Load:fae5eab6-2f47-4fbb-9f8c-751f2240b19e
+19:00:45.053 [hz._hzInstance_1_dev.partition-operation.thread-12]   DEBUG c.n.oauth.cache.RefreshTokenMapStore load - Load:fae5eab6-2f47-4fbb-9f8c-751f2240b19e
+19:00:45.282 [hz._hzInstance_1_dev.partition-operation.thread-11]   DEBUG c.networknt.oauth.cache.UserMapStore delete - Delete:7bebc6e8
+19:00:45.293 [hz._hzInstance_1_dev.partition-operation.thread-2]   DEBUG c.n.oauth.cache.ServiceMapStore load - Load:165d296d
+19:00:45.304 [hz._hzInstance_1_dev.partition-operation.thread-9]   DEBUG c.n.oauth.cache.RefreshTokenMapStore load - Load:49022a1e-71f4-4683-a22f-d81f2120bc2a
+19:00:45.341 [hz._hzInstance_1_dev.partition-operation.thread-9]   DEBUG c.n.oauth.cache.RefreshTokenMapStore load - Load:49022a1e-71f4-4683-a22f-d81f2120bc2a
+19:00:45.381 [hz._hzInstance_1_dev.partition-operation.thread-9]   DEBUG c.n.oauth.cache.ServiceMapStore load - Load:1f7a1fd3
+19:00:45.415 [hz._hzInstance_1_dev.partition-operation.thread-9]   DEBUG c.n.oauth.cache.RefreshTokenMapStore load - Load:bce471e8-8b7e-4b9f-9282-ac3750932b2a
+19:00:45.467 [hz._hzInstance_1_dev.partition-operation.thread-9]   DEBUG c.n.oauth.cache.RefreshTokenMapStore delete - Delete:bce471e8-8b7e-4b9f-9282-ac3750932b2a
+19:00:45.516 [hz._hzInstance_1_dev.partition-operation.thread-15]   DEBUG c.n.oauth.cache.RefreshTokenMapStore load - Load:c300f962-0b15-4f32-a154-148063a1a136
+19:00:45.518 [hz._hzInstance_1_dev.partition-operation.thread-15]   DEBUG c.n.oauth.cache.RefreshTokenMapStore load - Load:c300f962-0b15-4f32-a154-148063a1a136
+19:00:45.582 [hz._hzInstance_1_dev.partition-operation.thread-15]   DEBUG c.n.oauth.cache.RefreshTokenMapStore load - Load:c300f962-0b15-4f32-a154-148063a1a136
+19:00:45.600 [hz._hzInstance_1_dev.partition-operation.thread-15]   DEBUG c.n.oauth.cache.ServiceMapStore load - Load:be0245ca
+19:00:45.641 [hz._hzInstance_1_dev.partition-operation.thread-12]   DEBUG c.n.oauth.cache.RefreshTokenMapStore load - Load:76cd5087-c57f-4f82-96d9-1685439b1d78
+19:00:45.667 [hz._hzInstance_1_dev.partition-operation.thread-8]   DEBUG c.networknt.oauth.cache.UserMapStore store - Store:427a3000
+19:00:45.681 [hz._hzInstance_1_dev.partition-operation.thread-6]   DEBUG c.n.oauth.cache.ClientMapStore load - Load:b894e676-ee0e-439f-8060-cbd440c966e0
+19:00:45.683 [hz._hzInstance_1_dev.partition-operation.thread-6]   DEBUG c.n.oauth.cache.ClientMapStore load - Load:b894e676-ee0e-439f-8060-cbd440c966e0
+19:00:46.094 [hz._hzInstance_1_dev.partition-operation.thread-15]   DEBUG c.n.o.cache.ServiceEndpointMapStore delete - Delete:be0245ca
+19:00:46.215 [hz._hzInstance_1_dev.partition-operation.thread-6]   DEBUG c.n.oauth.cache.ClientMapStore load - Load:9958e846-af72-4b73-ba1e-0251f1e7186d
+19:00:46.217 [hz._hzInstance_1_dev.partition-operation.thread-6]   DEBUG c.n.oauth.cache.ClientMapStore load - Load:9958e846-af72-4b73-ba1e-0251f1e7186d
+19:00:46.237 [hz._hzInstance_1_dev.partition-operation.thread-1]   DEBUG c.n.oauth.cache.ClientMapStore store - Store:ca38f119-c232-4668-9585-1386e3d67ab3
+19:00:46.245 [hz._hzInstance_1_dev.partition-operation.thread-3]   DEBUG c.networknt.oauth.cache.UserMapStore load - Load:a8cfdf35
+19:00:46.252 [hz._hzInstance_1_dev.partition-operation.thread-3]   DEBUG c.networknt.oauth.cache.UserMapStore load - Load:a8cfdf35
+19:00:46.364 [hz._hzInstance_1_dev.partition-operation.thread-3]   DEBUG c.networknt.oauth.cache.UserMapStore load - Load:a8cfdf35
+19:00:46.450 [hz._hzInstance_1_dev.partition-operation.thread-3]   DEBUG c.networknt.oauth.cache.UserMapStore load - Load:a8cfdf35
+19:00:46.451 [hz._hzInstance_1_dev.partition-operation.thread-9]   DEBUG c.n.oauth.cache.RefreshTokenMapStore load - Load:b7ff8269-e0f0-437c-bd39-35bf56763571
+19:00:46.470 [hz._hzInstance_1_dev.partition-operation.thread-13]   DEBUG c.n.oauth.cache.ServiceMapStore store - Store:b73c9cab
+19:00:46.480 [hz._hzInstance_1_dev.partition-operation.thread-13]   DEBUG c.n.oauth.cache.ServiceMapStore load - Load:93b8d389
+19:00:46.482 [hz._hzInstance_1_dev.partition-operation.thread-13]   DEBUG c.n.oauth.cache.ServiceMapStore load - Load:93b8d389
+19:00:46.662 [hz._hzInstance_1_dev.partition-operation.thread-2]   DEBUG c.n.oauth.cache.ServiceMapStore delete - Delete:165d296d
+19:00:46.914 [hz._hzInstance_1_dev.partition-operation.thread-1]   DEBUG c.n.oauth.cache.ClientMapStore load - Load:6e45aaf4-3d32-4825-8603-e9f3af5d49cd
+19:00:46.917 [hz._hzInstance_1_dev.partition-operation.thread-1]   DEBUG c.n.oauth.cache.ClientMapStore load - Load:6e45aaf4-3d32-4825-8603-e9f3af5d49cd
+19:00:46.940 [hz._hzInstance_1_dev.partition-operation.thread-9]   DEBUG c.n.oauth.cache.ServiceMapStore delete - Delete:1f7a1fd3
+19:00:47.033 [hz._hzInstance_1_dev.partition-operation.thread-11]   DEBUG c.n.oauth.cache.RefreshTokenMapStore store - Store:04367ffd-1290-4ad5-8185-303a2ddebfc7
+19:00:47.074 [hz._hzInstance_1_dev.partition-operation.thread-8]   DEBUG c.n.oauth.cache.ClientMapStore load - Load:a0eadc90-ca38-4686-b28f-f52d98ba4ef9
+19:00:47.077 [hz._hzInstance_1_dev.partition-operation.thread-8]   DEBUG c.n.oauth.cache.ClientMapStore load - Load:a0eadc90-ca38-4686-b28f-f52d98ba4ef9
+19:00:47.085 [hz._hzInstance_1_dev.partition-operation.thread-1]   DEBUG c.n.oauth.cache.ServiceMapStore store - Store:87c6a61c
+19:00:47.143 [hz._hzInstance_1_dev.partition-operation.thread-13]   DEBUG c.n.o.cache.ServiceEndpointMapStore delete - Delete:b73c9cab
+19:00:47.156 [hz._hzInstance_1_dev.partition-operation.thread-3]   DEBUG c.n.oauth.cache.ClientMapStore load - Load:63d0cee0-b55f-48d8-a47f-6c97defeb37f
+19:00:47.157 [hz._hzInstance_1_dev.partition-operation.thread-3]   DEBUG c.n.oauth.cache.ClientMapStore load - Load:63d0cee0-b55f-48d8-a47f-6c97defeb37f
+19:00:47.196 [hz._hzInstance_1_dev.partition-operation.thread-9]   DEBUG c.n.oauth.cache.ClientMapStore store - Store:7b87eccb-8564-46b4-9c25-bfa6c350d96b
+19:00:47.260 [hz._hzInstance_1_dev.partition-operation.thread-2]   DEBUG c.n.o.cache.ServiceEndpointMapStore delete - Delete:f16b3bf1
+19:00:47.407 [hz._hzInstance_1_dev.partition-operation.thread-3]   DEBUG c.n.oauth.cache.RefreshTokenMapStore load - Load:b7cb533d-607d-4ba2-902b-743cb251c42f
+19:00:47.408 [hz._hzInstance_1_dev.partition-operation.thread-3]   DEBUG c.n.oauth.cache.RefreshTokenMapStore load - Load:b7cb533d-607d-4ba2-902b-743cb251c42f
+19:00:47.450 [hz._hzInstance_1_dev.partition-operation.thread-13]   DEBUG c.n.oauth.cache.ServiceMapStore delete - Delete:93b8d389
+19:00:47.472 [hz._hzInstance_1_dev.partition-operation.thread-2]   DEBUG c.n.oauth.cache.RefreshTokenMapStore store - Store:70eeedc2-a709-4194-8033-50cba8838609
+19:00:47.519 [hz._hzInstance_1_dev.partition-operation.thread-2]   DEBUG c.n.oauth.cache.RefreshTokenMapStore delete - Delete:70eeedc2-a709-4194-8033-50cba8838609
+19:00:47.625 [hz._hzInstance_1_dev.partition-operation.thread-12]   DEBUG c.n.oauth.cache.RefreshTokenMapStore load - Load:44f9ffa2-6ba8-4d9f-8f38-691dd7039cd5
+19:00:47.627 [hz._hzInstance_1_dev.partition-operation.thread-12]   DEBUG c.n.oauth.cache.RefreshTokenMapStore load - Load:44f9ffa2-6ba8-4d9f-8f38-691dd7039cd5
+19:00:47.706 [hz._hzInstance_1_dev.partition-operation.thread-9]   DEBUG c.networknt.oauth.cache.UserMapStore load - Load:721b6640
+19:00:47.709 [hz._hzInstance_1_dev.partition-operation.thread-9]   DEBUG c.networknt.oauth.cache.UserMapStore load - Load:721b6640
+19:00:47.791 [hz._hzInstance_1_dev.partition-operation.thread-12]   DEBUG c.n.oauth.cache.RefreshTokenMapStore store - Store:11ba4d82-1ea6-40ee-a469-0f3cb45abfda
+19:00:47.826 [hz._hzInstance_1_dev.partition-operation.thread-12]   DEBUG c.n.oauth.cache.RefreshTokenMapStore delete - Delete:11ba4d82-1ea6-40ee-a469-0f3cb45abfda
+19:00:48.423 [hz._hzInstance_1_dev.partition-operation.thread-15]   DEBUG c.n.oauth.cache.ClientMapStore load - Load:c0d7df33-72a8-45e7-a4af-b8108cf0b9bc
+19:00:48.426 [hz._hzInstance_1_dev.partition-operation.thread-14]   DEBUG c.n.oauth.cache.RefreshTokenMapStore store - Store:0d2c6e82-39d1-44b7-afa6-4b59de2197c6
+19:00:48.427 [hz._hzInstance_1_dev.partition-operation.thread-14]   DEBUG c.n.oauth.cache.RefreshTokenMapStore load - Load:0d2c6e82-39d1-44b7-afa6-4b59de2197c6
+19:00:48.470 [hz._hzInstance_1_dev.partition-operation.thread-1]   DEBUG c.n.oauth.cache.ServiceMapStore load - Load:87c6a61c
+19:00:48.533 [hz._hzInstance_1_dev.partition-operation.thread-15]   DEBUG c.n.oauth.cache.ClientMapStore store - Store:5faa5268-aac7-4b20-b09f-ed1b4628aa4a
+19:00:48.605 [hz._hzInstance_1_dev.partition-operation.thread-6]   DEBUG c.n.oauth.cache.RefreshTokenMapStore store - Store:93656b80-42a3-4433-a3d6-98bbc6ab1536
+19:00:48.778 [hz._hzInstance_1_dev.partition-operation.thread-15]   DEBUG c.n.oauth.cache.RefreshTokenMapStore load - Load:708ff612-36a6-40ba-a155-77cf6508bfde
+19:00:48.779 [hz._hzInstance_1_dev.partition-operation.thread-15]   DEBUG c.n.oauth.cache.RefreshTokenMapStore load - Load:708ff612-36a6-40ba-a155-77cf6508bfde
+19:00:48.817 [hz._hzInstance_1_dev.partition-operation.thread-14]   DEBUG c.n.oauth.cache.RefreshTokenMapStore delete - Delete:0d2c6e82-39d1-44b7-afa6-4b59de2197c6
+19:00:48.907 [hz._hzInstance_1_dev.partition-operation.thread-15]   DEBUG c.n.oauth.cache.ServiceMapStore load - Load:7d9211f5
+19:00:48.909 [hz._hzInstance_1_dev.partition-operation.thread-15]   DEBUG c.n.oauth.cache.ServiceMapStore load - Load:7d9211f5
+19:00:48.922 [hz._hzInstance_1_dev.partition-operation.thread-7]   DEBUG c.n.oauth.cache.ClientMapStore store - Store:eedb5ef7-37f6-47de-9492-f49bfc8d4078
+19:00:48.967 [hz._hzInstance_1_dev.partition-operation.thread-14]   DEBUG c.networknt.oauth.cache.UserMapStore load - Load:b80608bc
+19:00:48.969 [hz._hzInstance_1_dev.partition-operation.thread-14]   DEBUG c.networknt.oauth.cache.UserMapStore load - Load:b80608bc
+19:00:49.001 [hz._hzInstance_1_dev.partition-operation.thread-14]   DEBUG c.networknt.oauth.cache.UserMapStore load - Load:b80608bc
+19:00:49.019 [hz._hzInstance_1_dev.partition-operation.thread-14]   DEBUG c.networknt.oauth.cache.UserMapStore load - Load:b80608bc
+19:00:49.037 [hz._hzInstance_1_dev.partition-operation.thread-14]   DEBUG c.networknt.oauth.cache.UserMapStore load - Load:b80608bc
+19:00:49.076 [hz._hzInstance_1_dev.partition-operation.thread-14]   DEBUG c.networknt.oauth.cache.UserMapStore load - Load:b80608bc
+19:00:49.115 [hz._hzInstance_1_dev.partition-operation.thread-15]   DEBUG c.n.oauth.cache.ServiceMapStore store - Store:7d9211f5
+19:00:49.288 [hz._hzInstance_1_dev.partition-operation.thread-6]   DEBUG c.n.oauth.cache.ServiceMapStore load - Load:87b06420
+19:00:49.291 [hz._hzInstance_1_dev.partition-operation.thread-6]   DEBUG c.n.oauth.cache.ServiceMapStore load - Load:87b06420
+19:00:49.413 [hz._hzInstance_1_dev.partition-operation.thread-1]   DEBUG c.n.oauth.cache.ServiceMapStore delete - Delete:87c6a61c
+19:00:49.417 [hz._hzInstance_1_dev.partition-operation.thread-6]   DEBUG c.n.oauth.cache.RefreshTokenMapStore load - Load:bcbb36de-6d88-400e-b737-be784fce047b
+19:00:49.467 [hz._hzInstance_1_dev.partition-operation.thread-10]   DEBUG c.n.oauth.cache.RefreshTokenMapStore load - Load:ad63d8c6-3384-4b4d-ab54-0180ad46ea22
+19:00:49.580 [hz._hzInstance_1_dev.partition-operation.thread-8]   DEBUG c.networknt.oauth.cache.UserMapStore store - Store:de19364a
+19:00:49.643 [hz._hzInstance_1_dev.partition-operation.thread-10]   DEBUG c.n.oauth.cache.RefreshTokenMapStore delete - Delete:ad63d8c6-3384-4b4d-ab54-0180ad46ea22
+19:00:49.646 [hz._hzInstance_1_dev.partition-operation.thread-6]   DEBUG c.n.oauth.cache.ServiceMapStore load - Load:87b06420
+19:00:49.686 [hz._hzInstance_1_dev.partition-operation.thread-10]   DEBUG c.n.oauth.cache.RefreshTokenMapStore load - Load:ad63d8c6-3384-4b4d-ab54-0180ad46ea22
+19:00:49.702 [hz._hzInstance_1_dev.partition-operation.thread-6]   DEBUG c.n.oauth.cache.RefreshTokenMapStore delete - Delete:bcbb36de-6d88-400e-b737-be784fce047b
+19:00:49.792 [hz._hzInstance_1_dev.partition-operation.thread-15]   DEBUG c.n.oauth.cache.RefreshTokenMapStore store - Store:5efbc7b3-0f10-4e8e-aa2d-4e3ad08d2a16
+19:00:49.856 [hz._hzInstance_1_dev.partition-operation.thread-6]   DEBUG c.n.o.cache.ServiceEndpointMapStore delete - Delete:87b06420
+19:00:49.864 [hz._hzInstance_1_dev.partition-operation.thread-15]   DEBUG c.n.oauth.cache.RefreshTokenMapStore delete - Delete:5efbc7b3-0f10-4e8e-aa2d-4e3ad08d2a16
+19:00:49.868 [hz._hzInstance_1_dev.partition-operation.thread-6]   DEBUG c.networknt.oauth.cache.UserMapStore store - Store:c9c5b02f
+19:00:49.872 [hz._hzInstance_1_dev.partition-operation.thread-15]   DEBUG c.n.oauth.cache.RefreshTokenMapStore load - Load:5efbc7b3-0f10-4e8e-aa2d-4e3ad08d2a16
+19:00:49.999 [hz._hzInstance_1_dev.partition-operation.thread-15]   DEBUG c.n.oauth.cache.ServiceMapStore load - Load:7d9211f5
+19:00:50.061 [hz._hzInstance_1_dev.partition-operation.thread-10]   DEBUG c.n.oauth.cache.RefreshTokenMapStore load - Load:ad63d8c6-3384-4b4d-ab54-0180ad46ea22
+19:00:50.061 [hz._hzInstance_1_dev.partition-operation.thread-12]   DEBUG c.n.oauth.cache.ClientMapStore load - Load:d2bfb91d-96b9-446c-86ed-619c7af51789
+19:00:50.379 [hz._hzInstance_1_dev.partition-operation.thread-6]   DEBUG c.networknt.oauth.cache.UserMapStore load - Load:c9c5b02f
+19:00:50.453 [hz._hzInstance_1_dev.partition-operation.thread-1]   DEBUG c.networknt.oauth.cache.UserMapStore store - Store:05406b29
+19:00:50.569 [hz._hzInstance_1_dev.partition-operation.thread-6]   DEBUG c.networknt.oauth.cache.UserMapStore delete - Delete:c9c5b02f
+19:00:50.573 [hz._hzInstance_1_dev.partition-operation.thread-10]   DEBUG c.n.oauth.cache.RefreshTokenMapStore load - Load:ba6a57c1-de17-474a-a692-bf4e367406e7
+19:00:50.623 [hz._hzInstance_1_dev.partition-operation.thread-8]   DEBUG c.networknt.oauth.cache.UserMapStore load - Load:df2a9f4d
+19:00:50.625 [hz._hzInstance_1_dev.partition-operation.thread-8]   DEBUG c.networknt.oauth.cache.UserMapStore load - Load:df2a9f4d
+Jun 28, 2024 7:00:50 PM com.hazelcast.map.impl.operation.DeleteOperation
+19:00:50.742 [hz._hzInstance_1_dev.partition-operation.thread-9]   ERROR c.n.oauth.cache.ClientMapStore delete - Exception:
+java.sql.SQLIntegrityConstraintViolationException: Cannot delete or update a parent row: a foreign key constraint fails (`oauth2`.`refresh_token`, CONSTRAINT `refresh_token_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `client` (`client_id`))
+	at com.networknt.oauth.cache.ClientMapStore.delete(ClientMapStore.java:36)
+	at com.networknt.oauth.cache.ClientMapStore.delete(ClientMapStore.java:19)
+	at com.hazelcast.map.impl.MapStoreWrapper.delete(MapStoreWrapper.java:115)
+	at com.hazelcast.map.impl.mapstore.writethrough.WriteThroughStore.remove(WriteThroughStore.java:56)
+	at com.hazelcast.map.impl.mapstore.writethrough.WriteThroughStore.remove(WriteThroughStore.java:28)
+	at com.hazelcast.map.impl.recordstore.DefaultRecordStore.removeRecord(DefaultRecordStore.java:1034)
+	at com.hazelcast.map.impl.recordstore.DefaultRecordStore.delete(DefaultRecordStore.java:455)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeUpdate(ProxyPreparedStatement.java:61)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeUpdate(HikariProxyPreparedStatement.java)
+	at com.networknt.oauth.cache.ClientMapStore.delete(ClientMapStore.java:33)
+	at com.networknt.oauth.cache.ClientMapStore.delete(ClientMapStore.java:19)
+	at com.hazelcast.spi.impl.operationservice.impl.OperationRunnerImpl.run(OperationRunnerImpl.java:416)
+	at com.hazelcast.spi.impl.operationexecutor.impl.OperationThread.process(OperationThread.java:153)
+	at com.hazelcast.spi.impl.operationexecutor.impl.OperationThread.process(OperationThread.java:123)
+	at com.hazelcast.spi.impl.operationexecutor.impl.OperationThread.run(OperationThread.java:110)
+Caused by: java.sql.SQLIntegrityConstraintViolationException: Cannot delete or update a parent row: a foreign key constraint fails (`oauth2`.`refresh_token`, CONSTRAINT `refresh_token_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `client` (`client_id`))
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:97)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:955)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdateInternal(ClientPreparedStatement.java:1042)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdate(ClientPreparedStatement.java:1027)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeUpdate(HikariProxyPreparedStatement.java)
+	... 14 more
+
+	at com.hazelcast.map.impl.operation.DeleteOperation.run(DeleteOperation.java:44)
+	at com.hazelcast.spi.impl.operationservice.impl.OperationRunnerImpl.call(OperationRunnerImpl.java:210)
+	at com.hazelcast.spi.impl.operationservice.impl.OperationRunnerImpl.run(OperationRunnerImpl.java:416)
+	at com.hazelcast.spi.impl.operationexecutor.impl.OperationThread.process(OperationThread.java:123)
+19:00:50.769 [hz._hzInstance_1_dev.partition-operation.thread-1]   DEBUG c.networknt.oauth.cache.UserMapStore delete - Delete:05406b29
+19:00:50.869 [hz._hzInstance_1_dev.partition-operation.thread-10]   DEBUG c.n.oauth.cache.RefreshTokenMapStore store - Store:536b386d-eaa1-451f-a4a3-5ddb600eb3ef
+19:00:50.902 [hz._hzInstance_1_dev.partition-operation.thread-10]   DEBUG c.n.oauth.cache.RefreshTokenMapStore delete - Delete:536b386d-eaa1-451f-a4a3-5ddb600eb3ef
+19:00:50.920 [hz._hzInstance_1_dev.partition-operation.thread-15]   DEBUG c.n.oauth.cache.ServiceMapStore store - Store:7d9211f5
+19:00:51.094 [hz._hzInstance_1_dev.partition-operation.thread-11]   DEBUG c.n.oauth.cache.RefreshTokenMapStore load - Load:124a8e7e-3620-4851-9ed8-2eb87cd9a7dc
+19:00:51.099 [hz._hzInstance_1_dev.partition-operation.thread-11]   DEBUG c.n.oauth.cache.RefreshTokenMapStore load - Load:124a8e7e-3620-4851-9ed8-2eb87cd9a7dc
+19:00:51.109 [hz._hzInstance_1_dev.partition-operation.thread-9]   DEBUG c.n.oauth.cache.RefreshTokenMapStore store - Store:0b076996-a4da-4565-af32-b17900ffa0c4
+19:00:51.124 [hz._hzInstance_1_dev.partition-operation.thread-11]   DEBUG c.n.oauth.cache.RefreshTokenMapStore delete - Delete:124a8e7e-3620-4851-9ed8-2eb87cd9a7dc
+19:00:51.233 [hz._hzInstance_1_dev.partition-operation.thread-1]   DEBUG c.n.oauth.cache.RefreshTokenMapStore load - Load:2af3aa3a-2884-4763-841e-5a63afb12fca
+19:00:51.248 [hz._hzInstance_1_dev.partition-operation.thread-10]   DEBUG c.networknt.oauth.cache.UserMapStore store - Store:742a6621
+19:00:51.375 [hz._hzInstance_1_dev.partition-operation.thread-12]   DEBUG c.n.oauth.cache.ClientMapStore load - Load:34d55c85-c09b-46a1-b4c9-0b30c24d0fb8
+19:00:51.377 [hz._hzInstance_1_dev.partition-operation.thread-12]   DEBUG c.n.oauth.cache.ClientMapStore load - Load:34d55c85-c09b-46a1-b4c9-0b30c24d0fb8
+19:00:51.383 [hz._hzInstance_1_dev.partition-operation.thread-7]   DEBUG c.networknt.oauth.cache.UserMapStore store - Store:17caab12
+19:00:51.403 [hz._hzInstance_1_dev.partition-operation.thread-15]   DEBUG c.n.o.cache.ServiceEndpointMapStore delete - Delete:7d9211f5
+19:00:51.447 [hz._hzInstance_1_dev.partition-operation.thread-8]   DEBUG c.networknt.oauth.cache.UserMapStore store - Store:df2a9f4d
+19:00:51.480 [hz._hzInstance_1_dev.partition-operation.thread-8]   DEBUG c.networknt.oauth.cache.UserMapStore store - Store:df2a9f4d
+19:00:51.524 [hz._hzInstance_1_dev.partition-operation.thread-9]   DEBUG c.n.oauth.cache.RefreshTokenMapStore delete - Delete:0b076996-a4da-4565-af32-b17900ffa0c4
+19:00:51.535 [hz._hzInstance_1_dev.partition-operation.thread-6]   DEBUG c.networknt.oauth.cache.UserMapStore store - Store:b110cfa8
+19:00:51.557 [hz._hzInstance_1_dev.partition-operation.thread-9]   DEBUG c.n.oauth.cache.RefreshTokenMapStore load - Load:0b076996-a4da-4565-af32-b17900ffa0c4
+19:00:51.615 [hz._hzInstance_1_dev.partition-operation.thread-9]   DEBUG c.networknt.oauth.cache.UserMapStore store - Store:9c118259
+19:00:51.626 [hz._hzInstance_1_dev.partition-operation.thread-8]   DEBUG c.networknt.oauth.cache.UserMapStore store - Store:df2a9f4d
+19:00:51.641 [hz._hzInstance_1_dev.partition-operation.thread-7]   DEBUG c.networknt.oauth.cache.UserMapStore delete - Delete:17caab12
+19:00:51.687 [hz._hzInstance_1_dev.partition-operation.thread-9]   DEBUG c.n.oauth.cache.ClientMapStore store - Store:0c7f84e3-e482-49ca-8bd2-b825c0b3efba
+19:00:51.728 [hz._hzInstance_1_dev.partition-operation.thread-9]   DEBUG c.networknt.oauth.cache.UserMapStore store - Store:9c118259
+19:00:51.810 [hz._hzInstance_1_dev.partition-operation.thread-1]   DEBUG c.n.oauth.cache.ClientMapStore delete - Delete:6e45aaf4-3d32-4825-8603-e9f3af5d49cd
+java.sql.SQLIntegrityConstraintViolationException: Cannot delete or update a parent row: a foreign key constraint fails (`oauth2`.`refresh_token`, CONSTRAINT `refresh_token_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `client` (`client_id`))
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:97)
+SEVERE: [172.24.0.6]:5701 [dev] [3.12] java.sql.SQLIntegrityConstraintViolationException: Cannot delete or update a parent row: a foreign key constraint fails (`oauth2`.`refresh_token`, CONSTRAINT `refresh_token_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `client` (`client_id`))
+java.lang.RuntimeException: java.sql.SQLIntegrityConstraintViolationException: Cannot delete or update a parent row: a foreign key constraint fails (`oauth2`.`refresh_token`, CONSTRAINT `refresh_token_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `client` (`client_id`))
+	at com.networknt.oauth.cache.ClientMapStore.delete(ClientMapStore.java:36)
+	at com.networknt.oauth.cache.ClientMapStore.delete(ClientMapStore.java:19)
+	at com.hazelcast.map.impl.MapStoreWrapper.delete(MapStoreWrapper.java:115)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdate(ClientPreparedStatement.java:1027)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeUpdate(ProxyPreparedStatement.java:61)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeUpdate(HikariProxyPreparedStatement.java)
+	at com.networknt.oauth.cache.ClientMapStore.delete(ClientMapStore.java:33)
+	at com.hazelcast.map.impl.recordstore.DefaultRecordStore.delete(DefaultRecordStore.java:455)
+	at com.hazelcast.map.impl.operation.DeleteOperation.run(DeleteOperation.java:44)
+	at com.hazelcast.spi.Operation.call(Operation.java:170)
+	at com.hazelcast.map.impl.mapstore.writethrough.WriteThroughStore.remove(WriteThroughStore.java:28)
+	at com.hazelcast.map.impl.recordstore.DefaultRecordStore.delete(DefaultRecordStore.java:455)
+	at com.hazelcast.spi.Operation.call(Operation.java:170)
+	at com.hazelcast.spi.impl.operationservice.impl.OperationRunnerImpl.run(OperationRunnerImpl.java:199)
+	at com.hazelcast.spi.impl.operationservice.impl.OperationRunnerImpl.run(OperationRunnerImpl.java:416)
+	at com.hazelcast.spi.impl.operationexecutor.impl.OperationThread.process(OperationThread.java:153)
+	at com.hazelcast.spi.impl.operationexecutor.impl.OperationThread.run(OperationThread.java:110)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:117)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.hazelcast.spi.impl.operationexecutor.impl.OperationThread.process(OperationThread.java:153)
+	at com.hazelcast.spi.impl.operationexecutor.impl.OperationThread.run(OperationThread.java:110)
+19:00:51.849 [hz._hzInstance_1_dev.partition-operation.thread-1]   DEBUG c.n.oauth.cache.ClientMapStore delete - Delete:ca38f119-c232-4668-9585-1386e3d67ab3
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeLargeUpdate(ClientPreparedStatement.java:1345)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeUpdate(ProxyPreparedStatement.java:61)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeUpdate(HikariProxyPreparedStatement.java)
+	at com.networknt.oauth.cache.ClientMapStore.delete(ClientMapStore.java:33)
+	... 14 more
+
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:97)
+SEVERE: [172.24.0.6]:5701 [dev] [3.12] java.sql.SQLIntegrityConstraintViolationException: Cannot delete or update a parent row: a foreign key constraint fails (`oauth2`.`refresh_token`, CONSTRAINT `refresh_token_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `client` (`client_id`))
+java.lang.RuntimeException: java.sql.SQLIntegrityConstraintViolationException: Cannot delete or update a parent row: a foreign key constraint fails (`oauth2`.`refresh_token`, CONSTRAINT `refresh_token_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `client` (`client_id`))
+	at com.networknt.oauth.cache.ClientMapStore.delete(ClientMapStore.java:36)
+	at com.networknt.oauth.cache.ClientMapStore.delete(ClientMapStore.java:19)
+	at com.hazelcast.map.impl.MapStoreWrapper.delete(MapStoreWrapper.java:115)
+	at com.hazelcast.map.impl.mapstore.writethrough.WriteThroughStore.remove(WriteThroughStore.java:56)
+	at com.hazelcast.map.impl.mapstore.writethrough.WriteThroughStore.remove(WriteThroughStore.java:28)
+	at com.hazelcast.map.impl.recordstore.DefaultRecordStore.removeRecord(DefaultRecordStore.java:1034)
+	at com.hazelcast.map.impl.recordstore.DefaultRecordStore.delete(DefaultRecordStore.java:455)
+	at com.hazelcast.map.impl.operation.DeleteOperation.run(DeleteOperation.java:44)
+	at com.hazelcast.map.impl.MapStoreWrapper.delete(MapStoreWrapper.java:115)
+	at com.hazelcast.map.impl.mapstore.writethrough.WriteThroughStore.remove(WriteThroughStore.java:56)
+	at com.hazelcast.map.impl.mapstore.writethrough.WriteThroughStore.remove(WriteThroughStore.java:28)
+	at com.hazelcast.map.impl.recordstore.DefaultRecordStore.delete(DefaultRecordStore.java:455)
+	at com.hazelcast.spi.impl.operationservice.impl.OperationRunnerImpl.run(OperationRunnerImpl.java:416)
+	at com.hazelcast.spi.impl.operationexecutor.impl.OperationThread.process(OperationThread.java:123)
+	at com.hazelcast.map.impl.operation.DeleteOperation.run(DeleteOperation.java:44)
+	at com.hazelcast.spi.Operation.call(Operation.java:170)
+	at com.hazelcast.spi.impl.operationservice.impl.OperationRunnerImpl.call(OperationRunnerImpl.java:210)
+	at com.hazelcast.spi.impl.operationservice.impl.OperationRunnerImpl.run(OperationRunnerImpl.java:199)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:955)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdateInternal(ClientPreparedStatement.java:1094)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdateInternal(ClientPreparedStatement.java:1042)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdate(ClientPreparedStatement.java:1027)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeUpdate(HikariProxyPreparedStatement.java)
+	... 14 more

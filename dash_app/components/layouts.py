@@ -377,7 +377,7 @@ def create_project_layout(
 
     task_error_modal = dbc.Row(dbc.Modal(id=task_error_modal_id, is_open=False))
     task_logs_modal = dbc.Row(
-        dbc.Modal(id=task_logs_modal_id, size="lg", is_open=False)
+        dbc.Modal(id=task_logs_modal_id, size="xl", is_open=False)
     )
 
     analysis_edit_name_modal = dbc.Row(
@@ -454,7 +454,7 @@ def create_high_level_viz_result_layout(
 
     layout = [
         dbc.Container([table_row, error_toast_row, success_toast_row]),
-        dbc.Container(plot_row, fluid=True),
+        dbc.Container(plot_row, fluid=True, style={"paddingBottom": "200px"}),
     ]
 
     return layout

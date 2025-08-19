@@ -81,7 +81,8 @@ def run_anomaly_detection(
     test_data,
     detectors,
     enhancement,
-    include_items,
+    include_test_items,
+    include_train_items,
     mask_type,
     vectorizer_type,
     analysis_name=None,
@@ -94,7 +95,8 @@ def run_anomaly_detection(
         log_format,
         detectors,
         enhancement,
-        include_items,
+        include_test_items,
+        include_train_items,
         mask_type,
         vectorizer_type,
         analysis_name,
@@ -215,8 +217,9 @@ def fetch_project_name(project_id: int) -> str:
     return response.json().get("name", "404")
 
 
-def get_log_data_directory_options():
-    labels, values = get_all_root_log_directories()
+def get_log_data_directory_options(project_id: int):
+    base_path = _fetch_project_base_path(project_id).get("base_path")
+    labels, values = get_all_root_log_directories(base_path)
     return [{"label": lab, "value": val} for (lab, val) in zip(labels, values)]
 
 
@@ -234,6 +237,15 @@ def fetch_project_settings(project_id: int) -> dict:
     if error or response is None:
         raise ValueError(
             f"Was not able to retrieve settings for project id {project_id}: {error}"
+        )
+    return response.json()
+
+
+def _fetch_project_base_path(project_id: int) -> dict:
+    response, error = make_api_call({}, f"projects/{project_id}/base_path", "GET")
+    if error or response is None:
+        raise ValueError(
+            f"Was not able to retrieve base_path for project id {project_id}: {error}"
         )
     return response.json()
 
@@ -264,7 +276,8 @@ def _build_test_train_payload(
     log_format,
     detectors,
     enhancement,
-    include_items,
+    include_test_items,
+    include_train_items,
     mask_type,
     vectorizer_type,
     analysis_name,
@@ -282,17 +295,20 @@ def _build_test_train_payload(
     }
 
     if level == "directory":
-        payload["runs_to_include"] = include_items
+        payload["runs_to_include"] = include_test_items
+        payload["runs_to_include_train"] = include_train_items
         payload["run_level"] = True
     elif level == "file":
-        payload["files_to_include"] = include_items
+        payload["files_to_include"] = include_test_items
+        payload["files_to_include_train"] = include_train_items
         payload["file_level"] = True
     elif level == "line":
-        payload["runs_to_include"] = include_items
+        payload["runs_to_include"] = include_test_items
+        payload["runs_to_include_train"] = include_train_items
         payload["file_level"] = False
         payload["run_level"] = False
     else:
-        raise ValueError("Level must be either 'file' or 'directory'")
+        raise ValueError("Level must be 'line', 'file' or 'directory'")
 
     return payload
 

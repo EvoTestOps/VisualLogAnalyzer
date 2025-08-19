@@ -226,7 +226,9 @@ def run_anomaly_detection_analysis(
     models: list[str],
     item_list_col: str,
     runs_to_include: list[str] | None,
+    runs_to_include_train: list[str] | None,
     files_to_include: list[str] | None,
+    files_to_include_train: list[str] | None,
     file_level: bool,
     directory_level: bool,
     mask_type: str,
@@ -255,7 +257,9 @@ def run_anomaly_detection_analysis(
         train_data_path=train_data_path,
         test_data_path=test_data_path,
         runs_to_include=runs_to_include,
+        runs_to_include_train=runs_to_include_train,
         files_to_include=files_to_include,
+        files_to_include_train=files_to_include_train,
         mask_type=mask_type,
     )
 

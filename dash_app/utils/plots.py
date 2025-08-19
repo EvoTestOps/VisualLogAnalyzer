@@ -159,6 +159,8 @@ def create_unique_term_count_plot(df, theme="plotly_white"):
         template=theme,
     )
 
+    fig.update_yaxes(type="log")
+
     return fig
 
 
@@ -200,6 +202,8 @@ def create_unique_term_count_plot_by_file(
         yaxis_title="Lines",
         template=theme,
     )
+
+    fig.update_yaxes(type="log")
 
     return fig
 

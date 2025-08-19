@@ -38,10 +38,15 @@ def manual_test_train(project_id):
     test_data_path = validation_result.test_data_path
     models = validation_result.models
     item_list_col = validation_result.item_list_col
+
     runs_to_include = validation_result.runs_to_include
-    files_to_include = validation_result.files_to_include
-    file_level = validation_result.file_level
+    runs_to_include_train = validation_result.runs_to_include_train
     run_level = validation_result.run_level
+
+    files_to_include = validation_result.files_to_include
+    files_to_include_train = validation_result.files_to_include_train
+    file_level = validation_result.file_level
+
     mask_type = validation_result.mask_type
     vectorizer = validation_result.vectorizer
     analysis_name = validation_result.name
@@ -54,7 +59,9 @@ def manual_test_train(project_id):
         models,
         item_list_col,
         runs_to_include,
+        runs_to_include_train,
         files_to_include,
+        files_to_include_train,
         file_level,
         run_level,
         mask_type,

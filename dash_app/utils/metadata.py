@@ -139,7 +139,6 @@ def format_analysis_overview(analyses_data: list[dict]) -> list[dbc.ListGroupIte
                     [
                         html.Div(bottom_left_items),
                         edit_dropdown,
-                        # delete_button(id=str(analysis["id"]), label="Delete"),
                     ],
                     className="d-flex justify-content-between align-items-center",
                 ),
@@ -169,7 +168,18 @@ def format_project_overview(project_data: list[dict]) -> list[dbc.ListGroupItem]
                 ),
                 html.Div(
                     [
-                        html.P(f"Amount of analyses: {(project['analyses_count'])}"),
+                        html.Div(
+                            [
+                                html.P(
+                                    f"Base path: {(project.get('base_path') or "log_data").lstrip("/app/")}",
+                                    className="mb-0",
+                                ),
+                                html.P(
+                                    f"Amount of analyses: {(project['analyses_count'])}",
+                                    className="mb-0",
+                                ),
+                            ]
+                        ),
                         delete_button(id=str(project["id"]), label="Delete"),
                     ],
                     className="d-flex justify-content-between align-items-center",

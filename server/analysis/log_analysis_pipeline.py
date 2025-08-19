@@ -20,7 +20,9 @@ class ManualTrainTestPipeline:
         train_data_path=None,
         test_data_path=None,
         runs_to_include=None,
+        runs_to_include_train=None,
         files_to_include=None,
+        files_to_include_train=None,
         mask_type=None,
     ):
 
@@ -30,8 +32,12 @@ class ManualTrainTestPipeline:
 
         self._train_data_path = train_data_path
         self._test_data_path = test_data_path
+
         self._runs_to_include = runs_to_include
+        self._runs_to_include_train = runs_to_include_train
+
         self._files_to_include = files_to_include
+        self._files_to_include_train = files_to_include_train
 
         self._mask_type = mask_type
         self._vectorizer = vectorizer
@@ -49,6 +55,11 @@ class ManualTrainTestPipeline:
             self._df_test = filter_runs(self._df_test, self._runs_to_include)
         elif self._files_to_include is not None:
             self._df_test = filter_files(self._df_test, self._files_to_include)
+
+        if self._runs_to_include_train is not None:
+            self._df_train = filter_runs(self._df_train, self._runs_to_include_train)
+        elif self._files_to_include_train is not None:
+            self._df_train = filter_files(self._df_train, self._files_to_include_train)
 
     def _load_test_train(self, directory_path):
         loader = Loader(directory_path, self._log_format)

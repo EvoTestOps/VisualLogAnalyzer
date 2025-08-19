@@ -12,6 +12,8 @@ class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
 
+    base_path = db.Column(db.String)
+
     time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
     time_updated = db.Column(db.DateTime(timezone=True), onupdate=func.now())
 
@@ -30,6 +32,7 @@ class Project(db.Model):
         data = {
             "id": self.id,
             "name": self.name,
+            "base_path": self.base_path,
             "time_created": (
                 self.time_created.isoformat() if self.time_created else None
             ),

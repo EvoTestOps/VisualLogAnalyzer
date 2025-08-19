@@ -9,7 +9,7 @@ from dash_app.utils.metadata import format_project_overview
 
 dash.register_page(__name__, path="/", title="Home")
 
-form = project_form("submit-proj", "name-proj")
+form = project_form("submit-proj", "name-proj", "base-path-proj")
 
 # dcc.store is needed so that we can easily trigger the get_projects callback
 # after a new project has been created
@@ -78,10 +78,11 @@ def toggle_collapse(n, is_open):
     Output("refresh-proj", "data"),
     Input("submit-proj", "n_clicks"),
     State("name-proj", "value"),
+    State("base-path-proj", "value"),
     prevent_initial_call=True,
 )
-def create_project(_, name):
-    _, error = make_api_call({"name": name}, "projects")
+def create_project(_, name, base_path):
+    _, error = make_api_call({"name": name, "base_path": base_path}, "projects")
     if error:
         return (error, True, dash.no_update, False, False)
 

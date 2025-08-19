@@ -103,20 +103,20 @@ def register_callbacks(config, run_func):
 
         @callback(
             Output(form_ids["directory_id"], "options"),
-            Input(base_ids["url_id"], "search"),
+            Input(base_ids["project_store_id"], "data"),
         )
-        def get_log_data_directories(_):
-            return get_log_data_directory_options()
+        def get_log_data_directories(project_id):
+            return get_log_data_directory_options(project_id)
 
     else:
 
         @callback(
             Output(form_ids["train_data_id"], "options"),
             Output(form_ids["test_data_id"], "options"),
-            Input(base_ids["url_id"], "search"),
+            Input(base_ids["project_store_id"], "data"),
         )
-        def get_log_data_directories(_):
-            options = get_log_data_directory_options()
+        def get_log_data_directories(project_id):
+            options = get_log_data_directory_options(project_id)
             return options, options
 
     if (
@@ -144,15 +144,24 @@ def register_callbacks(config, run_func):
 
         @callback(
             Output(form_ids["runs_filter_id"], "options"),
+            Output(form_ids["runs_filter_train_id"], "options"),
             Input(form_ids["test_data_id"], "value"),
+            Input(form_ids["train_data_id"], "value"),
             State(base_ids["manual_filenames_id"], "data"),
         )
-        def get_comparison_options(directory_path, manual_filenames):
+        def get_comparison_options(dir_path_test, dir_path_train, manual_filenames):
             if manual_filenames:
                 return [], []
             runs_or_files = "files" if config["level"] == "file" else "runs"
-            options = get_filter_options(directory_path, runs_or_files=runs_or_files)
-            return options
+
+            options_test = get_filter_options(
+                dir_path_test, runs_or_files=runs_or_files
+            )
+            options_train = get_filter_options(
+                dir_path_train, runs_or_files=runs_or_files
+            )
+
+            return options_test, options_train
 
     @callback(
         Output(base_ids["error_toast_id"], "children", allow_duplicate=True),
