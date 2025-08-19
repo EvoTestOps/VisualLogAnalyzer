@@ -158,7 +158,7 @@ class TestRunUniqueTermsAnalysis:
             mask_type=None,
         )
 
-        mock_count_by_run.assert_called_once_with("dummy_df", "field")
+        mock_count_by_run.assert_called_once_with("dummy_df", "field", None)
         mock_count_by_file.assert_not_called()
 
         mock_store_result.assert_called_once()
@@ -184,7 +184,7 @@ class TestRunUniqueTermsAnalysis:
             mask_type=None,
         )
 
-        mock_count_by_file.assert_called_once_with("dummy_df", "field")
+        mock_count_by_file.assert_called_once_with("dummy_df", "field", None)
         mock_count_by_run.assert_not_called()
 
         mock_store_result.assert_called_once()
