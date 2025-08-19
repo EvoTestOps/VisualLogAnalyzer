@@ -62,16 +62,17 @@ def run_unique_terms_analysis(
     directory_path: str,
     item_list_col: str,
     file_level: bool,
+    mask_type: str | None,
     log=lambda msg: None,
 ) -> dict:
     log(f"Loading data from directory: {directory_path}")
     df = load_data(directory_path)
     if not file_level:
         log("Counting unique terms by directory")
-        unique_terms_count = unique_terms_count_by_run(df, item_list_col)
+        unique_terms_count = unique_terms_count_by_run(df, item_list_col, mask_type)
     else:
         log("Counting unique terms by file")
-        unique_terms_count = unique_terms_count_by_file(df, item_list_col)
+        unique_terms_count = unique_terms_count_by_file(df, item_list_col, mask_type)
 
     log("Storing and formatting results")
     analysis_type = (
@@ -83,6 +84,7 @@ def run_unique_terms_analysis(
         "analysis_sub_type": "unique-terms",
         "analysis_level": "directory" if not file_level else "file",
         "directory_path": directory_path,
+        "mask_type": mask_type,
         "name": analysis_name,
     }
 

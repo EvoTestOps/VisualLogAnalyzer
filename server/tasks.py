@@ -128,6 +128,7 @@ def async_run_unique_terms(
     directory_path: str,
     item_list_col: str,
     file_level: bool,
+    mask_type: str,
 ) -> dict:
     start_time = datetime.now(timezone.utc).isoformat()
     meta = {"analysis_type": "Unique terms", "start_time": start_time}
@@ -142,6 +143,7 @@ def async_run_unique_terms(
             directory_path,
             item_list_col,
             file_level,
+            mask_type,
             log=_make_logger(self, meta, logs),
         )
 

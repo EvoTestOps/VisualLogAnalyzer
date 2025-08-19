@@ -2,9 +2,9 @@ import polars as pl
 from server.analysis.enhancer import Enhancer
 
 
-def unique_terms_count_by_run(df, item_list_col):
+def unique_terms_count_by_run(df, item_list_col, mask_type=None):
     enhancer = Enhancer(df)
-    df = enhancer.enhance_event(item_list_col)
+    df = enhancer.enhance_event(item_list_col, mask_type=mask_type)
 
     run_unique_terms = (
         df.select("run", item_list_col)

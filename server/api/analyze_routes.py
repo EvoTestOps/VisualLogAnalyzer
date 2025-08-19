@@ -81,9 +81,10 @@ def run_unique_terms(project_id: int):
     item_list_col = validation_result.item_list_col
     file_level = validation_result.file_level
     analysis_name = validation_result.name
+    mask_type = validation_result.mask_type
 
     task = async_run_unique_terms.delay(
-        project_id, analysis_name, dir_path, item_list_col, file_level
+        project_id, analysis_name, dir_path, item_list_col, file_level, mask_type
     )
 
     return jsonify({"task_id": task.id}), 202

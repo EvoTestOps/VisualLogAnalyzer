@@ -197,10 +197,7 @@ def directory_level_viz_form(
                     mask_input(mask_id),
                     vectorizer_input(vectorizer_id),
                 ],
-            ),
-            dbc.FormText(
-                "Mask type and vectorizer are optional inputs for UMAP analysis.",
-                color="secondary",
+                class_name="mb-3",
             ),
             dbc.Row(
                 [
@@ -241,10 +238,7 @@ def file_level_viz_form(
                     mask_input(mask_id),
                     vectorizer_input(vectorizer_id),
                 ],
-            ),
-            dbc.FormText(
-                "Mask type and vectorizer are optional inputs for UMAP analysis.",
-                color="secondary",
+                class_name="mb-3",
             ),
             dbc.Row(
                 [
@@ -283,7 +277,10 @@ def distance_run_level_form(
                 class_name="mb-3",
             ),
             dbc.Row(
-                [mask_input(mask_id), vectorizer_input(vectorizer_id)],
+                [
+                    mask_input(mask_id),
+                    vectorizer_input(vectorizer_id),
+                ],
                 class_name="mb-3",
             ),
             dbc.Row(

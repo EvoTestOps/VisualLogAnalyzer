@@ -168,7 +168,7 @@ def target_run_input(id, manual=False):
         return dbc.Col(
             [
                 dbc.Label(
-                    "Target run",
+                    "Target",
                     html_for=id,
                     width="auto",
                 ),
@@ -182,7 +182,7 @@ def target_run_input(id, manual=False):
 
     return dbc.Col(
         [
-            dbc.Label("Target run", html_for=id, width="auto"),
+            dbc.Label("Target", html_for=id, width="auto"),
             dcc.Dropdown(
                 id=id,
                 className="dbc border border-light-subtle rounded",
