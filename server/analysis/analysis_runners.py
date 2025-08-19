@@ -104,7 +104,7 @@ def run_umap_analysis(
     item_list_col: str,
     file_level: bool,
     vectorizer: str,
-    mask_type: str,
+    mask_type: str | None,
     log=lambda msg: None,
 ) -> dict:
     log(f"Loading data from directory: {directory_path}")

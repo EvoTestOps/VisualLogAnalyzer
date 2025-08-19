@@ -114,6 +114,7 @@ class TestRunUniqueTermsAnalysis:
             directory_path=LABELED,
             item_list_col="e_words",
             file_level=file_level,
+            mask_type=None,
         )
 
         assert result["id"] == 50
@@ -130,6 +131,7 @@ class TestRunUniqueTermsAnalysis:
                 directory_path=LABELED,
                 item_list_col="bad_col",
                 file_level=False,
+                mask_type=None,
             )
 
     @patch("server.analysis.analysis_runners.store_and_format_result")
@@ -153,6 +155,7 @@ class TestRunUniqueTermsAnalysis:
             directory_path="some/path",
             item_list_col="field",
             file_level=False,
+            mask_type=None,
         )
 
         mock_count_by_run.assert_called_once_with("dummy_df", "field")
@@ -178,6 +181,7 @@ class TestRunUniqueTermsAnalysis:
             directory_path="some/path",
             item_list_col="field",
             file_level=True,
+            mask_type=None,
         )
 
         mock_count_by_file.assert_called_once_with("dummy_df", "field")
