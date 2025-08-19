@@ -55,4 +55,4 @@ jobs:
         path: test-results/
         
     - name: Shut down services
-      run: docker compose -f docker-compose.yml down -v
+      run: docker compose --env-file .env.sample -f docker-compose.yml down -v
