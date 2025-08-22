@@ -29,6 +29,8 @@ To start the application, clone this repository and run: `docker compose up`
 - Rename `.env.sample` to `.env`
 - or run compose with `docker compose --env-file .env.sample up`
 
+You can also modify the default values of the `.env` file according to your needs.
+
 Once running, navigate to [http://localhost:5000/dash/](http://localhost:5000/dash/)
 
 The repo comes with an example light-oauth2 dataset that you can use when trying out the application. Feel free to delete it if you have no use for it.
