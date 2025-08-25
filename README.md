@@ -20,6 +20,8 @@ Analyses are run as background tasks which gives the option to run multiple anal
 
 ## Run locally
 
+For a more detailed guide, see the [Usage guide](./docs/usage_guide.md).
+
 By default, the program expects the datasets to be located within the `log_data/` directory. To change the location of the log data, update the `LOG_DATA_DIRECTORY` environment variable in the `.env.sample` file. The analysis results are stored in `analysis_results/` as parquet files.
 
 It is a good idea to create the result directory yourself so you don't run into permission issues.
