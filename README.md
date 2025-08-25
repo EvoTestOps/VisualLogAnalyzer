@@ -2,22 +2,25 @@
 
 Web application for visualizing and analysing log files.
 
-![Project page](./images/project_page.png)
+![Project page](./docs/images/project_page.png)
 
-## Feature Overview 
+## Feature Overview
 
-Visual Log Analyzer provides similar log analysis capabilities as those found in [LogDelta](https://github.com/EvoTestOps/LogDelta). 
+Visual Log Analyzer provides similar log analysis capabilities as those found in [LogDelta](https://github.com/EvoTestOps/LogDelta).
 
-Analysis types: 
-- High-level visualizations 
+Analysis types:
+
+- High-level visualizations
 - Log distance analysis
-- Anomaly detection 
+- Anomaly detection
 
-These features can be applied at different levels: directory, file or line, depending on the analysis type. 
+These features can be applied at different levels: directory, file or line, depending on the analysis type.
 
-Analyses are run as background tasks which gives the option to run multiple analyses in parallel. However, performance may vary depending on the size of the datasets and the available memory. 
+Analyses are run as background tasks which gives the option to run multiple analyses in parallel. However, performance may vary depending on the size of the datasets and the available memory.
 
 ## Run locally
+
+For a more detailed guide, see the [Usage guide](./docs/usage_guide.md).
 
 By default, the program expects the datasets to be located within the `log_data/` directory. To change the location of the log data, update the `LOG_DATA_DIRECTORY` environment variable in the `.env.sample` file. The analysis results are stored in `analysis_results/` as parquet files.
 
@@ -26,6 +29,7 @@ It is a good idea to create the result directory yourself so you don't run into 
 To start the application, clone this repository and run: `docker compose up`
 
 **Note:** Before starting, either:
+
 - Rename `.env.sample` to `.env`
 - or run compose with `docker compose --env-file .env.sample up`
 
@@ -56,6 +60,7 @@ log_data/
 ```
 
 You can also structure your datasets into subdirectories for easier management, and then specify the base path when creating a project:
+
 ```
 log_data/
 ├── hadoop
@@ -66,17 +71,19 @@ log_data/
         ├── correct_1
         └── correct_n
 ```
+
 With project base path `./log_data/LO2` when working with the LO2-dataset.
 
-## Usage Tips & Troubleshooting 
-- **Isolate a specific trace:** Double-clicking a legend item will isolate that trace, hiding all others. This is especially useful in line-level anomaly detection, where plots can be cluttered. 
+## Usage Tips & Troubleshooting
 
-- **Resize plots:** Plots can be resized by dragging the bottom-right corner of the plot. 
+- **Isolate a specific trace:** Double-clicking a legend item will isolate that trace, hiding all others. This is especially useful in line-level anomaly detection, where plots can be cluttered.
 
-- **Manual filename entry:** Consider enabling “Manual filename entry” in the settings to avoid dropdown generation delays when working with large datasets with a lot of files, with the drawback of having to manually input filenames. 
+- **Resize plots:** Plots can be resized by dragging the bottom-right corner of the plot.
 
-- **Display moving averages:** To visualize moving averages in line-level plots, make sure to enable them in the settings. 
+- **Manual filename entry:** Consider enabling “Manual filename entry” in the settings to avoid dropdown generation delays when working with large datasets with a lot of files, with the drawback of having to manually input filenames.
 
-- **“No comparison runs found”-error:** Check “Match filenames”-setting. If it is enabled intentionally, ensure that the log data directory structure is consistent. 
+- **Display moving averages:** To visualize moving averages in line-level plots, make sure to enable them in the settings.
 
-- **Timestamps:** If the timestamps are incorrect, try modifying the PostgreSQL time zone setting in the env file. 
+- **“No comparison runs found”-error:** Check “Match filenames”-setting. If it is enabled intentionally, ensure that the log data directory structure is consistent.
+
+- **Timestamps:** If the timestamps are incorrect, try modifying the PostgreSQL time zone setting in the env file.
