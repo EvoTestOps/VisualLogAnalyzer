@@ -88,6 +88,9 @@ def create_line_level_plot(
         template=theme,
     )
 
+    if not normalize_scores:
+        fig.update_yaxes(type="log")
+
     return fig
 
 
