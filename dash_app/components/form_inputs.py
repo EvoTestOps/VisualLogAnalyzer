@@ -56,7 +56,7 @@ def enhancement_input(id):
     return dbc.Col(
         [
             dbc.Label("Enhancement", html_for=id, width="auto"),
-            dbc.Select(
+            dcc.Dropdown(
                 id=id,
                 options=[
                     {"label": "Words", "value": "e_words"},
@@ -68,6 +68,7 @@ def enhancement_input(id):
                     {"label": "Iplom", "value": "e_event_iplom_id"},
                 ],
                 value="e_words",
+                className="dbc border border-light-subtle rounded",
             ),
         ]
     )
@@ -251,13 +252,14 @@ def vectorizer_input(id):
     return dbc.Col(
         [
             dbc.Label("Vectorizer type", html_for=id, width="auto"),
-            dbc.Select(
+            dcc.Dropdown(
                 id=id,
                 options=[
                     {"label": "Count", "value": "count"},
                     {"label": "TF-IDF", "value": "tfidf"},
                 ],
                 value="count",
+                className="dbc border border-light-subtle rounded",
             ),
         ],
     )
