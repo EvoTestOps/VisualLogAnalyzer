@@ -9,6 +9,7 @@ class Settings(db.Model):
     color_by_directory = db.Column(db.Boolean, default=True)
     line_level_display_mode = db.Column(db.String, default="data_points_only")
     manual_filename_input = db.Column(db.Boolean, default=False)
+    line_level_normalization = db.Column(db.Boolean, default=True)
 
     project_id = db.Column(db.Integer, db.ForeignKey("projects.id"), nullable=False)
     project = db.relationship("Project", back_populates="settings")
@@ -21,4 +22,5 @@ class Settings(db.Model):
             "color_by_directory": self.color_by_directory,
             "line_level_display_mode": self.line_level_display_mode,
             "manual_filename_input": self.manual_filename_input,
+            "line_level_normalization": self.line_level_normalization,
         }

@@ -23,6 +23,7 @@ from dash_app.components.form_inputs import (
     columns_to_include_input,
     analysis_name_input,
     base_path_input,
+    normalize_scores_line_level,
 )
 
 
@@ -389,6 +390,7 @@ def project_settings_form(
     color_by_directory_id,
     line_display_mode_id,
     manual_filename_id,
+    normalize_scores_id,
 ):
     submit_btn = submit_button(submit_id, "Apply")
     form = dbc.Form(
@@ -401,6 +403,7 @@ def project_settings_form(
                             color_by_directory_input(color_by_directory_id),
                             manual_filename_input(manual_filename_id),
                             line_display_mode_input(line_display_mode_id),
+                            normalize_scores_line_level(normalize_scores_id),
                         ],
                         width=8,
                     ),

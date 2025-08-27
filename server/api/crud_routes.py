@@ -93,6 +93,8 @@ def update_settings(project_id: int):
     settings.color_by_directory = validated_data.color_by_directory
     settings.line_level_display_mode = validated_data.line_level_display_mode
     settings.manual_filename_input = validated_data.manual_filename_input
+    settings.line_level_normalization = validated_data.line_level_normalization
+
     db.session.commit()
 
     return {}, 200

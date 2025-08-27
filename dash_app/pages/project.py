@@ -68,6 +68,7 @@ def layout(project_id=None, **kwargs):
         "edit-name-input",
         "submit-edit-name",
         "task-logs-modal-project",
+        "normalize-scores-project",
     )
 
 
@@ -148,9 +149,11 @@ def get_analyses(_, project_id):
     Output("color-by-directory-project", "value"),
     Output("line-display-mode-project", "value"),
     Output("manual-filename-project", "value"),
+    Output("normalize-scores-project", "value"),
     Input("project-id", "data"),
 )
 def get_settings(project_id):
+    # TODO: what is return True?
     if not project_id:
         return True
 
@@ -164,6 +167,7 @@ def get_settings(project_id):
         settings.get("color_by_directory"),
         settings.get("line_level_display_mode"),
         settings.get("manual_filename_input"),
+        settings.get("line_level_normalization"),
     )
 
 
@@ -281,6 +285,7 @@ def edit_analysis_name(submit_n_clicks, new_name, analysis_id, url_path):
     State("color-by-directory-project", "value"),
     State("line-display-mode-project", "value"),
     State("manual-filename-project", "value"),
+    State("normalize-scores-project", "value"),
     State("project-id", "data"),
     prevent_initial_call=True,
 )
@@ -290,6 +295,7 @@ def apply_settings(
     color_by_directory,
     line_display_mode,
     manual_filename_input,
+    normalize_scores,
     project_id,
 ):
     if not n_clicks:
@@ -300,6 +306,7 @@ def apply_settings(
         "color_by_directory": color_by_directory,
         "line_level_display_mode": line_display_mode,
         "manual_filename_input": manual_filename_input,
+        "line_level_normalization": normalize_scores,
     }
     response, error = make_api_call(
         payload, f"projects/{project_id}/settings", requests_type="PATCH"
