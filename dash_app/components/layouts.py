@@ -42,6 +42,7 @@ def create_ano_line_level_result_layout(
     error_toast_id,
     success_toast_id,
     grid_image_link_id,
+    normalize_scores_id,
 ):
 
     error_toast_row = dbc.Row(error_toast(error_toast_id))
@@ -126,9 +127,17 @@ def create_ano_line_level_result_layout(
         className="dbc mt-3 ms-4 me-4",
     )
 
+    normalize_scores_store = dbc.Row(dcc.Store(id=normalize_scores_id))
+
     layout = [
         dbc.Container(
-            [metadata_row, create_grid_image_link, error_toast_row, success_toast_row]
+            [
+                metadata_row,
+                create_grid_image_link,
+                error_toast_row,
+                success_toast_row,
+                normalize_scores_store,
+            ]
         ),
         dbc.Container(plot_selector_row),
         dbc.Container(plot_row, fluid=True),
@@ -292,6 +301,7 @@ def create_project_layout(
     edit_name_input_id,
     submit_edit_name_id,
     task_logs_modal_id,
+    normalize_scores_id,
 ):
 
     error_toast_row = dbc.Row(error_toast(error_toast_id))
@@ -351,6 +361,7 @@ def create_project_layout(
                             color_by_directory_id,
                             line_display_mode_input_id,
                             manual_filename_id,
+                            normalize_scores_id,
                         ),
                         body=True,
                     ),

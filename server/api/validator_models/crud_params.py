@@ -37,3 +37,4 @@ class SettingsParams(BaseModel):
         "data_points_only"
     )
     manual_filename_input: bool
+    line_level_normalization: bool

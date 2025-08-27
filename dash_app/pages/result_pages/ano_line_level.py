@@ -35,6 +35,7 @@ def layout(analysis_id=None, **kwargs):
         "error-toast-ano-line-res",
         "success-toats-ano-line-res",
         "multi-plot-link-ano-line-res",
+        "normalize-scores-store-ano-line-res",
     )
 
     return base + content
@@ -74,6 +75,7 @@ def get_data(analysis_id):
     Output("error-toast-ano-line-res", "children", allow_duplicate=True),
     Output("error-toast-ano-line-res", "is_open", allow_duplicate=True),
     Output("multi-plot-link-ano-line-res", "href"),
+    Output("normalize-scores-store-ano-line-res", "data"),
     Input("stored-data-ano-line-res", "data"),
     State("analysis-id-ano-line-res", "data"),
     prevent_initial_call=True,
@@ -102,11 +104,26 @@ def generate_dropdown_and_metadata(encoded_df, analysis_id):
             str(error),
             True,
             dash.no_update,
+            dash.no_update,
         )
 
     metadata = response.json()
     project_id = metadata.get("project_id")
     metadata_rows = format_metadata_rows(metadata)
+
+    response_settings, error_settings = make_api_call(
+        {}, f"projects/{project_id}/settings", "GET"
+    )
+    if error_settings or response_settings is None:
+        return (
+            dash.no_update,
+            dash.no_update,
+            dash.no_update,
+            str(error_settings),
+            True,
+            dash.no_update,
+            dash.no_update,
+        )
 
     return (
         options,
@@ -115,6 +132,7 @@ def generate_dropdown_and_metadata(encoded_df, analysis_id):
         dash.no_update,
         False,
         f"/dash/analysis/ano-line-level/{analysis_id}/grid",
+        response_settings.json().get("line_level_normalization"),
     )
 
 
@@ -124,9 +142,10 @@ def generate_dropdown_and_metadata(encoded_df, analysis_id):
     Input("plot-selector-ano-line-res", "value"),
     Input("switch", "value"),
     State("stored-data-ano-line-res", "data"),
+    State("normalize-scores-store-ano-line-res", "data"),
     prevent_initial_call=True,
 )
-def render_plot(selected_plot, switch_on, encoded_df):
+def render_plot(selected_plot, switch_on, encoded_df, normalize_scores):
     if not encoded_df or not selected_plot:
         return dash.no_update, dash.no_update
 
@@ -141,7 +160,9 @@ def render_plot(selected_plot, switch_on, encoded_df):
         "minWidth": "600px",
         "width": "90%",
     }
-    fig = create_line_level_plot(df, selected_plot, theme)
+    fig = create_line_level_plot(
+        df, selected_plot, theme, normalize_scores=normalize_scores
+    )
 
     return fig, style
 

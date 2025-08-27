@@ -7,7 +7,19 @@ def get_options(df) -> list[dict]:
     return [{"label": seq_id, "value": seq_id} for seq_id in seq_ids]
 
 
-def create_line_level_plot(df, selected_plot, theme="plotly_white"):
+def create_line_level_plot(
+    df, selected_plot, theme="plotly_white", normalize_scores=True
+):
+    df = df.filter(pl.col("seq_id") == selected_plot)
+
+    if df.get_column("line_number", default=None) is None:
+        df = df.with_row_index()
+        xaxis_title = "Index"
+        x_column = "index"
+    else:
+        xaxis_title = "Line Number"
+        x_column = "line_number"
+
     prediction_columns = [
         col
         for col in df.columns
@@ -31,18 +43,10 @@ def create_line_level_plot(df, selected_plot, theme="plotly_white"):
         ],
     ]
 
-    df = df.filter(pl.col("seq_id") == selected_plot)
-    if df.get_column("line_number", default=None) is None:
-        df = df.with_row_index()
-        xaxis_title = "Index"
-        x_column = "index"
-    else:
-        xaxis_title = "Line Number"
-        x_column = "line_number"
-
-    for columns in measure_groups:
-        if columns:
-            df = _normalize_prediction_columns(df, columns)
+    if normalize_scores:
+        for columns in measure_groups:
+            if columns:
+                df = _normalize_prediction_columns(df, columns)
 
     # polars documentation says that map_elements is slow.
     # Change if it becomes an issue.
@@ -72,12 +76,20 @@ def create_line_level_plot(df, selected_plot, theme="plotly_white"):
             )
         )
 
+    title = (
+        f"Normalized Anomaly Score<br>File: {file_name}<br>Directory: {directory_name}"
+        if normalize_scores
+        else f"Anomaly Score<br>File: {file_name}<br>Directory: {directory_name}"
+    )
     fig.update_layout(
-        title=f"Normalized Anomaly Score<br>File: {file_name}<br>Directory: {directory_name}",
+        title=title,
         xaxis_title=xaxis_title,
-        yaxis_title="Anomaly Score (0 - 1)",
+        yaxis_title="Anomaly Score (0 - 1)" if normalize_scores else "Anomaly Score",
         template=theme,
     )
+
+    if not normalize_scores:
+        fig.update_yaxes(type="log")
 
     return fig
 

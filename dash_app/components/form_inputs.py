@@ -357,6 +357,15 @@ def manual_filename_input(id):
     )
 
 
+def normalize_scores_line_level(id):
+    return dbc.Col(
+        dbc.Checkbox(
+            id=id,
+            label="Normalize scores",
+        ),
+    )
+
+
 def redirect_to_results_input(id):
     return dbc.Col(
         [
