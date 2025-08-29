@@ -4,7 +4,7 @@ Usage and installation overview of the core features. Additional helpful informa
 
 ## Installation
 
-Before installing and starting the application, ensure Docker and Docker-compose are installed. Both can be installed according to the official Docker documentation. If you’re a student in the University of Helsinki and using a fuksi laptop, there might be some other steps you need to take to install Docker correctly (Docker might use the root partition and if it gets filled your computer might become unusable). Some information about installing Docker on cubbli-linux [here](https://version.helsinki.fi/cubbli/cubbli-help/-/wikis/Docker).
+Before installing and starting the application, ensure Docker and Docker-compose are installed. Both can be installed according to the official Docker documentation. **If you’re a student in the University of Helsinki and using a fuksi laptop**, there are some other steps you need to take to install Docker correctly (Docker uses the root partition by default and if it gets filled your computer can become unusable). Information about installing Docker on cubbli-linux [here](https://version.helsinki.fi/cubbli/cubbli-help/-/wikis/Docker). After installing Docker on cubbli-linux, you can install the Docker-compose plugin according to the [official documentation](https://docs.docker.com/compose/install/linux/).
 
 To run the application, execute the following commands:
 
