@@ -2,6 +2,8 @@
 
 Web application for visualizing and analysing log files.
 
+See the video demonstration on YouTube: [Video](https://www.youtube.com/watch?v=de8QSb3RBGc)
+
 ![Project page](./docs/images/project_page.png)
 
 ## Feature Overview
