@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "5000:5000"
+      - "127.0.0.1:5000:5000"
     working_dir: /app
     volumes:
       - ${LOG_DATA_DIRECTORY}:/app/log_data/
@@ -20,8 +20,6 @@ services:
       - db
   redis:
     image: redis:alpine
-    ports:
-      - 6379:6379
   celery:
     build:
       context: .
@@ -40,7 +38,7 @@ services:
       - redis
       - db
   db:
-    image: postgres:alpine
+    image: postgres:17-alpine
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -49,11 +47,11 @@ services:
       PGTZ: ${PGTZ}
     volumes:
       - db_data:/var/lib/postgresql/data
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - 8081:8080
+  # adminer:
+  #   image: adminer
+  #   restart: always
+  #   ports:
+  #     - "127.0.0.1:8081:8080"
 
 volumes:
   db_data:
