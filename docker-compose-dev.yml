@@ -26,6 +26,8 @@ services:
     command: celery -A server.make_celery worker --concurrency=4 --loglevel=info
     volumes:
       - .:/app
+      - ${LOG_DATA_DIRECTORY}:/app/log_data/
+      - ${RESULTS_DIRECTORY}:/app/analysis_results
     environment:
       DB_URL: "${DB_URL}"
       CELERY_BROKER_URL: "${CELERY_BROKER_URL}"
