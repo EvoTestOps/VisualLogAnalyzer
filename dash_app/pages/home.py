@@ -2,7 +2,7 @@ import dash
 import dash_bootstrap_components as dbc
 from dash import ALL, Input, Output, State, callback, dcc
 
-from dash_app.callbacks.callback_functions import make_api_call
+from dash_app.callbacks.callback_functions import get_base_path_options, make_api_call
 from dash_app.components.forms import project_form
 from dash_app.components.layouts import create_home_layout
 from dash_app.utils.metadata import format_project_overview
@@ -57,6 +57,27 @@ def get_projects(_1, _2):
         group_items = [dbc.ListGroupItem("No projects found")]
 
     return (group_items, dash.no_update, dash.no_update, dash.no_update, False)
+
+
+# Selecting a directory reveals the directories below it, so that deeper paths
+# can be reached by opening the dropdown again after selecting.
+@callback(
+    Output("base-path-proj", "options"),
+    Input("open-btn-proj", "n_clicks"),
+    Input("base-path-proj", "value"),
+)
+def get_base_paths(_, selected_path):
+    return get_base_path_options(selected_path)
+
+
+@callback(
+    Output("base-path-proj", "value"),
+    Input("base-path-proj", "id"),
+)
+def set_default_base_path(_):
+    # The log data root is the first option and the default base path
+    options = get_base_path_options()
+    return options[0]["value"] if options else None
 
 
 @callback(
