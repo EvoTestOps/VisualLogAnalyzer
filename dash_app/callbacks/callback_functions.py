@@ -9,6 +9,11 @@ from dash_app.utils.data_directories import (
     get_base_path_directories,
     get_runs,
 )
+from dash_app.utils.grouping import (
+    SEPARATOR,
+    add_group_column,
+    get_group_by_options,
+)
 from dash_app.utils.metadata import format_metadata_rows
 from dash_app.utils.plots import (
     create_files_count_plot,
@@ -121,7 +126,9 @@ def populate_datatable(analysis_id):
     return df_dict, columns, metadata_rows, project_id
 
 
-def create_high_level_plot(switch_on, analysis_id):
+def create_high_level_plot(
+    switch_on, analysis_id, group_by_indices=None, separator=SEPARATOR
+):
     metadata = _fetch_analysis_metadata(analysis_id)
     analysis_type = metadata.get("analysis_sub_type")
     analysis_level = metadata.get("analysis_level")
@@ -150,6 +157,12 @@ def create_high_level_plot(switch_on, analysis_id):
         "width": "90%",
     }
 
+    # The parts to group by are read with the same separator they were offered
+    # with, so the options are built before the data is grouped.
+    group_by_options = get_group_by_options(df, separator=separator)
+    if group_by_indices:
+        df = add_group_column(df, group_by_indices, separator=separator)
+
     if analysis_type == "file-count":
         fig = create_files_count_plot(df, theme)
     elif analysis_type == "umap":
@@ -163,7 +176,7 @@ def create_high_level_plot(switch_on, analysis_id):
 
     metadata_rows = format_metadata_rows(metadata)
 
-    return fig, style, metadata_rows, project_id
+    return fig, style, metadata_rows, project_id, group_by_options
 
 
 def make_api_call(json_payload, endpoint, requests_type="POST"):

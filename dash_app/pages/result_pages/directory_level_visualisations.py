@@ -14,6 +14,8 @@ config = {
         "metadata": "metadata-high-dir-res",
         "error_toast": "error-toast-high-dir-res",
         "success_toast": "success-toast-high-dir-res",
+        "group_by": "group-by-high-dir-res",
+        "separator": "separator-high-dir-res",
     },
 }
 
