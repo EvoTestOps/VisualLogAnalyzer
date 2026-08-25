@@ -31,12 +31,16 @@ def aggregate_file_level(df, item_list_col, mask_type=None):
 
     col_dtype = df.select(pl.col(item_list_col)).dtypes[0]
 
+    # The run each file belongs to is carried along so that anomaly detection can
+    # hold the run being scored out of its own training data.
     if isinstance(col_dtype, pl.List):
-        df = df.select("seq_id", item_list_col).explode(item_list_col)
+        df = df.select("seq_id", "run", item_list_col).explode(item_list_col)
     else:
-        df = df.select("seq_id", item_list_col)
+        df = df.select("seq_id", "run", item_list_col)
 
-    df = (df.group_by("seq_id").agg(pl.col(item_list_col))).sort("seq_id")
+    df = (
+        df.group_by("seq_id").agg([pl.col(item_list_col), pl.col("run").first()])
+    ).sort("seq_id")
 
     return df
 
@@ -49,12 +53,16 @@ def aggregate_file_level_with_file_names(df, item_list_col):
     col_dtype = df.select(pl.col(item_list_col)).dtypes[0]
 
     if isinstance(col_dtype, pl.List):
-        df = df.select("seq_id", "file_name", item_list_col).explode(item_list_col)
+        df = df.select("seq_id", "file_name", "run", item_list_col).explode(
+            item_list_col
+        )
     else:
-        df = df.select("seq_id", "file_name", item_list_col)
+        df = df.select("seq_id", "file_name", "run", item_list_col)
 
-    df = (df.group_by(["seq_id", "file_name"]).agg(pl.col(item_list_col))).sort(
-        "seq_id"
-    )
+    df = (
+        df.group_by(["seq_id", "file_name"]).agg(
+            [pl.col(item_list_col), pl.col("run").first()]
+        )
+    ).sort("seq_id")
 
     return df
