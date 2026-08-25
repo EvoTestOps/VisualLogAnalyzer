@@ -1,6 +1,35 @@
 import polars as pl
 import plotly.graph_objects as go
 
+from dash_app.utils.grouping import GROUP_COLUMN
+
+# Colors and shapes are combined, so the number of groups that stay apart is the
+# count of colors times the count of shapes. The colors are picked from the
+# published colour-blind safe palettes (Okabe & Ito, Paul Tol, IBM) as the five
+# that stay furthest apart when simulated for protanopia, deuteranopia and
+# tritanopia, while keeping enough contrast against both the light and the dark
+# theme. The shape carries the difference for anyone who sees no color at all.
+GROUP_COLORS = [
+    "#33BBEE",  # blue
+    "#E69F00",  # orange
+    "#117733",  # green
+    "#AA3377",  # magenta
+    "#785EF0",  # violet
+]
+
+GROUP_SYMBOLS = [
+    "circle",
+    "square",
+    "diamond",
+    "triangle-up",
+    "triangle-down",
+    "cross",
+    "x",
+    "star",
+    "pentagon",
+    "hexagram",
+]
+
 
 def get_options(df) -> list[dict]:
     seq_ids = sorted(df["seq_id"].unique().to_list())
@@ -153,15 +182,13 @@ def create_line_level_plot_minimal(
 def create_unique_term_count_plot(df, theme="plotly_white"):
     fig = go.Figure()
 
-    fig.add_trace(
-        go.Scatter(
-            x=df["unique_term_count"],
-            y=df["line_count"],
-            mode="markers",
-            text=df["run"],
-            hovertemplate="Run: %{text}<br>Unique terms: %{x}<br>Lines:%{y}<extra></extra>",
-            name="Runs",
-        )
+    _add_marker_traces(
+        fig,
+        _split_by_group(df, "Runs"),
+        x_column="unique_term_count",
+        y_column="line_count",
+        text_column="run",
+        hovertemplate="Run: %{text}<br>Unique terms: %{x}<br>Lines:%{y}<extra></extra>",
     )
 
     fig.update_layout(
@@ -181,32 +208,21 @@ def create_unique_term_count_plot_by_file(
 ):
     fig = go.Figure()
 
-    if color_by_directory:
-        runs = df["run"].unique()
-        for run in sorted(runs):
-            df_run = df.filter(pl.col("run") == run)
-
-            fig.add_trace(
-                go.Scatter(
-                    x=df_run["unique_term_count"],
-                    y=df_run["line_count"],
-                    mode="markers",
-                    text=df_run["seq_id"],
-                    hovertemplate="File: %{text}<br>Unique terms: %{x}<br>Lines:%{y}<extra></extra>",
-                    name=f"Directory: {run}",
-                )
-            )
+    if GROUP_COLUMN in df.columns:
+        frames = _split_by_group(df, "Files")
+    elif color_by_directory:
+        frames = _split_by_directory(df)
     else:
-        fig.add_trace(
-            go.Scatter(
-                x=df["unique_term_count"],
-                y=df["line_count"],
-                mode="markers",
-                text=df["seq_id"],
-                hovertemplate="File: %{text}<br>Unique terms: %{x}<br>Lines:%{y}<extra></extra>",
-                name="Files",
-            )
-        )
+        frames = [("Files", df)]
+
+    _add_marker_traces(
+        fig,
+        frames,
+        x_column="unique_term_count",
+        y_column="line_count",
+        text_column="seq_id",
+        hovertemplate="File: %{text}<br>Unique terms: %{x}<br>Lines:%{y}<extra></extra>",
+    )
 
     fig.update_layout(
         title="Unique term count by file",
@@ -223,15 +239,13 @@ def create_unique_term_count_plot_by_file(
 def create_files_count_plot(df, theme="plotly_white"):
     fig = go.Figure()
 
-    fig.add_trace(
-        go.Scatter(
-            x=df["file_count"],
-            y=df["line_count"],
-            mode="markers",
-            text=df["run"],
-            hovertemplate="Run: %{text}<br>Files: %{x}<br>Lines:%{y}<extra></extra>",
-            name="Runs",
-        )
+    _add_marker_traces(
+        fig,
+        _split_by_group(df, "Runs"),
+        x_column="file_count",
+        y_column="line_count",
+        text_column="run",
+        hovertemplate="Run: %{text}<br>Files: %{x}<br>Lines:%{y}<extra></extra>",
     )
 
     fig.update_layout(
@@ -241,38 +255,30 @@ def create_files_count_plot(df, theme="plotly_white"):
         template=theme,
     )
 
+    fig.update_yaxes(type="log")
+
     return fig
 
 
 def create_umap_plot(df, group_col, color_by_directory=False, theme="plotly_white"):
     fig = go.Figure()
 
-    if group_col == "seq_id" and color_by_directory:
-        runs = df["run"].unique()
-        for run in sorted(runs):
-            df_run = df.filter(pl.col("run") == run)
-
-            fig.add_trace(
-                go.Scatter(
-                    x=df_run["UMAP1"],
-                    y=df_run["UMAP2"],
-                    mode="markers",
-                    text=df_run[group_col],
-                    hovertemplate=f"{group_col}: %{{text}}<br>UMAP1: %{{x}}<br>UMAP2:%{{y}}<extra></extra>",
-                    name=f"Directory: {run}",
-                    marker=dict(symbol="x", size=4),
-                )
-            )
+    if GROUP_COLUMN in df.columns:
+        frames = _split_by_group(df, None)
+    elif group_col == "seq_id" and color_by_directory:
+        frames = _split_by_directory(df)
     else:
-        fig.add_trace(
-            go.Scatter(
-                x=df["UMAP1"],
-                y=df["UMAP2"],
-                mode="markers",
-                text=df[group_col],
-                hovertemplate=f"{group_col}: %{{text}}<br>UMAP1: %{{x}}<br>UMAP2:%{{y}}<extra></extra>",
-            )
-        )
+        frames = [(None, df)]
+
+    _add_marker_traces(
+        fig,
+        frames,
+        x_column="UMAP1",
+        y_column="UMAP2",
+        text_column=group_col,
+        hovertemplate=f"{group_col}: %{{text}}<br>UMAP1: %{{x}}<br>UMAP2:%{{y}}<extra></extra>",
+        size=6,
+    )
 
     fig.update_layout(
         title="UMAP comparison",
@@ -282,6 +288,54 @@ def create_umap_plot(df, group_col, color_by_directory=False, theme="plotly_whit
     )
 
     return fig
+
+
+def _add_marker_traces(
+    fig, frames, x_column, y_column, text_column, hovertemplate, size=8
+):
+    """Draw one marker trace per frame, each with its own color and shape."""
+    for index, (name, frame) in enumerate(frames):
+        fig.add_trace(
+            go.Scatter(
+                x=frame[x_column],
+                y=frame[y_column],
+                mode="markers",
+                text=frame[text_column],
+                hovertemplate=hovertemplate,
+                name=name,
+                marker=_group_marker(index, size),
+            )
+        )
+
+
+def _group_marker(index, size):
+    # The colors are cycled through first and the shape changes once they run
+    # out, so every combination is used before any of them comes back.
+    return dict(
+        color=GROUP_COLORS[index % len(GROUP_COLORS)],
+        symbol=GROUP_SYMBOLS[(index // len(GROUP_COLORS)) % len(GROUP_SYMBOLS)],
+        size=size,
+        # A neutral outline keeps the palest markers visible in both themes.
+        line=dict(width=1, color="rgba(128, 128, 128, 0.8)"),
+    )
+
+
+def _split_by_group(df, default_name):
+    """Frames to draw as separate traces, one per group when the data is grouped."""
+    if GROUP_COLUMN not in df.columns:
+        return [(default_name, df)]
+
+    return [
+        (group, df.filter(pl.col(GROUP_COLUMN) == group))
+        for group in sorted(df[GROUP_COLUMN].unique())
+    ]
+
+
+def _split_by_directory(df):
+    return [
+        (f"Directory: {run}", df.filter(pl.col("run") == run))
+        for run in sorted(df["run"].unique())
+    ]
 
 
 def _wrap_log(text, width=80):

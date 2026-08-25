@@ -19,6 +19,51 @@ To omit the `--env-file` flag, rename `.env.sample` to `.env`. For example with 
 
 Building the application for the first time may take 1-2 minutes. Once the applitcation is running navigate to <http://localhost:5000/dash/> to access the homepage.
 
+## Stopping and restarting
+
+The commands below assume you renamed `.env.sample` to `.env`. If you did not, add `--env-file .env.sample` to *every* `docker compose` command, not just `up` — compose reads the env file each time to resolve `${LOG_DATA_DIRECTORY}` and the other variables. Likewise, if you are using the development compose file, repeat `-f docker-compose-dev.yml` on every command.
+
+### Stopping
+
+If you started the application in the foreground with `docker compose up`, press `Ctrl+C` in that terminal. To stop it from another terminal, or when it was started in the background, use one of:
+
+```
+docker compose stop    # stop the containers but keep them, for a fast restart
+docker compose down    # stop and remove the containers
+```
+
+Both are safe to run: your projects and analyses are stored in the `db_data` Docker volume and the results in `analysis_results/`, and neither command touches them.
+
+### Restarting
+
+```
+docker compose start     # after `docker compose stop`
+docker compose up -d     # after `docker compose down`, or any time; -d runs it in the background
+docker compose restart   # stop and start in one go, e.g. to clear a stuck analysis worker
+```
+
+Database migrations are applied automatically every time the app container starts, so no extra step is needed after an update.
+
+With `-d` the application runs in the background and your terminal stays free. Use `docker compose ps` to see what is running and `docker compose logs -f` to follow the output (add a service name, e.g. `docker compose logs -f celery`, to follow just one).
+
+### Restarting after changing the code or configuration
+
+Changes to the `.env` file take effect when the containers are recreated: `docker compose up -d`. Changes to the application code or to `requirements.txt` require the images to be rebuilt first:
+
+```
+docker compose up -d --build
+```
+
+(With the development compose file the code is mounted into the containers, so only `requirements.txt` changes need a rebuild there.)
+
+### Starting over
+
+```
+docker compose down -v
+```
+
+The `-v` flag additionally deletes the `db_data` volume, which removes **all** projects and analysis records. The result files in `analysis_results/` are not deleted, but they are left orphaned — delete its contents as well if you want a completely clean state. The database schema is recreated automatically on the next start.
+
 ## Running analyses
 
 The repository includes an example light-oauth-2 dataset. It contains a `Labeled` directory which has known cases (either correct or some type of error), and a `Hidden_Group_1` which contains unknown cases. Reviewing the dataset structure is recommended.

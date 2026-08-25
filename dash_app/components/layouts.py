@@ -2,7 +2,11 @@ import dash_bootstrap_components as dbc
 from dash import dash_table, dcc, html
 
 from dash_app.components.color_mode_switch import color_mode_switch
-from dash_app.components.form_inputs import submit_button
+from dash_app.components.form_inputs import (
+    group_by_input,
+    separator_input,
+    submit_button,
+)
 from dash_app.components.forms import project_settings_form
 from dash_app.components.nav import crate_analysis_nav, nav
 from dash_app.components.toasts import error_toast, success_toast
@@ -429,12 +433,22 @@ def create_project_layout(
 
 
 def create_high_level_viz_result_layout(
-    plot_content_id, metadata_table_id, error_toast_id, success_toast_id
+    plot_content_id,
+    metadata_table_id,
+    error_toast_id,
+    success_toast_id,
+    group_by_id,
+    separator_id,
 ):
     error_toast_row = dbc.Row(error_toast(error_toast_id))
     success_toast_row = dbc.Row(success_toast(success_toast_id))
 
     table_row = dbc.Row(dbc.Table(id=metadata_table_id, hover=True, responsive=True))
+
+    group_by_row = dbc.Row(
+        [group_by_input(group_by_id), separator_input(separator_id)],
+        class_name="mb-3",
+    )
 
     plot_row = dbc.Row(
         dcc.Loading(
@@ -464,7 +478,7 @@ def create_high_level_viz_result_layout(
     )
 
     layout = [
-        dbc.Container([table_row, error_toast_row, success_toast_row]),
+        dbc.Container([table_row, group_by_row, error_toast_row, success_toast_row]),
         dbc.Container(plot_row, fluid=True, style={"paddingBottom": "200px"}),
     ]
 

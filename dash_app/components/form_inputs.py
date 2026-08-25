@@ -426,6 +426,73 @@ def analysis_name_input(id):
     )
 
 
+def group_by_input(id):
+    label_id = f"{id}-label"
+    return dbc.Col(
+        [
+            dbc.Label(
+                "Color by name part",
+                id=label_id,
+                html_for=id,
+                width="auto",
+                style={"textDecoration": "underline", "cursor": "pointer"},
+            ),
+            dbc.Tooltip(
+                "Directory names are split on '_'. Pick the parts to color the plot by, "
+                "for example the part holding the run type. Picking several parts combines "
+                "them into one label, in the order they were picked.",
+                target=label_id,
+                placement="bottom",
+            ),
+            dcc.Dropdown(
+                id=id,
+                multi=True,
+                placeholder="No grouping",
+                className="dbc border border-light-subtle rounded",
+                optionHeight=40,
+                maxHeight=350,
+            ),
+        ],
+        width=6,
+    )
+
+
+def separator_input(id):
+    label_id = f"{id}-label"
+    return dbc.Col(
+        [
+            dbc.Label(
+                "Name separator",
+                id=label_id,
+                html_for=id,
+                width="auto",
+                style={"textDecoration": "underline", "cursor": "pointer"},
+            ),
+            dbc.Tooltip(
+                "The character the names are split on before the parts are picked. "
+                "Changing it clears the picked parts, since the parts are counted "
+                "with the separator they were listed with.",
+                target=label_id,
+                placement="bottom",
+            ),
+            dcc.Dropdown(
+                id=id,
+                options=[
+                    {"label": "Underscore  _", "value": "_"},
+                    {"label": "Hyphen  -", "value": "-"},
+                    {"label": "Dot  .", "value": "."},
+                    {"label": "Slash  /", "value": "/"},
+                    {"label": "Space", "value": " "},
+                ],
+                value="_",
+                clearable=False,
+                className="dbc border border-light-subtle rounded",
+            ),
+        ],
+        width=3,
+    )
+
+
 def base_path_input(id):
     label_id = f"{id}-label"
     return dbc.Col(
