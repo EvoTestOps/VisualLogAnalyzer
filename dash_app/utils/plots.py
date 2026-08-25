@@ -255,6 +255,8 @@ def create_files_count_plot(df, theme="plotly_white"):
         template=theme,
     )
 
+    fig.update_yaxes(type="log")
+
     return fig
 
 
