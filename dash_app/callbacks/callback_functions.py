@@ -6,6 +6,7 @@ import requests
 from dash_app.utils.data_directories import (
     get_all_filenames,
     get_all_root_log_directories,
+    get_base_path_directories,
     get_runs,
 )
 from dash_app.utils.metadata import format_metadata_rows
@@ -220,6 +221,11 @@ def fetch_project_name(project_id: int) -> str:
 def get_log_data_directory_options(project_id: int):
     base_path = _fetch_project_base_path(project_id).get("base_path")
     labels, values = get_all_root_log_directories(base_path)
+    return [{"label": lab, "value": val} for (lab, val) in zip(labels, values)]
+
+
+def get_base_path_options(selected_path=None):
+    labels, values = get_base_path_directories(selected_path)
     return [{"label": lab, "value": val} for (lab, val) in zip(labels, values)]
 
 

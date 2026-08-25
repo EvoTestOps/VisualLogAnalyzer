@@ -438,14 +438,24 @@ def base_path_input(id):
                 style={"textDecoration": "underline", "cursor": "pointer"},
             ),
             dbc.Tooltip(
-                "Optional. Must be directory inside log_data/. Leave empty or unchanged to use the default. Directory must already exist.",
+                "The directory the project's log data is read from. Every analysis in the "
+                "project picks its data from inside this directory, so keep the root to make "
+                "all of log_data/ available. The directories in log_data/ are listed here; "
+                "select one and open the list again to see the directories inside it.",
                 target=label_id,
                 placement="bottom",
             ),
-            dbc.Input(
-                id=id,
-                type="text",
-                value="./log_data",
+            dcc.Loading(
+                type="circle",
+                delay_show=200,
+                overlay_style={"visibility": "visible"},
+                children=dcc.Dropdown(
+                    id=id,
+                    placeholder="Select a directory under log_data/",
+                    className="dbc border border-light-subtle rounded",
+                    optionHeight=40,
+                    maxHeight=350,
+                ),
             ),
         ],
     )

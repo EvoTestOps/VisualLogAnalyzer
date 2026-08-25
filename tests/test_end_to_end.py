@@ -2,6 +2,19 @@ import re
 from playwright.sync_api import Page, expect
 
 
+def select_base_path(page: Page, directory: str):
+    """Pick a directory in the project form's base path dropdown.
+
+    The options come from a callback and are virtualized, so wait for them to
+    arrive and type the directory to narrow the list down to the options that
+    are actually rendered.
+    """
+    page.click("#base-path-proj")
+    page.locator(".VirtualizedSelectOption").first.wait_for()
+    page.locator("#base-path-proj input").first.press_sequentially(directory)
+    page.locator(".VirtualizedSelectOption", has_text=directory).first.click()
+
+
 def test_has_title(page: Page):
     page.goto("http://127.0.0.1:5000/dash/")
 
@@ -24,7 +37,7 @@ def test_can_run_file_count_analysis(page: Page):
 
     page.get_by_role("button", name="Create a new project").click()
     page.get_by_label("Project name").fill("File count test")
-    page.get_by_label("Base path").fill("./log_data/LO2")
+    select_base_path(page, "LO2")
     page.get_by_role("button", name="Create", exact=True).click()
 
     project_link = page.locator("#project-group li a", has_text="File count test")
@@ -60,7 +73,7 @@ def test_can_run_ano_line_level(page: Page):
 
     page.get_by_role("button", name="Create a new project").click()
     page.get_by_label("Project name").fill("Ano Line Test")
-    page.get_by_label("Base path").fill("./log_data/LO2")
+    select_base_path(page, "LO2")
     page.get_by_role("button", name="Create", exact=True).click()
 
     project_link = page.locator("#project-group li a", has_text="Ano Line Test")
@@ -106,7 +119,7 @@ def test_error_ano_line_with_bad_inputs(page: Page):
 
     page.get_by_role("button", name="Create a new project").click()
     page.get_by_label("Project name").fill("Error Ano Line")
-    page.get_by_label("Base path").fill("./log_data/LO2")
+    select_base_path(page, "LO2")
     page.get_by_role("button", name="Create", exact=True).click()
 
     project_link = page.locator("#project-group li a", has_text="Error Ano Line")
